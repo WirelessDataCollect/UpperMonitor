@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/ico">
+        <file>ico/box-checked.png</file>
+        <file>ico/box-unchecked.png</file>
+        <file>ico/checked.png</file>
+        <file>ico/unchecked.png</file>
+        <file>ico/box-checked-left.png</file>
+    </qresource>
+</RCC>

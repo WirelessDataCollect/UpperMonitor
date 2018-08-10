@@ -30,15 +30,15 @@ class MyUDP : public QUdpSocket
     explicit MyUDP(QObject *parent = nullptr);
 
     void unbindPort();
-
+    bool bindPort(QHostAddress addr, qint16 port);
   signals:
     void newMessage(const QString &from, const QByteArray &message);
 
   public slots:
     void readyRead();
     void sendMessage(QHostAddress sender, quint16 senderPort, QByteArray Data);
-    void sendMessage(QString ip, quint16 senderPort, QByteArray Data);
-    bool bindPort(QHostAddress addr, qint16 port);
+
+
   private:
     QUdpSocket *socket;
 };

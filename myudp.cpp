@@ -27,12 +27,15 @@ MyUDP::MyUDP(QObject *parent) : QUdpSocket(parent)
 bool MyUDP::bindPort(QHostAddress addr, qint16 port)
 {
     socket->abort();
+
     bool isBinded = socket->bind(addr, port);
+    qDebug()<< "bindPort :" <<  addr<<port<<isBinded ;
     if (isBinded)
     {
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),Qt::DirectConnection);
     }
     return isBinded;
+
 }
 
 
@@ -45,15 +48,7 @@ void MyUDP::sendMessage(QHostAddress sender, quint16 senderPort, QByteArray Data
 
 }
 
-void MyUDP::sendMessage(QString ip, quint16 senderPort, QByteArray Data)
-{
-    QHostAddress sender(ip);
-    qDebug()<<"sendMessage:  "<<senderPort<<Data;
-    // Sends the datagram datagram
-    // to the host address and at port.
-    socket->writeDatagram(Data, sender, senderPort);
 
-}
 void MyUDP::readyRead()
 {
     // when data comes in

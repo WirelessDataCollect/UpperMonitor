@@ -31,3 +31,8 @@ HEADERS  += mainwindow.h \
     myudp.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    src.qrc
+
+DISTFILES +=

@@ -13,7 +13,7 @@
 
 #include <QProcess>
 #include<QTime>
-
+#include<QTimeZone>
 #include<QThread>
 
 #include<QDateTime>
@@ -50,6 +50,8 @@ private slots:
 
     void onUdpAppendMessage(const QString &from, const QString &message);
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
+    void on_button_IVSetting_clicked();
+    void adcbytetodata(const QString &from, const QByteArray &message);
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -65,9 +67,16 @@ public:
     quint16 udpTargetPort;
     quint16 syncTargetPort;
 
+    QByteArray DigitalIO;
+
+    QVector< QVector<float> > Adc_data;
     QByteArray IntToByte(quint32 i);
     QByteArray MainWindow:: uint16ToByte(quint16 i);
     QByteArray DatetimeToByte(QDateTime datetime);
+    QDateTime DatetimeToByte(QByteArray datebyte);
+    quint32  ByteTouint32(QByteArray abyte0);
+    quint32 ByteTouint16(QByteArray abyte0);
+    QDateTime ByteToDatetime(QByteArray datebyte);
 private:
     Ui::MainWindow *ui;
 
@@ -77,6 +86,9 @@ private:
     void stop();
     void synctime();
     void SendIpAdress(QHostAddress addr, quint16 port);
+    void SendAdcModle();
+    void AdcDataShow(float ch1, float ch2, float ch3, float ch4);
+
 };
 
 #endif // MAINWINDOW_H

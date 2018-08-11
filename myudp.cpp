@@ -30,6 +30,7 @@ bool MyUDP::bindPort(QHostAddress addr, qint16 port)
 
     bool isBinded = socket->bind(addr, port);
     qDebug()<< "bindPort :" <<  addr<<port<<isBinded ;
+     qDebug()<<socket->errorString();//此处为错误打印
     if (isBinded)
     {
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),Qt::DirectConnection);
@@ -41,7 +42,7 @@ bool MyUDP::bindPort(QHostAddress addr, qint16 port)
 
 void MyUDP::sendMessage(QHostAddress sender, quint16 senderPort, QByteArray Data)
 {
-    qDebug()<<"sendMessage:  "<<senderPort<<Data;
+   // qDebug()<<"me -->senderPort"<<senderPort;
     // Sends the datagram datagram
     // to the host address and at port.
     socket->writeDatagram(Data, sender, senderPort);
@@ -64,9 +65,8 @@ void MyUDP::readyRead()
 
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
-   QString  bufstring(buffer);
     emit newMessage(sender.toString(), buffer);
-    qDebug()<<"readyRead:   +   senderPort "<<bufstring<< senderPort;
+    //qDebug()<<"   senderPort --> me"<<sender.toString()<< senderPort;
 }
 
 void MyUDP::unbindPort()

@@ -64,19 +64,19 @@ public:
     QCheckBox *checkBox_4;
     QLabel *label_Channel4;
     QGroupBox *groupBox_2;
-    QVBoxLayout *verticalLayout;
+    QGridLayout *gridLayout_2;
     QHBoxLayout *horizontalLayout_4;
     QLabel *label_7;
     QLabel *label_8;
     QLabel *label_6;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_5;
-    QRadioButton *radioButton_3;
-    QRadioButton *radioButton;
+    QRadioButton *radioButton_1_0;
+    QRadioButton *radioButton_1_1;
     QHBoxLayout *horizontalLayout_3;
     QLabel *label_9;
-    QRadioButton *radioButton_5;
-    QRadioButton *radioButton_2;
+    QRadioButton *radioButton_2_0;
+    QRadioButton *radioButton_2_1;
     QWidget *Client2;
     QWidget *Client3;
     QWidget *Client4;
@@ -433,10 +433,10 @@ public:
         groupBox_2 = new QGroupBox(Client1);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(0, 194, 171, 141));
-        verticalLayout = new QVBoxLayout(groupBox_2);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        gridLayout_2 = new QGridLayout(groupBox_2);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
@@ -457,7 +457,7 @@ public:
         horizontalLayout_4->addWidget(label_6);
 
 
-        verticalLayout->addLayout(horizontalLayout_4);
+        gridLayout_2->addLayout(horizontalLayout_4, 0, 0, 1, 1);
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
@@ -467,27 +467,29 @@ public:
 
         horizontalLayout_2->addWidget(label_5);
 
-        radioButton_3 = new QRadioButton(groupBox_2);
-        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
-        sizePolicy.setHeightForWidth(radioButton_3->sizePolicy().hasHeightForWidth());
-        radioButton_3->setSizePolicy(sizePolicy);
-        radioButton_3->setLayoutDirection(Qt::LeftToRight);
-        radioButton_3->setAutoFillBackground(false);
+        radioButton_1_0 = new QRadioButton(groupBox_2);
+        radioButton_1_0->setObjectName(QStringLiteral("radioButton_1_0"));
+        sizePolicy.setHeightForWidth(radioButton_1_0->sizePolicy().hasHeightForWidth());
+        radioButton_1_0->setSizePolicy(sizePolicy);
+        radioButton_1_0->setLayoutDirection(Qt::LeftToRight);
+        radioButton_1_0->setAutoFillBackground(false);
+        radioButton_1_0->setInputMethodHints(Qt::ImhNone);
+        radioButton_1_0->setAutoExclusive(false);
 
-        horizontalLayout_2->addWidget(radioButton_3);
+        horizontalLayout_2->addWidget(radioButton_1_0);
 
-        radioButton = new QRadioButton(groupBox_2);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
-        sizePolicy.setHeightForWidth(radioButton->sizePolicy().hasHeightForWidth());
-        radioButton->setSizePolicy(sizePolicy);
-        radioButton->setLayoutDirection(Qt::LeftToRight);
-        radioButton->setAutoFillBackground(false);
-        radioButton->setInputMethodHints(Qt::ImhNone);
+        radioButton_1_1 = new QRadioButton(groupBox_2);
+        radioButton_1_1->setObjectName(QStringLiteral("radioButton_1_1"));
+        sizePolicy.setHeightForWidth(radioButton_1_1->sizePolicy().hasHeightForWidth());
+        radioButton_1_1->setSizePolicy(sizePolicy);
+        radioButton_1_1->setLayoutDirection(Qt::LeftToRight);
+        radioButton_1_1->setAutoFillBackground(false);
+        radioButton_1_1->setAutoExclusive(false);
 
-        horizontalLayout_2->addWidget(radioButton);
+        horizontalLayout_2->addWidget(radioButton_1_1);
 
 
-        verticalLayout->addLayout(horizontalLayout_2);
+        gridLayout_2->addLayout(horizontalLayout_2, 1, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
@@ -497,25 +499,27 @@ public:
 
         horizontalLayout_3->addWidget(label_9);
 
-        radioButton_5 = new QRadioButton(groupBox_2);
-        radioButton_5->setObjectName(QStringLiteral("radioButton_5"));
-        sizePolicy.setHeightForWidth(radioButton_5->sizePolicy().hasHeightForWidth());
-        radioButton_5->setSizePolicy(sizePolicy);
+        radioButton_2_0 = new QRadioButton(groupBox_2);
+        radioButton_2_0->setObjectName(QStringLiteral("radioButton_2_0"));
+        sizePolicy.setHeightForWidth(radioButton_2_0->sizePolicy().hasHeightForWidth());
+        radioButton_2_0->setSizePolicy(sizePolicy);
+        radioButton_2_0->setAutoExclusive(false);
 
-        horizontalLayout_3->addWidget(radioButton_5);
+        horizontalLayout_3->addWidget(radioButton_2_0);
 
-        radioButton_2 = new QRadioButton(groupBox_2);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
-        sizePolicy.setHeightForWidth(radioButton_2->sizePolicy().hasHeightForWidth());
-        radioButton_2->setSizePolicy(sizePolicy);
-        radioButton_2->setLayoutDirection(Qt::LeftToRight);
-        radioButton_2->setAutoFillBackground(false);
-        radioButton_2->setInputMethodHints(Qt::ImhNone);
+        radioButton_2_1 = new QRadioButton(groupBox_2);
+        radioButton_2_1->setObjectName(QStringLiteral("radioButton_2_1"));
+        sizePolicy.setHeightForWidth(radioButton_2_1->sizePolicy().hasHeightForWidth());
+        radioButton_2_1->setSizePolicy(sizePolicy);
+        radioButton_2_1->setLayoutDirection(Qt::LeftToRight);
+        radioButton_2_1->setAutoFillBackground(false);
+        radioButton_2_1->setInputMethodHints(Qt::ImhNone);
+        radioButton_2_1->setAutoExclusive(false);
 
-        horizontalLayout_3->addWidget(radioButton_2);
+        horizontalLayout_3->addWidget(radioButton_2_1);
 
 
-        verticalLayout->addLayout(horizontalLayout_3);
+        gridLayout_2->addLayout(horizontalLayout_3, 2, 0, 1, 1);
 
         tabWidget->addTab(Client1, QString());
         Client2 = new QWidget();
@@ -675,11 +679,11 @@ public:
         label_8->setText(QApplication::translate("MainWindow", " 0", Q_NULLPTR));
         label_6->setText(QApplication::translate("MainWindow", " 1", Q_NULLPTR));
         label_5->setText(QApplication::translate("MainWindow", "CH1", Q_NULLPTR));
-        radioButton_3->setText(QString());
-        radioButton->setText(QString());
+        radioButton_1_0->setText(QString());
+        radioButton_1_1->setText(QString());
         label_9->setText(QApplication::translate("MainWindow", "CH2", Q_NULLPTR));
-        radioButton_5->setText(QString());
-        radioButton_2->setText(QString());
+        radioButton_2_0->setText(QString());
+        radioButton_2_1->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(Client1), QApplication::translate("MainWindow", "Client1", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(Client2), QApplication::translate("MainWindow", "Client2", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(Client3), QApplication::translate("MainWindow", "Client3", Q_NULLPTR));

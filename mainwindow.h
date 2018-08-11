@@ -6,7 +6,7 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QNetworkInterface>
-
+#include <QTimer>
 
 #include <QHostAddress>
 #include <QHostInfo>
@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 
 signals:
     void udpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
-    void udpsent(QString IP, quint16 senderPort, QByteArray Data);
+    void myudpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
     bool bindPort(QHostAddress addr, qint16 port);
 private slots:
 
@@ -51,18 +51,22 @@ private slots:
     void onUdpAppendMessage(const QString &from, const QString &message);
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
     void on_button_IVSetting_clicked();
-    void adcbytetodata(const QString &from, const QByteArray &message);
+    void AdcByteToData(const QString &from, const QByteArray &message);
+    void UiDataShow();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     MyUDP *myudp = nullptr;
     MyUDP *syncudp = nullptr;
+    QTimer *timer = nullptr;
     quint16 udpListenPort;
     quint16 syncListenPort;
 
     QHostAddress localAddr;
     QHostAddress syncTargetAddr;
 
+    quint64 TotalByteNum;
+    quint64  TotalPackNum;
 
     quint16 udpTargetPort;
     quint16 syncTargetPort;
@@ -71,12 +75,15 @@ public:
 
     QVector< QVector<float> > Adc_data;
     QByteArray IntToByte(quint32 i);
+    QByteArray IntToHighByte(quint32 i);
     QByteArray MainWindow:: uint16ToByte(quint16 i);
     QByteArray DatetimeToByte(QDateTime datetime);
     QDateTime DatetimeToByte(QByteArray datebyte);
     quint32  ByteTouint32(QByteArray abyte0);
-    quint32 ByteTouint16(QByteArray abyte0);
+    quint16 ByteTouint16(QByteArray abyte0);
     QDateTime ByteToDatetime(QByteArray datebyte);
+    float ByteToFloat(QByteArray abyte0);
+
 private:
     Ui::MainWindow *ui;
 
@@ -88,6 +95,7 @@ private:
     void SendIpAdress(QHostAddress addr, quint16 port);
     void SendAdcModle();
     void AdcDataShow(float ch1, float ch2, float ch3, float ch4);
+    void DigitalDataShow(QByteArray bate0);
 
 };
 

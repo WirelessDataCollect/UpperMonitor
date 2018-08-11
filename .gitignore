@@ -1,3 +1,5 @@
 /WiFiGui.pro.user
 /debug
 /release
+/Makefile*
+/.qmake*

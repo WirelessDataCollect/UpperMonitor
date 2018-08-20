@@ -51,6 +51,8 @@ public:
     QPushButton *button_UdpStart;
     QTabWidget *tabWidget;
     QWidget *Client1;
+    QHBoxLayout *horizontalLayout_5;
+    QGridLayout *gridLayout_3;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QPushButton *button_IVSetting;
@@ -77,6 +79,7 @@ public:
     QLabel *label_9;
     QRadioButton *radioButton_2_0;
     QRadioButton *radioButton_2_1;
+    QWidget *widchart;
     QWidget *Client2;
     QWidget *Client3;
     QWidget *Client4;
@@ -106,10 +109,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(526, 604);
+        MainWindow->resize(526, 598);
         MainWindow->setStyleSheet(QString::fromUtf8("QWidget#centerWidget {\n"
 "        background: rgb(50, 50, 50);\n"
 "}\n"
+"QWidget#widchart {\n"
+"        background: rgb(50, 50, 50);\n"
+"}\n"
+"\n"
+"\n"
 "QFrame{\n"
 "        border: 1px solid rgb(50, 50, 50);\n"
 "        background: rgb(50, 50, 50);\n"
@@ -150,14 +158,14 @@ public:
 "QPushButton:enabled:hover{\n"
 "        background: rgb(85, 85, 85);\n"
 "}\n"
-"QPushButton:enabled:pressed{\n"
+"QPushButton:en"
+                        "abled:pressed{\n"
 "        background: rgb(80, 80, 80);\n"
 "}\n"
 "\n"
 "\n"
 "\n"
-""
-                        "\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -202,12 +210,12 @@ public:
 "}\n"
 "\n"
 "QCheckBox{\n"
-"         spacing: 10px;\n"
+""
+                        "         spacing: 10px;\n"
 "         \n"
 "}\n"
 "QCheckBox:enabled{\n"
-"      "
-                        "  color: rgb(175, 175, 175);\n"
+"        color: rgb(175, 175, 175);\n"
 "    /* color: rgb(0, 0, 0)*/\n"
 "}\n"
 "QCheckBox:enabled:hover{\n"
@@ -245,10 +253,10 @@ public:
 "        color: rgb(175, 175, 175);\n"
 "}\n"
 "QComboBox:!enabled {\n"
-"        color: rgb(155, 155, 155);\n"
+""
+                        "        color: rgb(155, 155, 155);\n"
 "}\n"
-"QComboBox:enabled:hover, QCom"
-                        "boBox:enabled:focus {\n"
+"QComboBox:enabled:hover, QComboBox:enabled:focus {\n"
 "        color: rgb(230, 230, 230);\n"
 "        background: rgb(68, 69, 73);\n"
 "}\n"
@@ -282,10 +290,10 @@ public:
 "}\n"
 "QLineEdit {\n"
 "        border-radius: 4px;\n"
-"        height: 25px;\n"
+"        height: 2"
+                        "5px;\n"
 "        width:30px;\n"
-"        border: 1px solid rgb(100, 100, 1"
-                        "00);\n"
+"        border: 1px solid rgb(100, 100, 100);\n"
 "        background: rgb(72, 72, 73);\n"
 "}\n"
 "QLineEdit:enabled {\n"
@@ -354,7 +362,7 @@ public:
 
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(10, 80, 501, 421));
+        tabWidget->setGeometry(QRect(0, 80, 521, 431));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -362,9 +370,15 @@ public:
         tabWidget->setSizePolicy(sizePolicy1);
         Client1 = new QWidget();
         Client1->setObjectName(QStringLiteral("Client1"));
+        horizontalLayout_5 = new QHBoxLayout(Client1);
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        gridLayout_3 = new QGridLayout();
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
         groupBox = new QGroupBox(Client1);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(0, 0, 171, 191));
         gridLayout = new QGridLayout(groupBox);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
@@ -430,9 +444,11 @@ public:
         label_Channel2->raise();
         label_Channel3->raise();
         label_Channel4->raise();
+
+        gridLayout_3->addWidget(groupBox, 0, 0, 1, 1);
+
         groupBox_2 = new QGroupBox(Client1);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        groupBox_2->setGeometry(QRect(0, 194, 171, 141));
         gridLayout_2 = new QGridLayout(groupBox_2);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -520,6 +536,17 @@ public:
 
 
         gridLayout_2->addLayout(horizontalLayout_3, 2, 0, 1, 1);
+
+
+        gridLayout_3->addWidget(groupBox_2, 1, 0, 1, 1);
+
+
+        horizontalLayout_5->addLayout(gridLayout_3);
+
+        widchart = new QWidget(Client1);
+        widchart->setObjectName(QStringLiteral("widchart"));
+
+        horizontalLayout_5->addWidget(widchart);
 
         tabWidget->addTab(Client1, QString());
         Client2 = new QWidget();
@@ -636,6 +663,9 @@ public:
 
         tabWidget->addTab(tab, QString());
         MainWindow->setCentralWidget(centralWidget);
+        groupBox_3->raise();
+        tabWidget->raise();
+        groupBox_2->raise();
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 526, 23));

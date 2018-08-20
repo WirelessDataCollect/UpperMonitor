@@ -18,8 +18,11 @@
 
 #include<QDateTime>
 #include "myudp.h"
-
+#include <numeric>
+#include"chartswidgt.h"
 #define  GET_TIME_SYNC          0xa1
+#define  GET_RETURN_ORDER       0xa2
+#define  GET_TEST               0xa3
 #define  GET_WIFI_SEND_EN       0xa5
 #define  GET_WIFI_SEND_DISABLE  0xa6
 #define  GET_CHANNEL_MODEL      0xa7
@@ -50,6 +53,8 @@ private slots:
 
     void onUdpAppendMessage(const QString &from, const QString &message);
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
+
+    void syncrxmessage(const QString &from, const QByteArray &message);
     void on_button_IVSetting_clicked();
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
@@ -59,6 +64,7 @@ public:
     MyUDP *myudp = nullptr;
     MyUDP *syncudp = nullptr;
     QTimer *timer = nullptr;
+    chartswidgt *dialog = nullptr;
     quint16 udpListenPort;
     quint16 syncListenPort;
 
@@ -73,27 +79,35 @@ public:
 
     QByteArray DigitalIO;
 
+
     QVector< QVector<float> > Adc_data;
+    QVector<uchar> OrderReturn;
+    quint16 ClientCount;
+    QByteArray IVset;
     QByteArray IntToByte(quint32 i);
     QByteArray IntToHighByte(quint32 i);
-    QByteArray MainWindow:: uint16ToByte(quint16 i);
+    QByteArray uint16ToByte(quint16 i);
     QByteArray DatetimeToByte(QDateTime datetime);
     QDateTime DatetimeToByte(QByteArray datebyte);
     quint32  ByteTouint32(QByteArray abyte0);
     quint16 ByteTouint16(QByteArray abyte0);
     QDateTime ByteToDatetime(QByteArray datebyte);
     float ByteToFloat(QByteArray abyte0);
+    void sleep(unsigned int msec);
 
 private:
     Ui::MainWindow *ui;
 
     QTextTableFormat tableFormat;
+
     void MainWindow::findLocalIPs();
-    void start();
-    void stop();
-    void synctime();
-    void SendIpAdress(QHostAddress addr, quint16 port);
-    void SendAdcModle();
+    void testconnect();
+    bool start();
+    bool stop();
+    bool synctime();
+    bool SendIpAdress(QHostAddress addr, quint16 port);
+    bool SendAdcModle();
+    int checkreturn(uchar order);
     void AdcDataShow(float ch1, float ch2, float ch3, float ch4);
     void DigitalDataShow(QByteArray bate0);
 

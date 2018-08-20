@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        myudp.cpp
+        myudp.cpp \
+    chartswidgt.cpp
 
 HEADERS  += mainwindow.h \
-    myudp.h
+    myudp.h \
+    chartswidgt.h
 
 FORMS    += mainwindow.ui
 

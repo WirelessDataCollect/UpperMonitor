@@ -29,17 +29,19 @@ public slots:
     void disconnectMarkers();
 
     void handleMarkerClicked();
-    void rxdata(QVector<QVector<uint16_t> > pdata,uint16_t pchannel,int Plotsize,int range);
+    void rxplotdata(QVector<double> &plotdata);
 private:
 
     QChart *m_chart;
     QList<QSplineSeries *> s_series;
-    QVector<QVector<uint16_t> > pdata;
-    uint16_t pchannel;
+    QVector<QVector<quint16> > pdata;
+    quint16 pchannel;
     QChartView *m_chartView;
     QGridLayout *m_mainLayout;
     QGridLayout *m_fontLayout;
-    void chartswidgt::setseries();
+    QList<QList<QPointF> > data;
+    qreal plotXaxis;
+    void setseries();
 };
 
 #endif // CHARTSWIDGT_H

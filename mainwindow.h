@@ -42,6 +42,7 @@ signals:
     void udpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
     void myudpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
     bool bindPort(QHostAddress addr, qint16 port);
+    void sendplotdata(QVector<double> &plotdata);
 private slots:
 
 //    void onTcpServerSendMessage();
@@ -58,12 +59,14 @@ private slots:
     void on_button_IVSetting_clicked();
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
+    void UiChartShow();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     MyUDP *myudp = nullptr;
     MyUDP *syncudp = nullptr;
     QTimer *timer = nullptr;
+    QTimer *plottimer = nullptr;
     chartswidgt *dialog = nullptr;
     quint16 udpListenPort;
     quint16 syncListenPort;
@@ -80,9 +83,9 @@ public:
     QByteArray DigitalIO;
 
 
-    QVector< QVector<float> > Adc_data;
-    QVector<uchar> OrderReturn;
-    quint16 ClientCount;
+    QVector< QVector<double> > Adc_data;
+    QVector<char> OrderReturn;
+    int ClientCount;
     QByteArray IVset;
     QByteArray IntToByte(quint32 i);
     QByteArray IntToHighByte(quint32 i);
@@ -92,8 +95,8 @@ public:
     quint32  ByteTouint32(QByteArray abyte0);
     quint16 ByteTouint16(QByteArray abyte0);
     QDateTime ByteToDatetime(QByteArray datebyte);
-    float ByteToFloat(QByteArray abyte0);
-    void sleep(unsigned int msec);
+    double ByteToAdcdata(QByteArray abyte0);
+    void sleep(int msec);
 
 private:
     Ui::MainWindow *ui;
@@ -107,8 +110,8 @@ private:
     bool synctime();
     bool SendIpAdress(QHostAddress addr, quint16 port);
     bool SendAdcModle();
-    int checkreturn(uchar order);
-    void AdcDataShow(float ch1, float ch2, float ch3, float ch4);
+    int checkreturn(int order);
+    void AdcDataShow(double ch1, double ch2, double ch3, double ch4);
     void DigitalDataShow(QByteArray bate0);
 
 };

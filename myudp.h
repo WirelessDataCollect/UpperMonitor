@@ -30,7 +30,7 @@ class MyUDP : public QUdpSocket
     explicit MyUDP(QObject *parent = nullptr);
 
     void unbindPort();
-    bool bindPort(QHostAddress addr, qint16 port);
+    bool bindPort(QHostAddress addr, quint16 port);
   signals:
     void newMessage(const QString &from, const QByteArray &message);
 

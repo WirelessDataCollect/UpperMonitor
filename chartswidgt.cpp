@@ -25,24 +25,35 @@ chartswidgt::chartswidgt(QWidget *parent) :
 
     // Create layout for grid and detached legend
     m_mainLayout = new QGridLayout();
-    m_mainLayout->addWidget(m_chartView, 0, 1, 3, 1);
+    m_mainLayout->setSpacing(0);
+    m_mainLayout->addWidget(m_chartView, 0, 0, -1, -1);
     setLayout(m_mainLayout);
+    m_mainLayout->setContentsMargins(0,0,0,0);
 
 
-    //connectMarkers();
-     // setseries();
-
-     // connectMarkers();
-    //  m_chart->createDefaultAxes();
+     setseries();
+     connectMarkers();
+     m_chart->createDefaultAxes();
+     m_chart->axisY()->setRange(0,5);
 
     // Set the title and show legend
     m_chart->setTitle("Legendmarker example (click on legend)");
     m_chart->legend()->setVisible(true);
-   // m_chart->legend()->setAlignment(Qt::AlignBottom);
-    m_chart->legend()->setAlignment(Qt::AlignLeft);
-
-
+    m_chart->legend()->setAlignment(Qt::AlignBottom);
     m_chartView->setRenderHint(QPainter::Antialiasing);
+
+    plotXaxis = 0;
+    QList<QPointF> zerolist;
+    for(plotXaxis = 0;plotXaxis<Alldatabuf;plotXaxis++)
+    {
+     zerolist.append(QPointF(plotXaxis,0));
+    }
+    for(int i = 0;i<4;i++)
+    {
+        data.append(zerolist);
+    }
+
+   // m_chartView->setRenderHint(QPainter::Antialiasing);
 }
 
 
@@ -54,12 +65,12 @@ void chartswidgt::setseries()
      s_series.append(series);
      series->setName(QString("Channel " + QString::number(s_series.count())));
      QList<QPointF> data;
-     for(int i=0;i<Alldatabuf-1;i++){
+     for(int i=0;i<Alldatabuf;i++){
          qreal x=i;
-         qreal y=-10;
+         qreal y=0;
          data.append(QPointF(x,y));
      }
-     data.append(QPointF(Alldatabuf-1,10));
+     //data.append(QPointF(Alldatabuf-1,10));
      series->append(data);
      m_chart->addSeries(series);
   }
@@ -159,14 +170,35 @@ void chartswidgt::handleMarkerClicked()
     }
 }
 
+void chartswidgt::rxplotdata(QVector<double> &plotdata)
+{
+    plotXaxis++;
+   // removeSeries();
 
-void chartswidgt::rxdata(QVector<QVector<uint16_t> > pdata,uint16_t pchannel,int Plotsize,int range){
+    for(int i = 0; i < 4;i++){
+        QSplineSeries *series =s_series.at(i);
+
+
+//        data[i].removeFirst();
+//        data[i].append(QPointF(plotXaxis,plotdata.at(i)));
+//        series->clear();
+         series->removePoints(0,1);
+        series->append(QPointF(plotXaxis,plotdata.at(i)));
+       // m_chart->addSeries(series);
+//        s_series.append(series);
+    }
+
+    m_chart->axisX()->setRange(plotXaxis-100,plotXaxis);
+
+}
+/*
+void chartswidgt::rxdata(QVector<QVector<quint16> > pdata,quint16 pchannel,int Plotsize,int range){
      removeSeries();
       QList<QPointF> data;
       double GainAD8421;
       data.clear();
       double Yrange;
-     QVector<QVector<uint16_t> >::iterator iter=pdata.begin();
+     QVector<QVector<quint16> >::iterator iter=pdata.begin();
      //qDebug()<<(*iter).size();
     // qDebug()<<(*iter).back();
    qDebug()<<"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL";
@@ -183,7 +215,7 @@ void chartswidgt::rxdata(QVector<QVector<uint16_t> > pdata,uint16_t pchannel,int
         if(pchannel%2){
             for(int j=0;j<Plotsize;j++){
                     qreal x=j;
-                    qreal y=((int16_t)((*iter).at(j)))/65536.0*2*4.09*2.5/GainAD8421;
+                    qreal y=((qint16)((*iter).at(j)))/65536.0*2*4.09*2.5/GainAD8421;
                     qDebug()<<"LLLLLL:     "<<y;
                    data.append(QPointF(x,y));
                  }
@@ -209,5 +241,5 @@ void chartswidgt::rxdata(QVector<QVector<uint16_t> > pdata,uint16_t pchannel,int
      m_chart->axisY()->setRange(-Yrange,Yrange);
     }
 
-
+*/
 

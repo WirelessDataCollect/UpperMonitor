@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     timer = new QTimer(this);
     plottimer = new QTimer(this);
-    plottimer->start(52);
+
 
     findLocalIPs();
 
@@ -24,39 +24,32 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         dialog = new chartswidgt;
     }
-
-
-    //dialog->setWindowTitle(tr("PLOT DATA"));
+    Adc_data.clear();
+    Adc_data.resize(4);
+    TotalByteNum = 0;
+    TotalPackNum= 0;
 
     QGridLayout *baseLayout = new QGridLayout(ui->widchart); //便于显示，创建网格布局
     baseLayout->addWidget(dialog, 0, 0,-1,-1);
     baseLayout->setSpacing(0);
     baseLayout->setContentsMargins(0,0,0,0);
     dialog->show();
-    connect(this, SIGNAL(sendplotdata(QVector<double> &)),dialog, SLOT(rxplotdata(QVector<double> &)));
-    connect(plottimer, SIGNAL(timeout()), this, SLOT(UiChartShow()));
-
-    Adc_data.clear();
-    Adc_data.resize(4);
-    TotalByteNum = 0;
-    TotalPackNum= 0;
-
 
     //start myudp thread
     QThread *thread_txrx= new QThread(this);
     myudp->moveToThread(thread_txrx);
 
-    //start sync thread
+//    //start sync thread
     QThread *thread_sync = new QThread(this);
     syncudp->moveToThread(thread_sync);
+
 
     //syncTargetAddr
     syncTargetAddr = QHostAddress("255.255.255.255");
 
-    qDebug()<<"syncTargetAddr"<< syncTargetAddr;
+//    qDebug()<<"syncTargetAddr"<< syncTargetAddr;
     syncListenPort = 5003;
     syncTargetPort = 5003;
-
 
     udpListenPort = 5001;
     udpTargetPort = 5002;
@@ -125,7 +118,6 @@ void MainWindow::on_button_UdpStart_clicked()
         ui->lineEdit_UdpListenPort->setText(QString::number(udpListenPort,10));
 
         // udp_txrx bindport
-
         bool isSuccess = myudp->bindPort(localAddr, udpListenPort);
         if(isSuccess)
         {
@@ -150,58 +142,84 @@ void MainWindow::on_button_UdpStart_clicked()
         }
 
         // signal connect to slot
-        connect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-        connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-        connect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
-        connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
+        connect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)),Qt::QueuedConnection);
+        connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
+
+        connect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
+        connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
+        //test the cninnection with client and count the number of count;
+
         connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 
-        //test the cninnection with client and count the number of count;
+        connect(this, SIGNAL(sendplotdata(QVector<double> &)),dialog, SLOT(rxplotdata(QVector<double> &)));
+        connect(plottimer, SIGNAL(timeout()), this, SLOT(UiChartShow()));
+
         testconnect();
         sleep(500);
         ClientCount = checkreturn(GET_TEST);
+        qDebug()<<"ClientCount"<<ClientCount;
         if(ClientCount ==0){
             QString  text("these is no client");
             onUdpAppendMessage("Me",text);
-
-            //return;
+            initoff();
+            return;
         }
 
-        // time sync
-         if(synctime()==false) {
-             qDebug()<< "synctime error";
-             return;
-         }
+
          // set the target ip adress of clients
          if(SendIpAdress(localAddr,udpListenPort) == false) {
               qDebug()<< "SendIpAdress error";
-             return;
+              initoff();
 
+             return;
          }
+
+         // time sync
+          if(synctime()==false) {
+              qDebug()<< "synctime error";
+              initoff();
+             return;
+          }
+          else qDebug()<< "synctime OK";
+
+         // set IVmodel
+//         if(SendAdcModle() == false) {
+//              qDebug()<< "SendIpAdress error";
+//              initoff();
+//             return;
+//         }
+
         // Client start
          if(start()==false) {
              qDebug()<< "start() error";
-             return;
+             initoff();
+           return;
           }
          // timer begin(updata the ui)
-         timer->start(1000);
-
+         timer->start(2000);
+         plottimer->start(500);
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
     }
-    else{
-       // Client stop
-        stop();
-        timer->stop();
-        myudp->unbindPort();
-        syncudp->unbindPort();
-        ui->button_UdpStart->setText("Start");
-        ui->lineEdit_UdpListenPort->setDisabled(false);
 
+    else initoff();
+}
 
-        disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-        disconnect(myudp, SIGNAL(newMessage(QString,QString)),this,SLOT(AdcByteToData(QString,QString)));
-    }
+void MainWindow::initoff(){
+    timer->stop();
+    plottimer->stop();
+   // Client stop
+    stop();
+   myudp->unbindPort();
+   syncudp->unbindPort();
+   ui->button_UdpStart->setText("Start");
+   ui->lineEdit_UdpListenPort->setDisabled(false);
+
+   disconnect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
+   disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
+   disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
+   disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
+
 }
 
 
@@ -211,7 +229,7 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 
   qDebug()<<"message.size()"<<message.size();
 
-  if(message.size()<16)
+  if(message.size()<16 || (message.size()%8!=0))
   {
       qDebug()<<"message.size()"<<message.size();
       return;
@@ -257,6 +275,8 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 
 void MainWindow::UiDataShow()
 {
+
+     if(Adc_data[0].isEmpty()) return;
     QVector<QVector<double> >::iterator iter=Adc_data.begin();
     iter=Adc_data.begin();
     AdcDataShow((*iter).at(0), (*(iter+1)).at(0), (*(iter+2)).at(0), (*(iter+3)).at(0));
@@ -345,15 +365,20 @@ int MainWindow::checkreturn(int order)
 }
 void MainWindow::syncrxmessage(const QString &from, const QByteArray &message)
 {
-   if(static_cast<quint8>(message.at(0))== GET_TIME_SYNC)  //时间同步
+    QString localfrom = from;
+    QString localmessage = message;
+   if(static_cast<quint8>(message.at(0))== TIME_SYNC_BOARD)  //终端之间的时间同步
    {
+     localmessage = "Time sync between boards";
    }
-   else if(static_cast<quint8>(message.at(0)) == GET_RETURN_ORDER)
+
+   else if(static_cast<quint8>(message.at(0)) == GET_RETURN_ORDER && (from != localAddr.toString()) )
    {
        OrderReturn.append(message.at(1));
    }
-   onUdpAppendMessage(from,message);
+   if(from == localAddr.toString()) localfrom = "SELF";
 
+   onUdpAppendMessage(localfrom,message);
 }
 
 void MainWindow::testconnect()
@@ -362,7 +387,7 @@ void MainWindow::testconnect()
    QByteArray databyte;
    databyte.append(static_cast<char>(GET_TEST));
    emit udpsent(syncTargetAddr, syncTargetPort,databyte);
-   emit myudpsent(syncTargetAddr,udpTargetPort,databyte);
+   emit myudpsent(syncTargetAddr,udpTargetPort,databyte);//某些客户端需要先发送数据才能接收
    QString text("testconnect");
    onUdpAppendMessage("Me",text);
 }
@@ -372,7 +397,7 @@ bool MainWindow::start()
     QByteArray data;
     data.resize(1);
     data[0] = static_cast<char>(GET_WIFI_SEND_EN);
-    QString text = "start";
+    QString text = "start: "+ data.toHex();
     int i=0;
     while(checkreturn(GET_WIFI_SEND_EN) != ClientCount && i<5)
     {
@@ -389,7 +414,7 @@ bool MainWindow::stop()
     QByteArray data;
     data.resize(1);
     data[0] = static_cast<char>(GET_WIFI_SEND_DISABLE);
-    QString text = "stop";
+    QString text = "stop: "+ data.toHex();
     int i=0;
     while(checkreturn(GET_WIFI_SEND_DISABLE) != ClientCount && i<5)
     {
@@ -408,14 +433,16 @@ bool MainWindow::synctime()
     QDateTime datetime = QDateTime::currentDateTime();
     databyte.append(DatetimeToByte(datetime));
     int i=0;
+    QString text = "synctime: "+ databyte.toHex();
     while(checkreturn(GET_TIME_SYNC) != ClientCount && i<5)
     {
        OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,databyte);
-       onUdpAppendMessage("Me",datetime.toString());
+       onUdpAppendMessage("Me",text);
        sleep(200);
        i++;
     }
+
     return checkreturn(GET_TIME_SYNC) == ClientCount;
 
 }
@@ -424,6 +451,7 @@ bool MainWindow::SendAdcModle()
     QByteArray databyte;
     char  hexzero = 0;
     databyte.append(static_cast<char>(GET_CHANNEL_MODEL));
+    databyte.append(0x01);
     if(ui->checkBox->isChecked())   databyte.append(0x01);  //V
     else databyte.append(hexzero);                             //I
     if(ui->checkBox_2->isChecked())   databyte.append(0x01);  //V
@@ -434,15 +462,16 @@ bool MainWindow::SendAdcModle()
     else databyte.append(hexzero);                             //I
 
     int i = 0;
+    QString text = "SendAdcModle: "+ databyte.toHex();
     while(checkreturn(GET_CHANNEL_MODEL) != ClientCount && i<5)
     {
        OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,databyte);
-        onUdpAppendMessage("Me"," SendAdcModle: "+databyte.toHex());
-       sleep(200);
+        onUdpAppendMessage("Me",text);
+        sleep(200);
        i++;
     }
-    return checkreturn(GET_TIME_SYNC) == ClientCount;
+    return checkreturn(GET_CHANNEL_MODEL) == ClientCount;
 }
 
 bool MainWindow::SendIpAdress(QHostAddress ip, quint16 port)
@@ -460,25 +489,25 @@ bool MainWindow::SendIpAdress(QHostAddress ip, quint16 port)
 //   qDebug()<<"databyte.toHex()"<< databyte.toHex();
 
    int i = 0;
+   QString text = "SendIpAdress: "+ databyte.toHex();
    while(checkreturn(GET_REMOTE_IP_PORT) != ClientCount && i<5)
    {
       OrderReturn.clear();
       emit udpsent(syncTargetAddr,syncTargetPort,databyte);
-      onUdpAppendMessage("Me"," SendIpAdress: "+databyte.toHex());
-      sleep(200);
+      onUdpAppendMessage("Me",text);
+      sleep(2000);
       i++;
    }
-   return checkreturn(GET_TIME_SYNC) == ClientCount;
+   qDebug()<<"checkreturn(GET_TIME_SYNC)"<<checkreturn(GET_TIME_SYNC);
+   return checkreturn(GET_REMOTE_IP_PORT) == ClientCount;
 }
 
 void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
 {
-   qDebug()<<"onUdpAppendMessage:  "<< message;
     QTextCursor cursor(ui->textBrowser_UdpMessage->textCursor());
     cursor.movePosition(QTextCursor::End);
     if(from != "Me")
     {
-
         QTextTable *table = cursor.insertTable(1, 2, tableFormat);
         table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
         table->cellAt(0, 1).firstCursorPosition().insertText(message);
@@ -611,6 +640,7 @@ double MainWindow:: ByteToAdcdata(QByteArray abyte0)
 void MainWindow::on_button_IVSetting_clicked()
 {
     SendAdcModle();
+
 }
 
 void MainWindow::sleep(int msec)

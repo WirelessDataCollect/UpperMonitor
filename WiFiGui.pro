@@ -37,4 +37,5 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     src.qrc
 
-DISTFILES +=
+DISTFILES += \
+    readme.md

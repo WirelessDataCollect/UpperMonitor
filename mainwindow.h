@@ -21,8 +21,11 @@
 #include <numeric>
 #include"chartswidgt.h"
 #define  GET_TIME_SYNC          0xa1
+#define  TIME_SYNC_BOARD        0xa4
+
 #define  GET_RETURN_ORDER       0xa2
 #define  GET_TEST               0xa3
+
 #define  GET_WIFI_SEND_EN       0xa5
 #define  GET_WIFI_SEND_DISABLE  0xa6
 #define  GET_CHANNEL_MODEL      0xa7
@@ -41,7 +44,7 @@ class MainWindow : public QMainWindow
 signals:
     void udpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
     void myudpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
-    bool bindPort(QHostAddress addr, qint16 port);
+    bool bindPort(QHostAddress addr, quint16 port);
     void sendplotdata(QVector<double> &plotdata);
 private slots:
 
@@ -103,7 +106,7 @@ private:
 
     QTextTableFormat tableFormat;
 
-    void MainWindow::findLocalIPs();
+    void findLocalIPs();
     void testconnect();
     bool start();
     bool stop();
@@ -113,6 +116,7 @@ private:
     int checkreturn(int order);
     void AdcDataShow(double ch1, double ch2, double ch3, double ch4);
     void DigitalDataShow(QByteArray bate0);
+    void initoff();
 
 };
 

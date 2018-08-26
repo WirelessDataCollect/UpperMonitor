@@ -13,9 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -24,7 +22,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -51,36 +48,6 @@ public:
     QPushButton *button_UdpStart;
     QTabWidget *tabWidget;
     QWidget *Client1;
-    QGridLayout *gridLayout_3;
-    QVBoxLayout *verticalLayout_2;
-    QGroupBox *groupBox;
-    QGridLayout *gridLayout;
-    QLabel *label_unit;
-    QLabel *label_Channel1;
-    QCheckBox *checkBox;
-    QCheckBox *checkBox_2;
-    QLabel *label_Channel2;
-    QCheckBox *checkBox_3;
-    QPushButton *button_IVSetting;
-    QCheckBox *checkBox_4;
-    QLabel *label_Channel3;
-    QLabel *label_Channel4;
-    QGroupBox *groupBox_2;
-    QGridLayout *gridLayout_2;
-    QHBoxLayout *horizontalLayout_4;
-    QLabel *label_7;
-    QLabel *label_8;
-    QLabel *label_6;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_5;
-    QRadioButton *radioButton_1_0;
-    QRadioButton *radioButton_1_1;
-    QHBoxLayout *horizontalLayout_3;
-    QLabel *label_9;
-    QRadioButton *radioButton_2_0;
-    QRadioButton *radioButton_2_1;
-    QGroupBox *groupBox_4;
-    QWidget *widchart;
     QWidget *Client2;
     QWidget *Client3;
     QWidget *Client4;
@@ -384,216 +351,6 @@ public:
         tabWidget->setSizePolicy(sizePolicy3);
         Client1 = new QWidget();
         Client1->setObjectName(QStringLiteral("Client1"));
-        gridLayout_3 = new QGridLayout(Client1);
-        gridLayout_3->setSpacing(0);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        gridLayout_3->setContentsMargins(9, -1, -1, -1);
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, -1, -1, -1);
-        groupBox = new QGroupBox(Client1);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        QSizePolicy sizePolicy4(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(1);
-        sizePolicy4.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-        groupBox->setSizePolicy(sizePolicy4);
-        groupBox->setMinimumSize(QSize(180, 250));
-        gridLayout = new QGridLayout(groupBox);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(9, -1, -1, -1);
-        label_unit = new QLabel(groupBox);
-        label_unit->setObjectName(QStringLiteral("label_unit"));
-        label_unit->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(label_unit, 0, 1, 1, 1);
-
-        label_Channel1 = new QLabel(groupBox);
-        label_Channel1->setObjectName(QStringLiteral("label_Channel1"));
-
-        gridLayout->addWidget(label_Channel1, 1, 1, 1, 1);
-
-        checkBox = new QCheckBox(groupBox);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
-
-        gridLayout->addWidget(checkBox, 1, 0, 1, 1);
-
-        checkBox_2 = new QCheckBox(groupBox);
-        checkBox_2->setObjectName(QStringLiteral("checkBox_2"));
-
-        gridLayout->addWidget(checkBox_2, 2, 0, 1, 1);
-
-        label_Channel2 = new QLabel(groupBox);
-        label_Channel2->setObjectName(QStringLiteral("label_Channel2"));
-
-        gridLayout->addWidget(label_Channel2, 2, 1, 1, 1);
-
-        checkBox_3 = new QCheckBox(groupBox);
-        checkBox_3->setObjectName(QStringLiteral("checkBox_3"));
-
-        gridLayout->addWidget(checkBox_3, 3, 0, 1, 1);
-
-        button_IVSetting = new QPushButton(groupBox);
-        button_IVSetting->setObjectName(QStringLiteral("button_IVSetting"));
-
-        gridLayout->addWidget(button_IVSetting, 0, 0, 1, 1);
-
-        checkBox_4 = new QCheckBox(groupBox);
-        checkBox_4->setObjectName(QStringLiteral("checkBox_4"));
-
-        gridLayout->addWidget(checkBox_4, 4, 0, 1, 1);
-
-        label_Channel3 = new QLabel(groupBox);
-        label_Channel3->setObjectName(QStringLiteral("label_Channel3"));
-
-        gridLayout->addWidget(label_Channel3, 3, 1, 1, 1);
-
-        label_Channel4 = new QLabel(groupBox);
-        label_Channel4->setObjectName(QStringLiteral("label_Channel4"));
-
-        gridLayout->addWidget(label_Channel4, 4, 1, 1, 1);
-
-        button_IVSetting->raise();
-        checkBox->raise();
-        checkBox_2->raise();
-        checkBox_3->raise();
-        checkBox_4->raise();
-        label_unit->raise();
-        label_Channel1->raise();
-        label_Channel2->raise();
-        label_Channel3->raise();
-        label_Channel4->raise();
-
-        verticalLayout_2->addWidget(groupBox);
-
-        groupBox_2 = new QGroupBox(Client1);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        QSizePolicy sizePolicy5(QSizePolicy::Preferred, QSizePolicy::Minimum);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(1);
-        sizePolicy5.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy5);
-        groupBox_2->setMinimumSize(QSize(0, 150));
-        gridLayout_2 = new QGridLayout(groupBox_2);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        horizontalLayout_4->setSizeConstraint(QLayout::SetFixedSize);
-        label_7 = new QLabel(groupBox_2);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        horizontalLayout_4->addWidget(label_7);
-
-        label_8 = new QLabel(groupBox_2);
-        label_8->setObjectName(QStringLiteral("label_8"));
-        label_8->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-
-        horizontalLayout_4->addWidget(label_8);
-
-        label_6 = new QLabel(groupBox_2);
-        label_6->setObjectName(QStringLiteral("label_6"));
-
-        horizontalLayout_4->addWidget(label_6);
-
-
-        gridLayout_2->addLayout(horizontalLayout_4, 0, 0, 1, 1);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        horizontalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
-        label_5 = new QLabel(groupBox_2);
-        label_5->setObjectName(QStringLiteral("label_5"));
-
-        horizontalLayout_2->addWidget(label_5);
-
-        radioButton_1_0 = new QRadioButton(groupBox_2);
-        radioButton_1_0->setObjectName(QStringLiteral("radioButton_1_0"));
-        sizePolicy1.setHeightForWidth(radioButton_1_0->sizePolicy().hasHeightForWidth());
-        radioButton_1_0->setSizePolicy(sizePolicy1);
-        radioButton_1_0->setLayoutDirection(Qt::LeftToRight);
-        radioButton_1_0->setAutoFillBackground(false);
-        radioButton_1_0->setInputMethodHints(Qt::ImhNone);
-        radioButton_1_0->setAutoExclusive(false);
-
-        horizontalLayout_2->addWidget(radioButton_1_0);
-
-        radioButton_1_1 = new QRadioButton(groupBox_2);
-        radioButton_1_1->setObjectName(QStringLiteral("radioButton_1_1"));
-        sizePolicy1.setHeightForWidth(radioButton_1_1->sizePolicy().hasHeightForWidth());
-        radioButton_1_1->setSizePolicy(sizePolicy1);
-        radioButton_1_1->setLayoutDirection(Qt::LeftToRight);
-        radioButton_1_1->setAutoFillBackground(false);
-        radioButton_1_1->setAutoExclusive(false);
-
-        horizontalLayout_2->addWidget(radioButton_1_1);
-
-
-        gridLayout_2->addLayout(horizontalLayout_2, 1, 0, 1, 1);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        label_9 = new QLabel(groupBox_2);
-        label_9->setObjectName(QStringLiteral("label_9"));
-
-        horizontalLayout_3->addWidget(label_9);
-
-        radioButton_2_0 = new QRadioButton(groupBox_2);
-        radioButton_2_0->setObjectName(QStringLiteral("radioButton_2_0"));
-        sizePolicy1.setHeightForWidth(radioButton_2_0->sizePolicy().hasHeightForWidth());
-        radioButton_2_0->setSizePolicy(sizePolicy1);
-        radioButton_2_0->setAutoExclusive(false);
-
-        horizontalLayout_3->addWidget(radioButton_2_0);
-
-        radioButton_2_1 = new QRadioButton(groupBox_2);
-        radioButton_2_1->setObjectName(QStringLiteral("radioButton_2_1"));
-        sizePolicy1.setHeightForWidth(radioButton_2_1->sizePolicy().hasHeightForWidth());
-        radioButton_2_1->setSizePolicy(sizePolicy1);
-        radioButton_2_1->setLayoutDirection(Qt::LeftToRight);
-        radioButton_2_1->setAutoFillBackground(false);
-        radioButton_2_1->setInputMethodHints(Qt::ImhNone);
-        radioButton_2_1->setAutoExclusive(false);
-
-        horizontalLayout_3->addWidget(radioButton_2_1);
-
-
-        gridLayout_2->addLayout(horizontalLayout_3, 2, 0, 1, 1);
-
-
-        verticalLayout_2->addWidget(groupBox_2);
-
-        groupBox_4 = new QGroupBox(Client1);
-        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        QSizePolicy sizePolicy6(QSizePolicy::Preferred, QSizePolicy::Expanding);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(5);
-        sizePolicy6.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy6);
-
-        verticalLayout_2->addWidget(groupBox_4);
-
-
-        gridLayout_3->addLayout(verticalLayout_2, 0, 0, 1, 1);
-
-        widchart = new QWidget(Client1);
-        widchart->setObjectName(QStringLiteral("widchart"));
-        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy7.setHorizontalStretch(2);
-        sizePolicy7.setVerticalStretch(1);
-        sizePolicy7.setHeightForWidth(widchart->sizePolicy().hasHeightForWidth());
-        widchart->setSizePolicy(sizePolicy7);
-
-        gridLayout_3->addWidget(widchart, 0, 1, 1, 1);
-
         tabWidget->addTab(Client1, QString());
         Client2 = new QWidget();
         Client2->setObjectName(QStringLiteral("Client2"));
@@ -736,28 +493,6 @@ public:
         label_LocalIP->setText(QApplication::translate("MainWindow", "255.255.255.255", Q_NULLPTR));
         Listen->setText(QApplication::translate("MainWindow", "Listen Port:", Q_NULLPTR));
         button_UdpStart->setText(QApplication::translate("MainWindow", "Start", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("MainWindow", "Anolog Input", Q_NULLPTR));
-        label_unit->setText(QApplication::translate("MainWindow", "\345\215\225\344\275\215(mA)", Q_NULLPTR));
-        label_Channel1->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
-        checkBox->setText(QApplication::translate("MainWindow", "CH1", Q_NULLPTR));
-        checkBox_2->setText(QApplication::translate("MainWindow", "CH2", Q_NULLPTR));
-        label_Channel2->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
-        checkBox_3->setText(QApplication::translate("MainWindow", "CH3", Q_NULLPTR));
-        button_IVSetting->setText(QApplication::translate("MainWindow", "I/V Setting", Q_NULLPTR));
-        checkBox_4->setText(QApplication::translate("MainWindow", "CH4", Q_NULLPTR));
-        label_Channel3->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
-        label_Channel4->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Digital Input", Q_NULLPTR));
-        label_7->setText(QApplication::translate("MainWindow", "Status", Q_NULLPTR));
-        label_8->setText(QApplication::translate("MainWindow", " 0", Q_NULLPTR));
-        label_6->setText(QApplication::translate("MainWindow", " 1", Q_NULLPTR));
-        label_5->setText(QApplication::translate("MainWindow", "CH1", Q_NULLPTR));
-        radioButton_1_0->setText(QString());
-        radioButton_1_1->setText(QString());
-        label_9->setText(QApplication::translate("MainWindow", "CH2", Q_NULLPTR));
-        radioButton_2_0->setText(QString());
-        radioButton_2_1->setText(QString());
-        groupBox_4->setTitle(QApplication::translate("MainWindow", "Message", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(Client1), QApplication::translate("MainWindow", "Client1", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(Client2), QApplication::translate("MainWindow", "Client2", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(Client3), QApplication::translate("MainWindow", "Client3", Q_NULLPTR));

@@ -30,8 +30,8 @@ public slots:
 
     void handleMarkerClicked();
     void rxplotdata(QVector<double> &plotdata);
-private:
 
+private:
     QChart *m_chart;
     QList<QSplineSeries *> s_series;
     QVector<QVector<quint16> > pdata;

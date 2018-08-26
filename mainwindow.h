@@ -20,6 +20,7 @@
 #include "myudp.h"
 #include <numeric>
 #include"chartswidgt.h"
+#include"showwidget.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
 
@@ -59,7 +60,7 @@ private slots:
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
 
     void syncrxmessage(const QString &from, const QByteArray &message);
-    void on_button_IVSetting_clicked();
+     bool sendIVmodle(QByteArray &databyte);
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
     void UiChartShow();
@@ -71,6 +72,8 @@ public:
     QTimer *timer = nullptr;
     QTimer *plottimer = nullptr;
     chartswidgt *dialog = nullptr;
+
+    QVector<showwidget *> datawidget;
     quint16 udpListenPort;
     quint16 syncListenPort;
 
@@ -86,7 +89,8 @@ public:
     QByteArray DigitalIO;
 
 
-    QVector< QVector<double> > Adc_data;
+    QVector<QVector< QVector<double> > > Adc_data;
+    QVector<int> ClientStatus;
     QVector<char> OrderReturn;
     int ClientCount;
     QByteArray IVset;
@@ -114,8 +118,7 @@ private:
     bool SendIpAdress(QHostAddress addr, quint16 port);
     bool SendAdcModle();
     int checkreturn(int order);
-    void AdcDataShow(double ch1, double ch2, double ch3, double ch4);
-    void DigitalDataShow(QByteArray bate0);
+    void DataShow(int channel, QByteArray bate0);
     void initoff();
 
 };

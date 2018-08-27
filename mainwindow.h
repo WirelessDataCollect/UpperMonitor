@@ -63,7 +63,7 @@ private slots:
      bool sendIVmodle(QByteArray databyte);
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
-    void myreceive(QByteArray &a, QString b);
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -106,6 +106,7 @@ public:
     double ByteToAdcdata(QByteArray abyte0);
     void sleep(int msec);
 
+
 private:
     Ui::MainWindow *ui;
 
@@ -119,8 +120,8 @@ private:
     bool SendIpAdress(QHostAddress addr, quint16 port);
     bool SendAdcModle();
     int checkreturn(int order);
-    void DataShow(int channel, QByteArray bate0);
     void initoff();
+    void ClientStatusShow();
 
 };
 

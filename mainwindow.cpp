@@ -86,11 +86,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(int i = 0;i<4;i++)
     connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
-}
-void MainWindow::myreceive(QByteArray &a, QString b)
-{
+
 
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -238,6 +237,7 @@ void MainWindow::on_button_UdpStart_clicked()
 
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
+         ui->label_clientnum->setText(QString::number(ClientCount));
     }
 
     else initoff();
@@ -266,7 +266,7 @@ void MainWindow::initoff(){
 void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 {
 
-  qDebug()<<"message.size()"<<message.size();
+//  qDebug()<<"message.size()"<<message.size();
 
   if(message.size()<16 || (message.size()%8!=0))
   {
@@ -280,7 +280,7 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 
   char ChannelID = message.at(12);
   if(count%8 >0) return;
-  if(ChannelID>4) return;
+  if(ChannelID>4 || ChannelID<1) return;
   DigitalIO = message.mid(13,2);
   QByteArray adcbyte = message.mid(16,static_cast<int>(count));
   QVector<QVector<double> >::iterator iter = Adc_data[ChannelID-1].begin();
@@ -312,6 +312,7 @@ void MainWindow::UiDataShow()
        if(Adc_data[i][0].isEmpty()) ClientStatus[i] = 0;
        else
        {
+           ClientStatus[i] = 1;
            data.clear();
            for(int j= 0;j<4;j++)
             data.append(Adc_data[i][j].first());
@@ -319,11 +320,25 @@ void MainWindow::UiDataShow()
             datawidget[i]->showdata(data,DigitalIO);
             datawidget[i]->showplot(data);
        }
+
        Adc_data[i].clear();
        Adc_data[i].resize(4);
     }
+   ClientStatusShow();
+
 }
 
+void MainWindow::ClientStatusShow()
+{
+    if(ClientStatus[0] ==1) ui->radioButton->setChecked(true);
+    else ui->radioButton->setChecked(false);
+    if(ClientStatus[1] ==1) ui->radioButton_2->setChecked(true);
+    else ui->radioButton_2->setChecked(false);
+    if(ClientStatus[2] ==1) ui->radioButton_3->setChecked(true);
+    else ui->radioButton_3->setChecked(false);
+    if(ClientStatus[3] ==1) ui->radioButton_4->setChecked(true);
+    else ui->radioButton_4->setChecked(false);
+}
 
 
 

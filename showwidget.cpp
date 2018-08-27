@@ -134,10 +134,10 @@ void showwidget::showdata(QVector<double> &data, QByteArray &databyte)
   data3->setText(QString::number(data.at(2), 'g', 4));
   data4->setText(QString::number(data.at(3), 'g', 4));
 
-  if(databyte.at(0)==1) ch1_status1->setChecked(true);
-  else ch1_status0->setChecked(true);
-  if(databyte.at(1)==1) ch2_status1->setChecked(true);
-  else ch2_status0->setChecked(true);
+  if(databyte.at(0)==1) ch1_status0->setChecked(true);
+  else ch1_status1->setChecked(true);
+  if(databyte.at(1)==1) ch2_status0->setChecked(true);
+  else ch2_status1->setChecked(true);
 }
 
 

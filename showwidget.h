@@ -49,6 +49,7 @@ public:
     QRadioButton *ch2_status1 = nullptr;
     chartswidgt *plotwidget = nullptr;
 
+
     QGroupBox *messageanalog = nullptr;
     QGroupBox *messagedigital = nullptr;
     QGroupBox *message = nullptr;

@@ -23,17 +23,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Adc_data.clear();
     Adc_data.resize(4);
-    Adc_data[0].resize(6);
-    Adc_data[1].resize(6);
-    Adc_data[2].resize(6);
-    Adc_data[3].resize(6);
+    Adc_data[0].resize(4);
+    Adc_data[1].resize(4);
+    Adc_data[2].resize(4);
+    Adc_data[3].resize(4);
     ClientStatus.clear();
     ClientStatus.resize(4);
 
     TotalByteNum = 0;
     TotalPackNum= 0;
     datawidget.resize(4);
-    datawidget[0] = new showwidget(this);
+
+    datawidget[0] = new showwidget();
+    //datawidget[0] = new showwidget(this);
     QGridLayout *baseLayout1 = new QGridLayout(ui->Client1); //便于显示，创建网格布局
     baseLayout1->addWidget(datawidget[0], 0, 0,-1,-1);
     baseLayout1->setSpacing(0);
@@ -82,10 +84,13 @@ MainWindow::MainWindow(QWidget *parent) :
     udpTargetPort = 5002;
 
 
-//    for(int i = 0;i<4;i++)
-    connect(this->datawidget[0], SIGNAL(uisendIVmodle(QByteArray )), this, SLOT(sendIVmodle(QByteArray )));
+    for(int i = 0;i<4;i++)
+    connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 }
+void MainWindow::myreceive(QByteArray &a, QString b)
+{
 
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -183,16 +188,12 @@ void MainWindow::on_button_UdpStart_clicked()
 
         //IVseting button
         for(int i = 0;i<4;i++)
-        connect(datawidget[i],SIGNAL(sendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
+        connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
 
-
-       // connect(this, SIGNAL(sendplotdata(QVector<double> &)),dialog, SLOT(rxplotdata(QVector<double> &)));
-        connect(plottimer, SIGNAL(timeout()), this, SLOT(UiChartShow()));
-        //test the cninnection with client and count the number of count;
-
+        //test the connection with client and count the number of count;
         testconnect();
-        sleep(500);
+        sleep(1000);
         ClientCount = checkreturn(GET_TEST);
         qDebug()<<"ClientCount"<<ClientCount;
         if(ClientCount ==0){
@@ -204,12 +205,12 @@ void MainWindow::on_button_UdpStart_clicked()
 
 
          // set the target ip adress of clients
-         if(SendIpAdress(localAddr,udpListenPort) == false) {
-              qDebug()<< "SendIpAdress error";
-              initoff();
+//         if(SendIpAdress(localAddr,udpListenPort) == false) {
+//              qDebug()<< "SendIpAdress error";
+//              initoff();
 
-             return;
-         }
+//             return;
+//         }
 
          // time sync
           if(synctime()==false) {
@@ -233,8 +234,8 @@ void MainWindow::on_button_UdpStart_clicked()
            return;
           }
          // timer begin(updata the ui)
-         timer->start(2000);
-         plottimer->start(500);
+         timer->start(1000);
+
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
     }
@@ -244,7 +245,6 @@ void MainWindow::on_button_UdpStart_clicked()
 
 void MainWindow::initoff(){
     timer->stop();
-    plottimer->stop();
    // Client stop
     stop();
    myudp->unbindPort();
@@ -257,7 +257,7 @@ void MainWindow::initoff(){
    disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
    disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
    for(int i=0; i<4;i++)
-   disconnect(datawidget[i],SIGNAL(sendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
+   disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
 }
 
@@ -277,13 +277,15 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
   TotalByteNum += static_cast<quint64>(message.size()) ;
   QDateTime datatime = ByteToDatetime(message.left(8));
   quint32 count =  ByteTouint32(message.mid(8,4));
-  char ChannelID = message.at(12);
 
+  char ChannelID = message.at(12);
+  if(count%8 >0) return;
+  if(ChannelID>4) return;
   DigitalIO = message.mid(13,2);
   QByteArray adcbyte = message.mid(16,static_cast<int>(count));
   QVector<QVector<double> >::iterator iter = Adc_data[ChannelID-1].begin();
 
-  for(int i=0;i<16;)
+  for(int i=0;i<static_cast<int>(count);)
    {
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
        i+=2;
@@ -307,48 +309,23 @@ void MainWindow::UiDataShow()
     QVector<double> data;
     for(int i =0; i<4; i++)
     {
-       if(Adc_data[i].isEmpty()) ClientStatus[i] = 0;
+       if(Adc_data[i][0].isEmpty()) ClientStatus[i] = 0;
        else
        {
+           data.clear();
            for(int j= 0;j<4;j++)
             data.append(Adc_data[i][j].first());
 
             datawidget[i]->showdata(data,DigitalIO);
             datawidget[i]->showplot(data);
-
-            Adc_data[i].clear();
-            Adc_data[i].resize(4);
        }
+       Adc_data[i].clear();
+       Adc_data[i].resize(4);
     }
 }
 
 
-void MainWindow::UiChartShow()
-{
-    /*
-    //test
-    static double i = 0;
-     i++;
-     if(i>5) i=0;
-    qDebug()<<"rand number"<<i;
-    Adc_data[0].append(i);
-    Adc_data[1].append(i);
-    Adc_data[2].append(i);
-    Adc_data[3].append(i);
-    //
-    */
-    if(Adc_data.at(0).isEmpty()) return;
 
-    QVector<double> plotdata;
-    plotdata.clear();
-    for(int i = 0;i < 4;i++)
-    {
-      plotdata.append(Adc_data.at(i).back());
-      qDebug()<<"Adc_data.at(i).back()"<<Adc_data.at(i).back();
-    }
-
-    emit sendplotdata(plotdata);
-}
 
 
 
@@ -440,7 +417,7 @@ bool MainWindow::synctime()
 }
 
 
-bool MainWindow::sendIVmodle(QByteArray &databyte)
+bool MainWindow::sendIVmodle(QByteArray databyte)
 {
     QByteArray byte;
     byte.append(static_cast<char>(GET_CHANNEL_MODEL));
@@ -450,7 +427,7 @@ bool MainWindow::sendIVmodle(QByteArray &databyte)
    if(btn == datawidget[1]) byte.append(0x02);
    if(btn == datawidget[2]) byte.append(0x03);
    if(btn == datawidget[3]) byte.append(0x04);
-
+   qDebug()<< byte.toHex();
     byte.append(databyte);
     int i = 0;
     QString text = "SendAdcModle: "+ byte.toHex();

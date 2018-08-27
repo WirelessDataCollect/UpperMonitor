@@ -19,7 +19,7 @@
 #include<QDateTime>
 #include "myudp.h"
 #include <numeric>
-#include"chartswidgt.h"
+
 #include"showwidget.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
@@ -60,10 +60,10 @@ private slots:
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
 
     void syncrxmessage(const QString &from, const QByteArray &message);
-     bool sendIVmodle(QByteArray &databyte);
+     bool sendIVmodle(QByteArray databyte);
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
-    void UiChartShow();
+    void myreceive(QByteArray &a, QString b);
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -71,9 +71,10 @@ public:
     MyUDP *syncudp = nullptr;
     QTimer *timer = nullptr;
     QTimer *plottimer = nullptr;
-    chartswidgt *dialog = nullptr;
 
     QVector<showwidget *> datawidget;
+    showwidget *datawidget1 = nullptr;
+
     quint16 udpListenPort;
     quint16 syncListenPort;
 

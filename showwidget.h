@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
-#include<QPushButton>
+#include <QPushButton>
 #include<QLabel>
 #include<QCheckBox>
 #include<QMessageBox>
@@ -14,6 +14,7 @@
 #include<QVector>
 #include<QDebug>
 #include"chartswidgt.h"
+
 class showwidget : public QWidget
 {
     Q_OBJECT
@@ -21,8 +22,8 @@ public:
     explicit showwidget(QWidget *parent = nullptr);
 
 signals:
-    void uisendIVmodle(QByteArray & databyte);
-
+    void uisendIVmodle(QByteArray databyte);
+    void sendsignal(QByteArray &a, QString b);
 public slots:
     void IVmodleset(void);
     void showdata(QVector<double> &data, QByteArray &databyte);

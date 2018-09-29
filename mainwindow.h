@@ -19,7 +19,8 @@
 #include<QDateTime>
 #include "myudp.h"
 #include <numeric>
-#include"chartswidgt.h"
+
+#include"showwidget.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
 
@@ -59,10 +60,10 @@ private slots:
     void onUdpAppendMessage(const QString &from, const QByteArray &message);
 
     void syncrxmessage(const QString &from, const QByteArray &message);
-    void on_button_IVSetting_clicked();
+     bool sendIVmodle(QByteArray databyte);
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
-    void UiChartShow();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -70,7 +71,10 @@ public:
     MyUDP *syncudp = nullptr;
     QTimer *timer = nullptr;
     QTimer *plottimer = nullptr;
-    chartswidgt *dialog = nullptr;
+
+    QVector<showwidget *> datawidget;
+    showwidget *datawidget1 = nullptr;
+
     quint16 udpListenPort;
     quint16 syncListenPort;
 
@@ -86,7 +90,8 @@ public:
     QByteArray DigitalIO;
 
 
-    QVector< QVector<double> > Adc_data;
+    QVector<QVector< QVector<double> > > Adc_data;
+    QVector<int> ClientStatus;
     QVector<char> OrderReturn;
     int ClientCount;
     QByteArray IVset;
@@ -101,6 +106,7 @@ public:
     double ByteToAdcdata(QByteArray abyte0);
     void sleep(int msec);
 
+
 private:
     Ui::MainWindow *ui;
 
@@ -114,9 +120,8 @@ private:
     bool SendIpAdress(QHostAddress addr, quint16 port);
     bool SendAdcModle();
     int checkreturn(int order);
-    void AdcDataShow(double ch1, double ch2, double ch3, double ch4);
-    void DigitalDataShow(QByteArray bate0);
     void initoff();
+    void ClientStatusShow();
 
 };
 

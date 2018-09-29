@@ -20,20 +20,49 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         syncudp = new MyUDP;
     }
-    if(dialog == nullptr)
-    {
-        dialog = new chartswidgt;
-    }
+
     Adc_data.clear();
     Adc_data.resize(4);
+    Adc_data[0].resize(4);
+    Adc_data[1].resize(4);
+    Adc_data[2].resize(4);
+    Adc_data[3].resize(4);
+    ClientStatus.clear();
+    ClientStatus.resize(4);
+
     TotalByteNum = 0;
     TotalPackNum= 0;
+    datawidget.resize(4);
 
-    QGridLayout *baseLayout = new QGridLayout(ui->widchart); //便于显示，创建网格布局
-    baseLayout->addWidget(dialog, 0, 0,-1,-1);
-    baseLayout->setSpacing(0);
-    baseLayout->setContentsMargins(0,0,0,0);
-    dialog->show();
+    datawidget[0] = new showwidget();
+    //datawidget[0] = new showwidget(this);
+    QGridLayout *baseLayout1 = new QGridLayout(ui->Client1); //便于显示，创建网格布局
+    baseLayout1->addWidget(datawidget[0], 0, 0,-1,-1);
+    baseLayout1->setSpacing(0);
+    baseLayout1->setMargin(0);
+
+
+    datawidget[1] = new showwidget(this);
+    QGridLayout *baseLayout2 = new QGridLayout(ui->Client2); //便于显示，创建网格布局
+    baseLayout2->addWidget(datawidget[1], 0, 0,-1,-1);
+    baseLayout2->setSpacing(0);
+    baseLayout2->setMargin(0);
+
+    datawidget[2] = new showwidget(this);
+    QGridLayout *baseLayout3 = new QGridLayout(ui->Client3); //便于显示，创建网格布局
+
+    baseLayout3->addWidget(datawidget[2], 0, 0,-1,-1);
+    baseLayout3->setSpacing(0);
+    baseLayout3->setMargin(0);
+    baseLayout3->setContentsMargins(0,0,0,0);
+
+
+    datawidget[3] = new showwidget(this);
+    QGridLayout *baseLayout4 = new QGridLayout(ui->Client4); //便于显示，创建网格布局
+    baseLayout4->addWidget(datawidget[3], 0, 0,-1,-1);
+    baseLayout4->setSpacing(0);
+    baseLayout4->setContentsMargins(0,0,0,0);
+
 
     //start myudp thread
     QThread *thread_txrx= new QThread(this);
@@ -53,6 +82,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     udpListenPort = 5001;
     udpTargetPort = 5002;
+
+
+    for(int i = 0;i<4;i++)
+    connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -147,15 +182,17 @@ void MainWindow::on_button_UdpStart_clicked()
 
         connect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
         connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
-        //test the cninnection with client and count the number of count;
 
         connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 
-        connect(this, SIGNAL(sendplotdata(QVector<double> &)),dialog, SLOT(rxplotdata(QVector<double> &)));
-        connect(plottimer, SIGNAL(timeout()), this, SLOT(UiChartShow()));
+        //IVseting button
+        for(int i = 0;i<4;i++)
+        connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
+
+        //test the connection with client and count the number of count;
         testconnect();
-        sleep(500);
+        sleep(1000);
         ClientCount = checkreturn(GET_TEST);
         qDebug()<<"ClientCount"<<ClientCount;
         if(ClientCount ==0){
@@ -167,12 +204,12 @@ void MainWindow::on_button_UdpStart_clicked()
 
 
          // set the target ip adress of clients
-         if(SendIpAdress(localAddr,udpListenPort) == false) {
-              qDebug()<< "SendIpAdress error";
-              initoff();
+//         if(SendIpAdress(localAddr,udpListenPort) == false) {
+//              qDebug()<< "SendIpAdress error";
+//              initoff();
 
-             return;
-         }
+//             return;
+//         }
 
          // time sync
           if(synctime()==false) {
@@ -196,10 +233,11 @@ void MainWindow::on_button_UdpStart_clicked()
            return;
           }
          // timer begin(updata the ui)
-         timer->start(2000);
-         plottimer->start(500);
+         timer->start(1000);
+
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
+         ui->label_clientnum->setText(QString::number(ClientCount));
     }
 
     else initoff();
@@ -207,7 +245,6 @@ void MainWindow::on_button_UdpStart_clicked()
 
 void MainWindow::initoff(){
     timer->stop();
-    plottimer->stop();
    // Client stop
     stop();
    myudp->unbindPort();
@@ -219,6 +256,8 @@ void MainWindow::initoff(){
    disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
    disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
    disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
+   for(int i=0; i<4;i++)
+   disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
 }
 
@@ -227,7 +266,7 @@ void MainWindow::initoff(){
 void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 {
 
-  qDebug()<<"message.size()"<<message.size();
+//  qDebug()<<"message.size()"<<message.size();
 
   if(message.size()<16 || (message.size()%8!=0))
   {
@@ -238,13 +277,15 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
   TotalByteNum += static_cast<quint64>(message.size()) ;
   QDateTime datatime = ByteToDatetime(message.left(8));
   quint32 count =  ByteTouint32(message.mid(8,4));
-  char ChannelID = message.at(12);
 
+  char ChannelID = message.at(12);
+  if(count%8 >0) return;
+  if(ChannelID>4 || ChannelID<1) return;
   DigitalIO = message.mid(13,2);
   QByteArray adcbyte = message.mid(16,static_cast<int>(count));
-  QVector<QVector<double> >::iterator iter=Adc_data.begin();
+  QVector<QVector<double> >::iterator iter = Adc_data[ChannelID-1].begin();
 
-  for(int i=0;i<16;)
+  for(int i=0;i<static_cast<int>(count);)
    {
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
        i+=2;
@@ -257,105 +298,50 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
        iter++;
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
        i+=2;
-       iter=Adc_data.begin();
+       iter-=3;
   }
-
-
-
-
-
-//  iter=Adc_data.begin();
-//  AdcDataShow((*iter).at(0), (*(iter+1)).at(0), (*(iter+2)).at(0), (*(iter+3)).at(0));
-// DigitalDataShow(DigitalIO);
-// Adc_data.clear();
-// Adc_data.resize(4);
 
 }
 
 
 void MainWindow::UiDataShow()
 {
+    QVector<double> data;
+    for(int i =0; i<4; i++)
+    {
+       if(Adc_data[i][0].isEmpty()) ClientStatus[i] = 0;
+       else
+       {
+           ClientStatus[i] = 1;
+           data.clear();
+           for(int j= 0;j<4;j++)
+            data.append(Adc_data[i][j].first());
 
-     if(Adc_data[0].isEmpty()) return;
-    QVector<QVector<double> >::iterator iter=Adc_data.begin();
-    iter=Adc_data.begin();
-    AdcDataShow((*iter).at(0), (*(iter+1)).at(0), (*(iter+2)).at(0), (*(iter+3)).at(0));
-    DigitalDataShow(DigitalIO);
-    qDebug()<< "(*iter).size()"<<(*iter).size();
-    qDebug()<<"TotalByteNum"<< TotalByteNum;
-    qDebug()<<"TotalPackNum"<< TotalPackNum;
-    TotalByteNum = 0;
-    TotalPackNum = 0;
-    Adc_data.clear();
-    Adc_data.resize(4);
+            datawidget[i]->showdata(data,DigitalIO);
+            datawidget[i]->showplot(data);
+       }
+
+       Adc_data[i].clear();
+       Adc_data[i].resize(4);
+    }
+   ClientStatusShow();
+
 }
 
-
-void MainWindow::UiChartShow()
+void MainWindow::ClientStatusShow()
 {
-    /*
-    //test
-    static double i = 0;
-     i++;
-     if(i>5) i=0;
-    qDebug()<<"rand number"<<i;
-    Adc_data[0].append(i);
-    Adc_data[1].append(i);
-    Adc_data[2].append(i);
-    Adc_data[3].append(i);
-    //
-    */
-    if(Adc_data.at(0).isEmpty()) return;
-
-    QVector<double> plotdata;
-    plotdata.clear();
-    for(int i = 0;i < 4;i++)
-    {
-      plotdata.append(Adc_data.at(i).back());
-      qDebug()<<"Adc_data.at(i).back()"<<Adc_data.at(i).back();
-    }
-
-    emit sendplotdata(plotdata);
+    if(ClientStatus[0] ==1) ui->radioButton->setChecked(true);
+    else ui->radioButton->setChecked(false);
+    if(ClientStatus[1] ==1) ui->radioButton_2->setChecked(true);
+    else ui->radioButton_2->setChecked(false);
+    if(ClientStatus[2] ==1) ui->radioButton_3->setChecked(true);
+    else ui->radioButton_3->setChecked(false);
+    if(ClientStatus[3] ==1) ui->radioButton_4->setChecked(true);
+    else ui->radioButton_4->setChecked(false);
 }
 
 
-void MainWindow::AdcDataShow(double ch1, double ch2, double ch3, double ch4)
-{
-    ui->label_Channel1->setText(QString::number(ch1, 'g', 4));
-    ui->label_Channel2->setText(QString::number(ch2, 'g', 4));
-    ui->label_Channel3->setText(QString::number(ch3, 'g', 4));
-    ui->label_Channel4->setText(QString::number(ch4, 'g', 4));
-}
 
-void MainWindow::DigitalDataShow(QByteArray bate0)
-{
-     qDebug()<< "DigitalDataShow"<<bate0.toHex();
-    if(bate0.at(0) == 0)
-
-    {
-        ui->radioButton_1_0->setChecked(true);
-        ui->radioButton_1_1->setChecked(false);
-    }
-
-    else
-    {
-        ui->radioButton_1_0->setChecked(false);
-        ui->radioButton_1_1->setChecked(true);
-    }
-    if(bate0.at(1) == 0)
-
-    {
-        ui->radioButton_2_0->setChecked(true);
-        ui->radioButton_2_1->setChecked(false);
-    }
-
-    else
-    {
-        ui->radioButton_2_0->setChecked(false);
-        ui->radioButton_2_1->setChecked(true);
-    }
-
-}
 
 
 int MainWindow::checkreturn(int order)
@@ -442,31 +428,28 @@ bool MainWindow::synctime()
        sleep(200);
        i++;
     }
-
     return checkreturn(GET_TIME_SYNC) == ClientCount;
-
 }
-bool MainWindow::SendAdcModle()
-{
-    QByteArray databyte;
-    char  hexzero = 0;
-    databyte.append(static_cast<char>(GET_CHANNEL_MODEL));
-    databyte.append(0x01);
-    if(ui->checkBox->isChecked())   databyte.append(0x01);  //V
-    else databyte.append(hexzero);                             //I
-    if(ui->checkBox_2->isChecked())   databyte.append(0x01);  //V
-    else databyte.append(hexzero);                             //I
-    if(ui->checkBox_3->isChecked())   databyte.append(0x01);  //V
-    else databyte.append(hexzero);                             //I
-    if(ui->checkBox_4->isChecked())   databyte.append(0x01);  //V
-    else databyte.append(hexzero);                             //I
 
+
+bool MainWindow::sendIVmodle(QByteArray databyte)
+{
+    QByteArray byte;
+    byte.append(static_cast<char>(GET_CHANNEL_MODEL));
+
+    showwidget *btn = qobject_cast<showwidget *>(sender());
+   if(btn == datawidget[0]) byte.append(0x01);
+   if(btn == datawidget[1]) byte.append(0x02);
+   if(btn == datawidget[2]) byte.append(0x03);
+   if(btn == datawidget[3]) byte.append(0x04);
+   qDebug()<< byte.toHex();
+    byte.append(databyte);
     int i = 0;
-    QString text = "SendAdcModle: "+ databyte.toHex();
+    QString text = "SendAdcModle: "+ byte.toHex();
     while(checkreturn(GET_CHANNEL_MODEL) != ClientCount && i<5)
     {
        OrderReturn.clear();
-       emit udpsent(syncTargetAddr,syncTargetPort,databyte);
+       emit udpsent(syncTargetAddr,syncTargetPort,byte);
         onUdpAppendMessage("Me",text);
         sleep(200);
        i++;
@@ -637,11 +620,7 @@ double MainWindow:: ByteToAdcdata(QByteArray abyte0)
    return (((uchar)abyte0.at(0))*16 + ((uchar)abyte0.at(1))/16) *5.0/4096.0;
 }
 
-void MainWindow::on_button_IVSetting_clicked()
-{
-    SendAdcModle();
 
-}
 
 void MainWindow::sleep(int msec)
 {

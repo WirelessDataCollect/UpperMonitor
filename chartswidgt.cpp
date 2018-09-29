@@ -26,9 +26,10 @@ chartswidgt::chartswidgt(QWidget *parent) :
     // Create layout for grid and detached legend
     m_mainLayout = new QGridLayout();
     m_mainLayout->setSpacing(0);
+    m_mainLayout->setMargin(0);
     m_mainLayout->addWidget(m_chartView, 0, 0, -1, -1);
     setLayout(m_mainLayout);
-    m_mainLayout->setContentsMargins(0,0,0,0);
+   // m_mainLayout->setContentsMargins(0,0,0,0);
 
 
      setseries();
@@ -173,23 +174,12 @@ void chartswidgt::handleMarkerClicked()
 void chartswidgt::rxplotdata(QVector<double> &plotdata)
 {
     plotXaxis++;
-   // removeSeries();
-
     for(int i = 0; i < 4;i++){
         QSplineSeries *series =s_series.at(i);
-
-
-//        data[i].removeFirst();
-//        data[i].append(QPointF(plotXaxis,plotdata.at(i)));
-//        series->clear();
          series->removePoints(0,1);
-        series->append(QPointF(plotXaxis,plotdata.at(i)));
-       // m_chart->addSeries(series);
-//        s_series.append(series);
+         series->append(QPointF(plotXaxis,plotdata.at(i)));
     }
-
     m_chart->axisX()->setRange(plotXaxis-100,plotXaxis);
-
 }
 /*
 void chartswidgt::rxdata(QVector<QVector<quint16> > pdata,quint16 pchannel,int Plotsize,int range){

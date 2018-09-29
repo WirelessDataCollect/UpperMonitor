@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
         myudp.cpp \
-    chartswidgt.cpp
+    chartswidgt.cpp \
+    showwidget.cpp
 
 HEADERS  += mainwindow.h \
     myudp.h \
-    chartswidgt.h
+    chartswidgt.h \
+    showwidget.h
 
 FORMS    += mainwindow.ui
 

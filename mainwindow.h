@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -18,6 +18,7 @@
 
 #include<QDateTime>
 #include "myudp.h"
+#include "mytcpclient.h"
 #include <numeric>
 
 #include"showwidget.h"
@@ -64,11 +65,22 @@ private slots:
     void AdcByteToData(const QString &from, const QByteArray &message);
     void UiDataShow();
 
+    void onTcpClientNewConnection(const QString &from, quint16 port);
+    void onTcpClientTimeOut();
+    void onTcpClientDisconnected();
+    void onTcpClientAppendMessage(const QString &from, const QByteArray &message);
+    void on_comboBox_Interface_highlighted(int index);
+
+    void on_pushButton_local_clicked();
+
+    void on_pushButton_remote_clicked();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     MyUDP *myudp = nullptr;
     MyUDP *syncudp = nullptr;
+    MyTCPClient *mytcpclient = nullptr;
     QTimer *timer = nullptr;
     QTimer *plottimer = nullptr;
 
@@ -77,9 +89,13 @@ public:
 
     quint16 udpListenPort;
     quint16 syncListenPort;
+    quint16 tcpClientTargetPort;
 
     QHostAddress localAddr;
     QHostAddress syncTargetAddr;
+    QHostAddress tcpClientTargetAddr;
+
+
 
     quint64 TotalByteNum;
     quint64  TotalPackNum;
@@ -111,6 +127,7 @@ private:
     Ui::MainWindow *ui;
 
     QTextTableFormat tableFormat;
+    QList<QNetworkInterface> interfaceList;
 
     void findLocalIPs();
     void testconnect();

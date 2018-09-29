@@ -20,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         syncudp = new MyUDP;
     }
+     mytcpclient = new MyTCPClient;
+     tcpClientTargetAddr.setAddress("115.159.154.160");
+     tcpClientTargetPort = 8080;
+
+
 
     Adc_data.clear();
     Adc_data.resize(4);
@@ -88,6 +93,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
 
+
+    //tcp client
+
 }
 
 MainWindow::~MainWindow()
@@ -97,31 +105,35 @@ MainWindow::~MainWindow()
 
 }
 
+
 /***********************************
  *
  * Find IP of local WiFi connections
  *
  ***********************************/
-
 void MainWindow::findLocalIPs()
 {
+   // ui->comboBox_Interface->clear();
+   interfaceList.clear();
+   interfaceList = QNetworkInterface::allInterfaces();
 
-    //获取主机名
-    QString localHost = QHostInfo::localHostName();
 
-    QHostInfo info = QHostInfo::fromName(localHost);
-
-        info.addresses();//QHostInfo的address函数获取本机ip地址
-        //如果存在多条ip地址ipv4和ipv6：
-        foreach(QHostAddress address,info.addresses())
+    if (interfaceList.isEmpty())
+    {
+        // TODO wifilist is empty
+    }
+    else
+    {
+        for (int j = 0; j < interfaceList.size(); ++j)
         {
-            if(address.protocol()==QAbstractSocket::IPv4Protocol){//只取ipv4协议的地址
-                qDebug()<<address.toString();
-                localAddr= address;
-                ui->label_LocalIP->setText(address.toString());
-            }
+            ui->comboBox_Interface->addItem(interfaceList.at(j).humanReadableName());
         }
+    }
 }
+
+
+
+
 
 void MainWindow::on_button_UdpSend_clicked()
 {
@@ -152,20 +164,9 @@ void MainWindow::on_button_UdpStart_clicked()
         if(port) udpListenPort = port;
         ui->lineEdit_UdpListenPort->setText(QString::number(udpListenPort,10));
 
-        // udp_txrx bindport
-        bool isSuccess = myudp->bindPort(localAddr, udpListenPort);
-        if(isSuccess)
-        {
-             ui->statusBar->showMessage(&"Listen to" [ udpListenPort],2);
-            qDebug()<<"udp_txrx bindport ok.";
-        }
-        else{
-            qDebug()<<"udp_txrx bindport error.";
-            return;
-        }
 
         // syncudp  bindport
-        isSuccess = syncudp->bindPort(localAddr, syncListenPort);
+        bool isSuccess = syncudp->bindPort(localAddr, syncListenPort);
         if(isSuccess)
         {
           ui->statusBar->showMessage(&"Listen to" [ syncListenPort],2);
@@ -178,17 +179,16 @@ void MainWindow::on_button_UdpStart_clicked()
 
         // signal connect to slot
         connect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)),Qt::QueuedConnection);
-        connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
+
 
         connect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
-        connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
+
 
         connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 
         //IVseting button
         for(int i = 0;i<4;i++)
         connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
-
 
         //test the connection with client and count the number of count;
         testconnect();
@@ -219,13 +219,6 @@ void MainWindow::on_button_UdpStart_clicked()
           }
           else qDebug()<< "synctime OK";
 
-         // set IVmodel
-//         if(SendAdcModle() == false) {
-//              qDebug()<< "SendIpAdress error";
-//              initoff();
-//             return;
-//         }
-
         // Client start
          if(start()==false) {
              qDebug()<< "start() error";
@@ -239,7 +232,6 @@ void MainWindow::on_button_UdpStart_clicked()
          ui->button_UdpStart->setText("Stop");
          ui->label_clientnum->setText(QString::number(ClientCount));
     }
-
     else initoff();
 }
 
@@ -258,6 +250,52 @@ void MainWindow::initoff(){
    disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
    for(int i=0; i<4;i++)
    disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
+   disconnect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
+}
+
+// local
+void MainWindow::on_pushButton_local_clicked()
+{
+    //disable the tcp client
+    mytcpclient->closeClient();
+
+
+    bool isSuccess = myudp->bindPort(localAddr, udpListenPort);
+    if(isSuccess)
+    {
+         ui->statusBar->showMessage(&"Listen to" [udpListenPort],2);
+         qDebug()<<"udp_txrx bindport ok.";
+
+         connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
+         connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
+         ui->pushButton_local->setDisabled(true);
+         ui->pushButton_remote->setDisabled(false);
+          QMessageBox::information(this,QStringLiteral("UDP连接成功"),QStringLiteral("局域网UDP连接成功"));
+    }
+    else{
+        qDebug()<<"udp_txrx bindport error.";
+          QMessageBox::warning(this,QString::fromUtf8("本地UDP连接失败"),QString::fromUtf8("数据接受UDP"));
+        return;
+    }
+
+
+
+}
+
+void MainWindow::on_pushButton_remote_clicked()
+{
+    //disable the udp
+
+    myudp->close();
+    disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
+    disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
+    ui->pushButton_local->setDisabled(false);
+
+
+    //enable the tcp client
+    connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
+    connect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
+    mytcpclient->connectTo(tcpClientTargetAddr, tcpClientTargetPort);
 
 }
 
@@ -316,7 +354,6 @@ void MainWindow::UiDataShow()
            data.clear();
            for(int j= 0;j<4;j++)
             data.append(Adc_data[i][j].first());
-
             datawidget[i]->showdata(data,DigitalIO);
             datawidget[i]->showplot(data);
        }
@@ -339,10 +376,6 @@ void MainWindow::ClientStatusShow()
     if(ClientStatus[3] ==1) ui->radioButton_4->setChecked(true);
     else ui->radioButton_4->setChecked(false);
 }
-
-
-
-
 
 int MainWindow::checkreturn(int order)
 {
@@ -377,6 +410,75 @@ void MainWindow::testconnect()
    QString text("testconnect");
    onUdpAppendMessage("Me",text);
 }
+
+/***********************************
+ *
+ * TCP client has a new connection
+ *
+ ***********************************/
+
+void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
+{
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
+    disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
+
+    connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onTcpClientDisconnected()));
+    ui->statusBar->showMessage("TCP Connected to " + from + ": " + QString::number(port), 2000);
+    qDebug()<< "TCP Connected to " + from + ": " + QString::number(port);
+
+    connect(mytcpclient, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
+    ui->pushButton_remote->setDisabled(true);
+    QMessageBox::information(this,QStringLiteral("TCP连接成功"),"Remote Serve Ip Adress is "+from+ ":"+QString::number(port));
+}
+
+
+
+/***********************************
+ *
+ * TCP client connection time out
+ *
+ ***********************************/
+void MainWindow::onTcpClientTimeOut()
+{
+    ui->statusBar->showMessage("TCP Connection time out", 2000);
+    qDebug()<< "TCP Connection time out";
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
+    disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
+    mytcpclient->closeClient();
+    ui->pushButton_remote->setDisabled(false);
+    QMessageBox::warning(this,QStringLiteral("TCP连接超时"),"Remote Serve Ip Adress is "+tcpClientTargetAddr.toString()+ ":"+QString::number(tcpClientTargetPort));
+
+}
+
+/***********************************
+ *
+ * TCP client disconnected
+ *
+ ***********************************/
+void MainWindow::onTcpClientDisconnected()
+{
+    ui->statusBar->showMessage("TCP Disconnected from server", 2000);
+    disconnect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onTcpClientDisconnected()));
+    disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(onTcpClientAppendMessage(QString, QString)));
+    ui->pushButton_remote->setDisabled(false);
+    QMessageBox::warning(this,QStringLiteral("断开tcp"),"Remote Serve Ip Adress is "+tcpClientTargetAddr.toString()+ ":"+QString::number(tcpClientTargetPort));
+
+}
+
+/***********************************
+ *
+ * TCP client newmessage
+ *
+ ***********************************/
+
+void MainWindow::onTcpClientAppendMessage(const QString &from, const QByteArray &message)
+{
+    AdcByteToData(from, message);
+
+}
+
+
+
 //order  (syncudp)
 bool MainWindow::start()
 {
@@ -628,4 +730,37 @@ void MainWindow::sleep(int msec)
     while( QTime::currentTime() < dieTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
+
+
+void MainWindow::on_comboBox_Interface_highlighted(int index)
+{
+    if (ui->comboBox_Interface->count() >= index)
+    {
+        ui->comboBox_Interface->setCurrentIndex(index);
+
+        for (int i = 0; i < interfaceList.at(index).addressEntries().size(); ++i)
+        {
+            if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            {
+                ui->label_LocalIP->setText(interfaceList.at(index).addressEntries().at(i).ip().toString());
+                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
+
+            }
+        }
+    }
+    else if (ui->comboBox_Interface->count() > 0 && ui->comboBox_Interface->count() < index)
+    {
+        ui->comboBox_Interface->setCurrentIndex(0);
+        for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
+        {
+            if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            {
+                ui->label_LocalIP->setText(interfaceList.at(0).addressEntries().at(i).ip().toString());
+                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
+            }
+        }
+    }
+}
+
+
 

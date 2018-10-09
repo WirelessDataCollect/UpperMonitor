@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   mytcpclient.cpp: TCP client
  * 
  *   Copyright (C) 2017  Zhengyu Peng, https://zpeng.me
@@ -93,7 +93,7 @@ void MyTCPClient::abortConnection()
 void MyTCPClient::messageReady()
 {
     array = tcpSocket->readAll();
-   // qDebug()<<"messageReady"<<array;
+    qDebug()<<"messageReady"<<array.size();
     emit newMessage(tcpSocket->peerAddress().toString(), array);
 }
 

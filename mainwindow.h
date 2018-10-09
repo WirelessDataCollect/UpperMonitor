@@ -21,6 +21,11 @@
 #include "mytcpclient.h"
 #include <numeric>
 
+
+#include <QtCore/QTextStream>
+#include <QtCore/QFile>
+#include <QtCore/QIODevice>
+
 #include"showwidget.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
@@ -105,6 +110,7 @@ public:
 
     QByteArray DigitalIO;
 
+    QVector<quint16> CH1SaveData;
 
     QVector<QVector< QVector<double> > > Adc_data;
     QVector<int> ClientStatus;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   myudp.cpp: UDP socket
  * 
  *   Copyright (C) 2017  Zhengyu Peng, https://zpeng.me
@@ -65,7 +65,7 @@ void MyUDP::readyRead()
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
     emit newMessage(sender.toString(), buffer);
-//    qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
+    qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
 
 }
 

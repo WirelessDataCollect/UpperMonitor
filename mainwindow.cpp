@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     syncListenPort = 5003;
     syncTargetPort = 5003;
 
-    udpListenPort = 5001;
+    udpListenPort = 5004;
     udpTargetPort = 5002;
 
 
@@ -162,6 +162,7 @@ void MainWindow::on_button_UdpStart_clicked()
         findLocalIPs();
         quint16 port = ui->lineEdit_UdpListenPort->text().toUShort();
         if(port) udpListenPort = port;
+
         ui->lineEdit_UdpListenPort->setText(QString::number(udpListenPort,10));
 
 
@@ -227,7 +228,7 @@ void MainWindow::on_button_UdpStart_clicked()
           }
          // timer begin(updata the ui)
          timer->start(1000);
-
+         qDebug()<<"timer->start(1000)";
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
          ui->label_clientnum->setText(QString::number(ClientCount));
@@ -239,14 +240,35 @@ void MainWindow::initoff(){
     timer->stop();
    // Client stop
     stop();
-   myudp->unbindPort();
+
+//    if(CH1SaveData.length()>10)
+//    {
+//
+//        QString sFilePath="D:\\terx.txt";
+//        QFile f(sFilePath);      //定义一个文件
+//        f.open(QIODevice::WriteOnly);   //打开文件
+//        QTextStream qs(&f);             //定义一个数据流
+//        qs.setCodec("UTF-8");
+//        for(int i=0;i<CH1SaveData.length();i++)
+//        {
+//           // qs <<CH1SaveData[i];      //把数组中的数据写到数据流，即写入文件中
+//            qs<<QString::number(CH1SaveData.at(i),10)<<endl;
+//        }
+
+//        f.close();
+//         qDebug()<<"CH1SaveData.at(0)"<<CH1SaveData.at(0);
+//        CH1SaveData.clear();
+//        CH1SaveData.resize(0);
+
+//    }
+  // myudp->unbindPort();
    syncudp->unbindPort();
    ui->button_UdpStart->setText("Start");
    ui->lineEdit_UdpListenPort->setDisabled(false);
 
    disconnect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-   disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-   disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
+  // disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
+  // disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
    disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
    for(int i=0; i<4;i++)
    disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
@@ -286,7 +308,7 @@ void MainWindow::on_pushButton_remote_clicked()
 {
     //disable the udp
 
-    myudp->close();
+    myudp->unbindPort();
     disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
     disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
     ui->pushButton_local->setDisabled(false);
@@ -304,28 +326,35 @@ void MainWindow::on_pushButton_remote_clicked()
 void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 {
 
-//  qDebug()<<"message.size()"<<message.size();
+ // qDebug()<<"message.size()"<<message.size();
 
   if(message.size()<16 || (message.size()%8!=0))
   {
       qDebug()<<"message.size()"<<message.size();
       return;
   }
+
   TotalPackNum ++;
   TotalByteNum += static_cast<quint64>(message.size()) ;
   QDateTime datatime = ByteToDatetime(message.left(8));
   quint32 count =  ByteTouint32(message.mid(8,4));
 
+
   char ChannelID = message.at(12);
+ // qDebug()<<"count:"<<count;
+ //  qDebug()<<"ChannelID:v "<<ChannelID;
   if(count%8 >0) return;
   if(ChannelID>4 || ChannelID<1) return;
   DigitalIO = message.mid(13,2);
+
   QByteArray adcbyte = message.mid(16,static_cast<int>(count));
+
   QVector<QVector<double> >::iterator iter = Adc_data[ChannelID-1].begin();
 
   for(int i=0;i<static_cast<int>(count);)
    {
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
+      // CH1SaveData.append((quint16)(adcbyte.at(i)*16+adcbyte.at(i+1)/16));
        i+=2;
        iter++;
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
@@ -338,6 +367,8 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
        i+=2;
        iter-=3;
   }
+
+
 
 }
 
@@ -361,7 +392,11 @@ void MainWindow::UiDataShow()
        Adc_data[i].clear();
        Adc_data[i].resize(4);
     }
-   ClientStatusShow();
+    ClientStatusShow();
+
+
+
+
 
 }
 

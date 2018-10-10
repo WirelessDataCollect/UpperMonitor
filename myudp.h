@@ -32,7 +32,7 @@ class MyUDP : public QUdpSocket
     void unbindPort();
 
   signals:
-    void newMessage(const QString &from, const QByteArray &message);
+    void newMessage(const QString &from, const QByteArray message);
 
   public slots:
     void readyRead();

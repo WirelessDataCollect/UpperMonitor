@@ -323,14 +323,17 @@ void MainWindow::on_pushButton_remote_clicked()
 
 
 //data receive (myudp)
-void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
+void MainWindow::AdcByteToData(const QString &from, const QByteArray message)
 {
 
- // qDebug()<<"message.size()"<<message.size();
+ // disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
+
+ qDebug()<<"message.size()"<<message.size();
 
   if(message.size()<16 || (message.size()%8!=0))
   {
       qDebug()<<"message.size()"<<message.size();
+   //   connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
       return;
   }
 
@@ -348,6 +351,11 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
   DigitalIO = message.mid(13,2);
 
   QByteArray adcbyte = message.mid(16,static_cast<int>(count));
+  qDebug()<<count<<adcbyte.length();
+//  for(int i =0;i<adcbyte.length();i=i+8)
+//  {
+//      qDebug()<<i<<adcbyte.mid(i,8).toHex();
+//  }
 
   QVector<QVector<double> >::iterator iter = Adc_data[ChannelID-1].begin();
 
@@ -364,18 +372,20 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
        i+=2;
        iter++;
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
+       qDebug()<<ChannelID<<i<<adcbyte.mid(i,2).toHex()<<ByteToAdcdata(adcbyte.mid(i,2));
        i+=2;
        iter-=3;
   }
 
 
-
+ //connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
 }
 
 
 void MainWindow::UiDataShow()
 {
     QVector<double> data;
+    double mean=0;
     for(int i =0; i<4; i++)
     {
        if(Adc_data[i][0].isEmpty()) ClientStatus[i] = 0;
@@ -384,13 +394,22 @@ void MainWindow::UiDataShow()
            ClientStatus[i] = 1;
            data.clear();
            for(int j= 0;j<4;j++)
-            data.append(Adc_data[i][j].first());
+           {
+               mean = 0;
+               for(int k=0;k<Adc_data[i][j].length();k++)
+               {
+                  mean+=  Adc_data[i][j][k];
+               }
+            data.append(mean/Adc_data[i][j].length());
+           }
+
             datawidget[i]->showdata(data,DigitalIO);
             datawidget[i]->showplot(data);
-       }
 
+       }
        Adc_data[i].clear();
        Adc_data[i].resize(4);
+      // qDebug()<<"Adc_data[i][0].isEmpty()"<<Adc_data[i][0].isEmpty();
     }
     ClientStatusShow();
 

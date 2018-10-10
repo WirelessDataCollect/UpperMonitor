@@ -93,7 +93,7 @@ void MyTCPClient::abortConnection()
 void MyTCPClient::messageReady()
 {
     array = tcpSocket->readAll();
-    qDebug()<<"messageReady"<<array.size();
+    //qDebug()<<"messageReady"<<array.size();
     emit newMessage(tcpSocket->peerAddress().toString(), array);
 }
 

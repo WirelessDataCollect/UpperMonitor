@@ -67,7 +67,7 @@ private slots:
 
     void syncrxmessage(const QString &from, const QByteArray &message);
      bool sendIVmodle(QByteArray databyte);
-    void AdcByteToData(const QString &from, const QByteArray &message);
+    void AdcByteToData(const QString &from, const QByteArray message);
     void UiDataShow();
 
     void onTcpClientNewConnection(const QString &from, quint16 port);

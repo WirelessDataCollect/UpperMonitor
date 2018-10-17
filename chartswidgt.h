@@ -1,4 +1,4 @@
-#ifndef CHARTSWIDGT_H
+﻿#ifndef CHARTSWIDGT_H
 #define CHARTSWIDGT_H
 
 #include <QtCharts/QChartGlobal>
@@ -12,8 +12,13 @@
 #include <QtWidgets/QGroupBox>
 #include <QtCharts/QLineSeries>
 #include <QSplineSeries>
+#include<QMouseEvent>
+#include<QWheelEvent>
+#include <QRubberBand>
+#include"chartview.h"
 QT_CHARTS_USE_NAMESPACE
 
+#define ChartMouseStyle   0
 
 #define Alldatabuf 100
 class chartswidgt : public QWidget
@@ -32,6 +37,9 @@ public slots:
     void rxplotdata(QVector<double> &plotdata);
 
 private:
+    bool isClicking;
+    int xOld;
+    int yOld;
     QChart *m_chart;
     QList<QSplineSeries *> s_series;
     QVector<QVector<quint16> > pdata;
@@ -42,6 +50,13 @@ private:
     QList<QList<QPointF> > data;
     qreal plotXaxis;
     void setseries();
+
+
+protected:
+
+    void mousePressEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
 };
 
 #endif // CHARTSWIDGT_H

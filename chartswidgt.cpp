@@ -1,4 +1,4 @@
-#include "chartswidgt.h"
+﻿#include "chartswidgt.h"
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtWidgets/QPushButton>
@@ -11,18 +11,40 @@
 #include <QtCharts/QXYLegendMarker>
 #include <QtCore/QtMath>
 #include <QValueAxis>
+
 #include "mainwindow.h"
 
 QT_CHARTS_USE_NAMESPACE
 
+
 chartswidgt::chartswidgt(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    isClicking(false),
+    xOld(0), yOld(0)
 {
+
     // Create chart view with the chart
     m_chart = new QChart();
-    m_chartView = new QChartView(m_chart, this);
+   if(ChartMouseStyle==1)
+   {
+        m_chartView = new QChartView(m_chart, this);
 
 
+   }else{
+       m_chartView = new ChartView(m_chart);
+
+   }
+  m_chartView->setRubberBand(QChartView::RectangleRubberBand);
+
+
+////    m_chartView->setMouseTracking(true);
+////    m_chartView->setInteractive(true);
+
+////    m_chartView->installEventFilter(this);
+  //
+
+
+    m_chartView->setRenderHint(QPainter::Antialiasing);
     // Create layout for grid and detached legend
     m_mainLayout = new QGridLayout();
     m_mainLayout->setSpacing(0);
@@ -35,13 +57,18 @@ chartswidgt::chartswidgt(QWidget *parent) :
      setseries();
      connectMarkers();
      m_chart->createDefaultAxes();
-     m_chart->axisY()->setRange(0,5);
+    // m_chart->axisY()->setRange(0,5);
 
     // Set the title and show legend
     m_chart->setTitle("Legendmarker example (click on legend)");
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
-    m_chartView->setRenderHint(QPainter::Antialiasing);
+
+
+
+
+
+   // m_mainLayout->installEventFilter(this);
 
     plotXaxis = 0;
     QList<QPointF> zerolist;
@@ -176,11 +203,46 @@ void chartswidgt::rxplotdata(QVector<double> &plotdata)
     plotXaxis++;
     for(int i = 0; i < 4;i++){
         QSplineSeries *series =s_series.at(i);
+
          series->removePoints(0,1);
          series->append(QPointF(plotXaxis,plotdata.at(i)));
     }
     m_chart->axisX()->setRange(plotXaxis-100,plotXaxis);
 }
+
+void chartswidgt::wheelEvent(QWheelEvent *event)
+{
+    if (event->delta() > 0) {
+        m_chart->zoom(2);
+    } else {
+        m_chart->zoom(0.5);
+    }
+
+    QWidget::wheelEvent(event);
+
+}
+
+void chartswidgt::mousePressEvent(QMouseEvent *event)
+{
+
+    qDebug()<<"chartswidgt"<<"mousePressEvent";
+ if (event->button() & Qt::RightButton) {
+        m_chart->zoomReset();
+        if(ChartMouseStyle==1){
+            m_chart->zoom(2);
+        }
+    }
+
+    QWidget::mousePressEvent(event);
+}
+
+
+
+
+
+
+
+
 /*
 void chartswidgt::rxdata(QVector<QVector<quint16> > pdata,quint16 pchannel,int Plotsize,int range){
      removeSeries();

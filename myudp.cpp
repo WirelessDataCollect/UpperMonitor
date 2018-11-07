@@ -42,7 +42,7 @@ bool MyUDP::bindPort(QHostAddress addr, quint16 port)
 
 void MyUDP::sendMessage(QHostAddress sender, quint16 senderPort, QByteArray Data)
 {
-    qDebug()<<"me -->senderPort"<<senderPort;
+  //  qDebug()<<"me -->senderPort"<<senderPort;
     // Sends the datagram datagram
     // to the host address and at port.
     socket->writeDatagram(Data, sender, senderPort);
@@ -65,7 +65,7 @@ void MyUDP::readyRead()
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
     emit newMessage(sender.toString(), buffer);
-    qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
+   // qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
 
 }
 

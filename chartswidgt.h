@@ -34,7 +34,7 @@ public slots:
     void disconnectMarkers();
 
     void handleMarkerClicked();
-    void rxplotdata(QVector<double> &plotdata);
+    void rxplotdata(QVector<QVector<double> >&plotdata);
 
 private:
     bool isClicking;

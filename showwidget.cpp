@@ -141,7 +141,7 @@ void showwidget::showdata(QVector<double> &data, QByteArray &databyte)
 }
 
 
-void showwidget::showplot(QVector<double> &data)
+void showwidget::showplot(QVector<QVector<double> > &data)
 {
     plotwidget->rxplotdata(data);
 }

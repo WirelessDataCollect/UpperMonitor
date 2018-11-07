@@ -15,7 +15,6 @@ void ChartView::mousePressEvent(QMouseEvent *event)
     } else if (event->button() & Qt::RightButton) {
         chart()->zoomReset();
     }
-
     QChartView::mousePressEvent(event);
 }
 

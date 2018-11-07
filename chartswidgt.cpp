@@ -198,17 +198,22 @@ void chartswidgt::handleMarkerClicked()
     }
 }
 
-void chartswidgt::rxplotdata(QVector<double> &plotdata)
+void chartswidgt::rxplotdata(QVector<QVector<double> >&plotdata)
 {
     plotXaxis++;
     for(int i = 0; i < 4;i++){
-        QSplineSeries *series =s_series.at(i);
 
+         QSplineSeries *series =s_series.at(i);
+
+
+         series->append(QPointF(plotXaxis,plotdata.at(i).at(0)));
+         qDebug()<<"plotdata.at(i).length()"<<plotdata.at(i).length();
          series->removePoints(0,1);
-         series->append(QPointF(plotXaxis,plotdata.at(i)));
     }
-    m_chart->axisX()->setRange(plotXaxis-100,plotXaxis);
+
+    m_chart->axisX()->setRange(plotXaxis-Alldatabuf,plotXaxis);
 }
+
 
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {

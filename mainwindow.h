@@ -25,7 +25,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
-
+#include<QQueue>
 #include"showwidget.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
@@ -38,6 +38,7 @@
 #define  GET_CHANNEL_MODEL      0xa7
 #define  GET_CAN_SEND_EN        0xa8
 #define  GET_REMOTE_IP_PORT     0xa9
+#define  GET_HEARTBEAT          0xaa
 
 
 namespace Ui {
@@ -79,6 +80,15 @@ private slots:
     void on_pushButton_local_clicked();
 
     void on_pushButton_remote_clicked();
+    void heatbeatslot();
+
+    void on_radioButton_clicked(bool checked);
+
+    void on_radioButton_3_clicked(bool checked);
+
+    void on_radioButton_2_clicked(bool checked);
+
+    void on_radioButton_4_clicked(bool checked);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -87,7 +97,7 @@ public:
     MyUDP *syncudp = nullptr;
     MyTCPClient *mytcpclient = nullptr;
     QTimer *timer = nullptr;
-    QTimer *plottimer = nullptr;
+    QTimer *heatbeattimer = nullptr;
 
     QVector<showwidget *> datawidget;
     showwidget *datawidget1 = nullptr;
@@ -113,7 +123,9 @@ public:
     QVector<quint16> CH1SaveData;
 
     QVector<QVector< QVector<double> > > Adc_data;
-    QVector<int> ClientStatus;
+    QVector<int> ClientStatusEnable;
+    QVector<int> ClientStatusOnline;
+    QVector<int> ClientStatusOnlineAll;
     QVector<char> OrderReturn;
     int ClientCount;
     QByteArray IVset;
@@ -137,14 +149,19 @@ private:
 
     void findLocalIPs();
     void testconnect();
-    bool start();
-    bool stop();
+    bool start(char channelnum);
+    bool stop(char channelnum);
     bool synctime();
     bool SendIpAdress(QHostAddress addr, quint16 port);
     bool SendAdcModle();
-    int checkreturn(int order);
+    bool checkreturn(char order, char channelnum );
+    QVector<int> checkreturn(char order);
     void initoff();
     void ClientStatusShow();
+    void heartbeat();
+    void checkheartbeat();
+
+
 
 };
 

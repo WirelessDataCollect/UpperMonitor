@@ -102,7 +102,7 @@ QRadioButton::indicator {
 }
 QRadioButton::indicator::checked {
     color: rgb(0, 0, 0);
-    image: url(:/ico/ico/checked.png)
+    image: url(:/ico/ico/checked-red.png)
 }
 QRadioButton::indicator::unchecked {
     
@@ -214,6 +214,190 @@ QLineEdit:!enabled {
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="Client1">
+       <attribute name="title">
+        <string>Client1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="Client2">
+       <attribute name="title">
+        <string>Client2</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="Client3">
+       <attribute name="title">
+        <string>Client3</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="Client4">
+       <attribute name="title">
+        <string>Client4</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Debug</string>
+       </attribute>
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>443</width>
+          <height>325</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Message:</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="QGroupBox" name="groupBox_7">
+           <property name="title">
+            <string>Send to:</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <widget class="QTextBrowser" name="textBrowser_UdpMessage"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>IP:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_UdpTargetIP">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="line_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Port:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_UdpTargetPort">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>80</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="baseSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLineEdit" name="lineEdit_UdpSend"/>
+              </item>
+              <item>
+               <widget class="Line" name="line_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="button_UdpSend">
+                <property name="text">
+                 <string>Send</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QGroupBox" name="groupBox_3">
       <property name="sizePolicy">
@@ -226,51 +410,6 @@ QLineEdit:!enabled {
        <string>Network Interface:</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QComboBox" name="comboBox_Interface">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>130</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_LocalIP">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>120</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>255.255.255.255</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="0" column="1">
         <spacer name="horizontalSpacer_6">
          <property name="orientation">
@@ -458,6 +597,51 @@ QLineEdit:!enabled {
          </item>
         </layout>
        </item>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QComboBox" name="comboBox_Interface">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>130</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_LocalIP">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>255.255.255.255</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="1" column="1">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
@@ -516,19 +700,6 @@ QLineEdit:!enabled {
          </item>
         </layout>
        </item>
-       <item row="1" column="3">
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>93</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="1" column="4">
         <widget class="QPushButton" name="button_UdpStart">
          <property name="sizePolicy">
@@ -554,191 +725,20 @@ QLineEdit:!enabled {
          </property>
         </widget>
        </item>
+       <item row="1" column="3">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>93</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="Client1">
-       <attribute name="title">
-        <string>Client1</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="Client2">
-       <attribute name="title">
-        <string>Client2</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="Client3">
-       <attribute name="title">
-        <string>Client3</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="Client4">
-       <attribute name="title">
-        <string>Client4</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Debug</string>
-       </attribute>
-       <widget class="QGroupBox" name="groupBox_8">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>443</width>
-          <height>325</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Message:</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_11">
-         <item>
-          <widget class="QGroupBox" name="groupBox_7">
-           <property name="title">
-            <string>Send to:</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_12">
-            <item>
-             <widget class="QTextBrowser" name="textBrowser_UdpMessage"/>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
-              <item>
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>IP:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_UdpTargetIP">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>200</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>200</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="Line" name="line_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Port:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_UdpTargetPort">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>80</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>80</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="baseSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="Line" name="line_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <widget class="QLineEdit" name="lineEdit_UdpSend"/>
-              </item>
-              <item>
-               <widget class="Line" name="line_8">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_UdpSend">
-                <property name="text">
-                 <string>Send</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -749,7 +749,7 @@ QLineEdit:!enabled {
      <x>0</x>
      <y>0</y>
      <width>892</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

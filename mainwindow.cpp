@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     timer = new QTimer(this);
-    plottimer = new QTimer(this);
+    heatbeattimer = new QTimer(this);
 
-
+    ClientStatusOnlineAll.resize(15);
+    ClientStatusOnline.resize(5);
     findLocalIPs();
 
     if (myudp == nullptr)
@@ -26,14 +27,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+
     Adc_data.clear();
     Adc_data.resize(4);
     Adc_data[0].resize(4);
     Adc_data[1].resize(4);
     Adc_data[2].resize(4);
     Adc_data[3].resize(4);
-    ClientStatus.clear();
-    ClientStatus.resize(4);
+    ClientStatusEnable.clear();
+    ClientStatusEnable.resize(4);
 
     TotalByteNum = 0;
     TotalPackNum= 0;
@@ -132,12 +134,10 @@ void MainWindow::findLocalIPs()
 }
 
 
-
-
-
 void MainWindow::on_button_UdpSend_clicked()
 {
      QString text = ui->lineEdit_UdpSend->text();
+
      QString senderIP = ui->lineEdit_UdpTargetIP->text();
      udpTargetPort = ui->lineEdit_UdpTargetPort->text().toUShort();
      qDebug()<<"udpTargetPort"<<udpTargetPort;
@@ -185,23 +185,11 @@ void MainWindow::on_button_UdpStart_clicked()
         connect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
 
 
-        connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
+
 
         //IVseting button
         for(int i = 0;i<4;i++)
         connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
-
-        //test the connection with client and count the number of count;
-        testconnect();
-        sleep(1000);
-        ClientCount = checkreturn(GET_TEST);
-        qDebug()<<"ClientCount"<<ClientCount;
-        if(ClientCount ==0){
-            QString  text("these is no client");
-            onUdpAppendMessage("Me",text);
-            initoff();
-            return;
-        }
 
 
          // set the target ip adress of clients
@@ -213,22 +201,17 @@ void MainWindow::on_button_UdpStart_clicked()
 //         }
 
          // time sync
-          if(synctime()==false) {
-              qDebug()<< "synctime error";
-              initoff();
-             return;
-          }
-          else qDebug()<< "synctime OK";
 
         // Client start
-         if(start()==false) {
-             qDebug()<< "start() error";
-             initoff();
-           return;
-          }
+
          // timer begin(updata the ui)
          timer->start(1000);
-         qDebug()<<"timer->start(1000)";
+
+         heatbeattimer->start(5000);
+
+         connect(heatbeattimer, SIGNAL(timeout()), this, SLOT(heatbeatslot()));
+         connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
+
          ui->lineEdit_UdpListenPort->setDisabled(true);
          ui->button_UdpStart->setText("Stop");
          ui->label_clientnum->setText(QString::number(ClientCount));
@@ -239,8 +222,8 @@ void MainWindow::on_button_UdpStart_clicked()
 void MainWindow::initoff(){
     timer->stop();
    // Client stop
-    stop();
-
+   // stop();
+    heatbeattimer->stop();
 //    if(CH1SaveData.length()>10)
 //    {
 //
@@ -354,7 +337,7 @@ void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
   for(int i=0;i<static_cast<int>(count);)
    {
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
-      // CH1SaveData.append((quint16)(adcbyte.at(i)*16+adcbyte.at(i+1)/16));
+       CH1SaveData.append((quint16)(adcbyte.at(i)*16+adcbyte.at(i+1)/16));
        i+=2;
        iter++;
        (*iter).append(ByteToAdcdata(adcbyte.mid(i,2)));
@@ -378,62 +361,163 @@ void MainWindow::UiDataShow()
     QVector<double> data;
     for(int i =0; i<4; i++)
     {
-       if(Adc_data[i][0].isEmpty()) ClientStatus[i] = 0;
+       if(Adc_data[i][0].isEmpty()) ClientStatusEnable[i] = 0;
        else
        {
-           ClientStatus[i] = 1;
+           ClientStatusEnable[i] = 1;
            data.clear();
            for(int j= 0;j<4;j++)
             data.append(Adc_data[i][j].first());
             datawidget[i]->showdata(data,DigitalIO);
-            datawidget[i]->showplot(data);
+            datawidget[i]->showplot(Adc_data[i]);
        }
 
        Adc_data[i].clear();
        Adc_data[i].resize(4);
     }
-    ClientStatusShow();
-
-
-
-
-
 }
 
 void MainWindow::ClientStatusShow()
 {
-    if(ClientStatus[0] ==1) ui->radioButton->setChecked(true);
-    else ui->radioButton->setChecked(false);
-    if(ClientStatus[1] ==1) ui->radioButton_2->setChecked(true);
-    else ui->radioButton_2->setChecked(false);
-    if(ClientStatus[2] ==1) ui->radioButton_3->setChecked(true);
-    else ui->radioButton_3->setChecked(false);
-    if(ClientStatus[3] ==1) ui->radioButton_4->setChecked(true);
-    else ui->radioButton_4->setChecked(false);
+   if(ClientStatusOnline[0]==1)
+   {
+       ui->radioButton->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/checked-red.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-green.png);}"
+                );
+       ui->radioButton->setCheckable(true);
+      if(ClientStatusEnable[0]) ui->radioButton->setChecked(true);
+      else ui->radioButton->setChecked(false);
+
+   }
+   else{
+        ui->radioButton->setChecked(false);
+        ui->radioButton->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/unchecked.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-red.png);}"
+                );
+       ui->radioButton->setCheckable(false);
+   }
+
+   if(ClientStatusOnline[1]==1)
+   {
+       ui->radioButton_2->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/checked-red.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-green.png);}"
+                );
+        ui->radioButton_2->setCheckable(true);
+
+   }
+   else{
+        ui->radioButton_2->setChecked(false);
+       ui->radioButton_2->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/unchecked.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-red.png);}"
+                );
+       ui->radioButton_2->setCheckable(false);
+   }
+   if(ClientStatusOnline[2]==1)
+   {
+       ui->radioButton_3->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/checked-red.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-green.png);}"
+                );
+       ui->radioButton_3->setCheckable(true);
+       if(ClientStatusEnable[2]) ui->radioButton->setChecked(true);
+       else ui->radioButton->setChecked(false);
+
+   }
+   else{
+        ui->radioButton_3->setChecked(false);
+       ui->radioButton_3->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/unchecked.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-red.png);}"
+                );
+       ui->radioButton_3->setCheckable(false);
+
+   }
+
+   if(ClientStatusOnline[3]==1)
+   {
+       ui->radioButton_4->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/checked-red.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-green.png);}"
+                );
+        ui->radioButton_4->setCheckable(true);
+
+   }
+   else{
+        ui->radioButton_4->setChecked(false);
+       ui->radioButton_4->setStyleSheet(
+                "QRadioButton::indicator::unchecked {image: url(:/ico/ico/unchecked.png);}"
+                "QRadioButton::indicator::checked {image: url(:/ico/ico/checked-red.png);}"
+                );
+       ui->radioButton_4->setCheckable(false);
+   }
 }
 
-int MainWindow::checkreturn(int order)
+bool MainWindow::checkreturn(char order,char channelnum)
 {
+      if(OrderReturn.isEmpty()) return false;
+      for(int i=0;i<OrderReturn.count()-1;i++)
+      {
+          if(OrderReturn.at(i)==order && OrderReturn.at(i+1)==channelnum)
+          {
+              OrderReturn.remove(i,2);
 
-      return OrderReturn.count(static_cast<char>(order));
+              return true;
+          }
+      }
+      return false;
 }
+
+
+QVector<int> MainWindow::checkreturn(char order)
+{
+     QVector<int> channel;
+     channel.fill(0,5);
+      for(int i=0;i<OrderReturn.count()-1;i++)
+      {
+          if(OrderReturn.at(i)==order &&OrderReturn.at(i+1)<5 &&OrderReturn.at(i+1)>=0)
+          {
+              channel[OrderReturn.at(i+1)-1]=1;
+              OrderReturn.remove(i,2);
+              i--;
+          }
+      }
+      return channel;
+}
+
+
 void MainWindow::syncrxmessage(const QString &from, const QByteArray &message)
 {
     QString localfrom = from;
     QString localmessage = message;
+
    if(static_cast<quint8>(message.at(0))== TIME_SYNC_BOARD)  //终端之间的时间同步
    {
      localmessage = "Time sync between boards";
    }
 
+
    else if(static_cast<quint8>(message.at(0)) == GET_RETURN_ORDER && (from != localAddr.toString()) )
    {
-       OrderReturn.append(message.at(1));
+
+          OrderReturn.append(message.at(1));
+          OrderReturn.append(message.at(2));
+
    }
    if(from == localAddr.toString()) localfrom = "SELF";
-
    onUdpAppendMessage(localfrom,message);
 }
+
+
+
+/***********************************
+ *
+ * UDP 测试连接
+ *
+ ***********************************/
 
 void MainWindow::testconnect()
 {
@@ -512,66 +596,113 @@ void MainWindow::onTcpClientAppendMessage(const QString &from, const QByteArray 
 
 }
 
+void MainWindow::heatbeatslot()
+{
+    checkheartbeat();
+    heartbeat();
+    ClientStatusShow();
+}
 
+void MainWindow::heartbeat()
+{
+    QByteArray data;
+    data[0] = static_cast<char>(GET_HEARTBEAT);
+    QString text = "heartbeat: "+ data.toHex();
+    onUdpAppendMessage("Me", text);
+    emit udpsent(syncTargetAddr,syncTargetPort,data);
+
+}
+void MainWindow::checkheartbeat()
+{
+    QVector<int> channel = checkreturn(static_cast<char>(GET_HEARTBEAT));
+    ClientStatusOnlineAll+=channel;
+    ClientStatusOnlineAll.erase(ClientStatusOnlineAll.begin(),ClientStatusOnlineAll.begin()+5);
+    for(int i=0;i<5;i++)
+    {
+        ClientStatusOnline[i]=(ClientStatusOnlineAll.at(i) | ClientStatusOnlineAll.at(i+5) | ClientStatusOnlineAll.at(i+10));
+
+    }
+
+}
 
 //order  (syncudp)
-bool MainWindow::start()
+
+bool MainWindow::start(char channelnum)
 {
     QByteArray data;
-    data.resize(1);
+    bool status=false;
+    data.resize(2);
     data[0] = static_cast<char>(GET_WIFI_SEND_EN);
+    data[1] = channelnum;
     QString text = "start: "+ data.toHex();
     int i=0;
-    while(checkreturn(GET_WIFI_SEND_EN) != ClientCount && i<5)
+    while(status==false &&i<5)
     {
-       OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,data);
        onUdpAppendMessage("Me", text);
        sleep(200);
        i++;
+       status = checkreturn(static_cast<char>(GET_WIFI_SEND_EN), channelnum);
     }
-    return checkreturn(GET_WIFI_SEND_EN) == ClientCount;
+    if(status)   onUdpAppendMessage("Me", QString("start is ok"));
+    return status;
+
 }
-bool MainWindow::stop()
+bool MainWindow::stop(char channelnum)
 {
+
     QByteArray data;
+     bool status=false;
     data.resize(1);
     data[0] = static_cast<char>(GET_WIFI_SEND_DISABLE);
+    data[1] = channelnum;
     QString text = "stop: "+ data.toHex();
     int i=0;
-    while(checkreturn(GET_WIFI_SEND_DISABLE) != ClientCount && i<5)
+    OrderReturn.clear();
+    while(status==false && i<5)
     {
        OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,data);
        onUdpAppendMessage("Me", text);
        sleep(200);
        i++;
+       status = checkreturn(static_cast<char>(GET_WIFI_SEND_DISABLE), channelnum);
     }
-    return checkreturn(GET_WIFI_SEND_DISABLE) == ClientCount;
+    if(status)   onUdpAppendMessage("Me", QString("stop is ok"));
+    return status;
 }
+
 bool MainWindow::synctime()
 {
     QByteArray databyte;
+    QVector<int> channel;
+    bool status = false;
     databyte.append(static_cast<char>(GET_TIME_SYNC));
     QDateTime datetime = QDateTime::currentDateTime();
     databyte.append(DatetimeToByte(datetime));
     int i=0;
     QString text = "synctime: "+ databyte.toHex();
-    while(checkreturn(GET_TIME_SYNC) != ClientCount && i<5)
+    OrderReturn.clear();
+
+      while(status==false && i<5)
     {
        OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,databyte);
        onUdpAppendMessage("Me",text);
        sleep(200);
        i++;
+       status = (ClientStatusOnline==checkreturn(static_cast<char>(GET_TIME_SYNC)));
+
     }
-    return checkreturn(GET_TIME_SYNC) == ClientCount;
+    return status;
+
 }
 
 
 bool MainWindow::sendIVmodle(QByteArray databyte)
 {
     QByteArray byte;
+    bool status = false;
     byte.append(static_cast<char>(GET_CHANNEL_MODEL));
 
     showwidget *btn = qobject_cast<showwidget *>(sender());
@@ -583,43 +714,45 @@ bool MainWindow::sendIVmodle(QByteArray databyte)
     byte.append(databyte);
     int i = 0;
     QString text = "SendAdcModle: "+ byte.toHex();
-    while(checkreturn(GET_CHANNEL_MODEL) != ClientCount && i<5)
+
+    while(status==false && i<5)
     {
        OrderReturn.clear();
        emit udpsent(syncTargetAddr,syncTargetPort,byte);
         onUdpAppendMessage("Me",text);
         sleep(200);
        i++;
+       status = checkreturn(static_cast<char>(GET_CHANNEL_MODEL), byte.at(1));
     }
-    return checkreturn(GET_CHANNEL_MODEL) == ClientCount;
+    return status;
 }
 
 bool MainWindow::SendIpAdress(QHostAddress ip, quint16 port)
 {
-   QByteArray databyte;
-   databyte.append(static_cast<char>(GET_REMOTE_IP_PORT));
+    QByteArray databyte;
+    bool status = false;
+    databyte.append(static_cast<char>(GET_REMOTE_IP_PORT));
 
-   quint32    ipv4sdress = ip.toIPv4Address();
-   QByteArray ipv4adressByte =IntToHighByte(ipv4sdress);
-   databyte.append(ipv4adressByte);
-   QByteArray portByte = uint16ToByte(port);
-   databyte.append(portByte);
-//   qDebug()<<"syncTargetAddr"<<ip;
-//   qDebug()<< "databyte.size()"<<databyte.size();
-//   qDebug()<<"databyte.toHex()"<< databyte.toHex();
-
-   int i = 0;
-   QString text = "SendIpAdress: "+ databyte.toHex();
-   while(checkreturn(GET_REMOTE_IP_PORT) != ClientCount && i<5)
-   {
-      OrderReturn.clear();
-      emit udpsent(syncTargetAddr,syncTargetPort,databyte);
-      onUdpAppendMessage("Me",text);
-      sleep(2000);
-      i++;
-   }
-   qDebug()<<"checkreturn(GET_TIME_SYNC)"<<checkreturn(GET_TIME_SYNC);
-   return checkreturn(GET_REMOTE_IP_PORT) == ClientCount;
+    quint32    ipv4sdress = ip.toIPv4Address();
+    QByteArray ipv4adressByte =IntToHighByte(ipv4sdress);
+    databyte.append(ipv4adressByte);
+    QByteArray portByte = uint16ToByte(port);
+    databyte.append(portByte);
+    //   qDebug()<<"syncTargetAddr"<<ip;
+    //   qDebug()<< "databyte.size()"<<databyte.size();
+    //   qDebug()<<"databyte.toHex()"<< databyte.toHex();
+    QString text = "SendIpAdress: "+ databyte.toHex();
+    int i=0;
+    while(status==false && i<5)
+    {
+        OrderReturn.clear();
+        emit udpsent(syncTargetAddr,syncTargetPort,databyte);
+        onUdpAppendMessage("Me",text);
+        sleep(200);
+        i++;
+        status = (ClientStatusOnline==checkreturn(static_cast<char>(GET_TIME_SYNC)));
+    }
+    return status;
 }
 
 void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
@@ -644,7 +777,7 @@ void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
 
 void MainWindow::onUdpAppendMessage(const QString &from, const QByteArray &message)
 {
-   qDebug()<<"onUdpAppendMessage:  "<< message;
+ //  qDebug()<<"onUdpAppendMessage:  "<< message;
     QTextCursor cursor(ui->textBrowser_UdpMessage->textCursor());
     cursor.movePosition(QTextCursor::End);
     if(from != "Me")
@@ -795,7 +928,92 @@ void MainWindow::on_comboBox_Interface_highlighted(int index)
             }
         }
     }
+
 }
 
 
 
+
+void MainWindow::on_radioButton_clicked(bool checked)
+{
+    qDebug()<<"on_radioButton_0_clicked"<<checked;
+    if(checked)
+    {
+
+        if(start(1)) ClientStatusEnable[0]= 1;
+        else  ClientStatusEnable[0]= 0;
+        {
+
+        }
+
+    }
+    else{
+        if(stop(1)) ClientStatusEnable[0]= 0;
+        else ClientStatusEnable[0]= 1;
+    }
+
+
+}
+
+
+void MainWindow::on_radioButton_2_clicked(bool checked)
+{
+    qDebug()<<"on_radioButton_2_clicked"<<checked;
+    if(checked)
+    {
+
+        if(start(2)) ClientStatusEnable[1]= 1;
+        else  ClientStatusEnable[1]= 0;
+        {
+
+        }
+
+    }
+    else{
+        if(stop(2)) ClientStatusEnable[1]= 0;
+        else ClientStatusEnable[1]= 1;
+    }
+}
+
+
+
+void MainWindow::on_radioButton_3_clicked(bool checked)
+{
+    qDebug()<<"on_radioButton_3_clicked"<<checked;
+    if(checked)
+    {
+
+        if(start(3)) ClientStatusEnable[2]= 1;
+        else  ClientStatusEnable[2]= 0;
+        {
+
+        }
+
+    }
+    else{
+        if(stop(3)) ClientStatusEnable[2]= 0;
+        else ClientStatusEnable[2]= 1;
+    }
+}
+
+
+
+void MainWindow::on_radioButton_4_clicked(bool checked)
+{
+    qDebug()<<"on_radioButton_4_clicked"<<checked;
+    if(checked)
+    {
+
+        if(start(4)) ClientStatusEnable[3]= 1;
+        else  ClientStatusEnable[3]= 0;
+        {
+
+        }
+
+    }
+    else{
+        if(stop(4)) ClientStatusEnable[3]= 0;
+        else ClientStatusEnable[3]= 1;
+    }
+
+}

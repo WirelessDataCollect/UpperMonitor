@@ -27,7 +27,7 @@ signals:
 public slots:
     void IVmodleset(void);
     void showdata(QVector<double> &data, QByteArray &databyte);
-    void showplot(QVector<double> &data);
+    void showplot(QVector<QVector<double> > &data);
 
 private:
 

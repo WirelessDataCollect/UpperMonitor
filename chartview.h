@@ -4,11 +4,17 @@
 #include <QChartView>
 #include <QRubberBand>
 #include <QDebug>
+#include <QtCharts/QChart>
+
 
 QT_CHARTS_USE_NAMESPACE
 
+
 class ChartView : public QChartView
 {
+    Q_OBJECT
+signals:
+    void sendposition(const QPoint &point);
 public:
     ChartView(QChart *chart, QWidget *parent = 0);
 
@@ -23,6 +29,9 @@ private:
 
     int xOld;
     int yOld;
+
+
+
 };
 
 #endif /* __CHARTVIEW_H__ */

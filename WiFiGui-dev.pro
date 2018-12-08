@@ -29,14 +29,17 @@ SOURCES += main.cpp\
     chartswidgt.cpp \
     showwidget.cpp \
     mytcpclient.cpp \
-    chartview.cpp
+    chartview.cpp \
+    callout.cpp
 
 HEADERS  += mainwindow.h \
     myudp.h \
     chartswidgt.h \
     showwidget.h \
     mytcpclient.h \
-    chartview.h
+    chartview.h \
+    myeventfilter.h \
+    callout.h
 
 FORMS    += mainwindow.ui
 

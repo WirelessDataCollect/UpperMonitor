@@ -1,27 +1,32 @@
 ﻿#include "chartview.h"
-
+#include "chartswidgt.h"
 ChartView::ChartView(QChart *chart, QWidget *parent) :
     QChartView(chart, parent),
     isClicking(false),
     xOld(0), yOld(0)
 {
-   // setRubberBand(QChartView::RectangleRubberBand);
+  setRubberBand(QChartView::NoRubberBand);
+
 }
 
 void ChartView::mousePressEvent(QMouseEvent *event)
 {
+    qDebug()<<"ChartView"<<"mousePressEvent";
     if (event->button() & Qt::LeftButton) {
         isClicking = true;
     } else if (event->button() & Qt::RightButton) {
         chart()->zoomReset();
     }
+
     QChartView::mousePressEvent(event);
 }
 
 void ChartView::mouseMoveEvent(QMouseEvent *event)
 {
-    int x, y;
+    //qDebug()<<"ChartView"<<"mouseMoveEvent";
 
+    emit sendposition(event->pos());
+    int x, y;
     if (isClicking) {
         if (xOld == 0 && yOld == 0) {
 
@@ -33,16 +38,16 @@ void ChartView::mouseMoveEvent(QMouseEvent *event)
 
         xOld = event->x();
         yOld = event->y();
-
         return;
     }
+
 
     QChartView::mouseMoveEvent(event);
 }
 
 void ChartView::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug()<<"mouseReleaseEvent";
+    qDebug()<<"ChartView mouseReleaseEvent";
     if (isClicking) {
         xOld = yOld = 0;
         isClicking = false;
@@ -52,7 +57,11 @@ void ChartView::mouseReleaseEvent(QMouseEvent *event)
     if (!(event->button() & Qt::RightButton)) {
         QChartView::mouseReleaseEvent(event);
     }
+
+
+
 }
+
 
 void ChartView::keyPressEvent(QKeyEvent *event)
 {
@@ -74,3 +83,4 @@ void ChartView::keyPressEvent(QKeyEvent *event)
         break;
     }
 }
+

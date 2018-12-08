@@ -1,4 +1,4 @@
-#include "showwidget.h"
+﻿#include "showwidget.h"
 
 showwidget::showwidget(QWidget *parent) : QWidget(parent)
 {
@@ -95,7 +95,6 @@ mesagedigitalLayout->addWidget(ch2_status1,2,2,1,1);
  dataLayout->addWidget(messagedigital);
  dataLayout->addWidget(message);
  plotwidget = new chartswidgt();
-
  m_mainLayout->addLayout(dataLayout);
  m_mainLayout->addWidget(plotwidget);
  m_mainLayout->setMargin(5);

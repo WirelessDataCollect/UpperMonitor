@@ -749,7 +749,7 @@ QLineEdit:!enabled {
      <x>0</x>
      <y>0</y>
      <width>892</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

@@ -16,17 +16,26 @@
 #include<QWheelEvent>
 #include <QRubberBand>
 #include"chartview.h"
+#include<QFontMetrics>
+#include<QLabel>
+#include<QDialog>
+#include<QDockWidget>
+#include"callout.h"
 QT_CHARTS_USE_NAMESPACE
 
-#define ChartMouseStyle   0
+#define ChartMouseStyle   1
 
 #define Alldatabuf 100
 class chartswidgt : public QWidget
 {
     Q_OBJECT
+
+
 public:
     explicit chartswidgt(QWidget *parent = 0);
-
+    QLabel *label_position;
+    bool eventFilter(QObject *target , QEvent *event );
+    QChartView *m_chartView;
 public slots:
     //void addSeries();
     void removeSeries();
@@ -35,6 +44,12 @@ public slots:
 
     void handleMarkerClicked();
     void rxplotdata(QVector<QVector<double> >&plotdata);
+    void clickpoint(const QPointF &point, bool state);
+    void show_position(const QPoint &point);
+
+
+
+
 
 private:
     bool isClicking;
@@ -44,18 +59,22 @@ private:
     QList<QSplineSeries *> s_series;
     QVector<QVector<quint16> > pdata;
     quint16 pchannel;
-    QChartView *m_chartView;
-    QGridLayout *m_mainLayout;
-    QGridLayout *m_fontLayout;
+
+    QVBoxLayout *m_mainLayout;
+
     QList<QList<QPointF> > data;
     qreal plotXaxis;
     void setseries();
-
+    QRectF m_rect;
+    QRectF m_textRect;
+    QFont m_font;
+    callout *m_callout = nullptr;
 
 protected:
 
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
+    void mouseMoveEvent(QMouseEvent * event);
 
 };
 

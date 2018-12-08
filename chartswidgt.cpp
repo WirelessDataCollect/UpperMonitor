@@ -11,7 +11,7 @@
 #include <QtCharts/QXYLegendMarker>
 #include <QtCore/QtMath>
 #include <QValueAxis>
-
+#include<QToolTip>
 #include "mainwindow.h"
 
 QT_CHARTS_USE_NAMESPACE
@@ -22,39 +22,50 @@ chartswidgt::chartswidgt(QWidget *parent) :
     isClicking(false),
     xOld(0), yOld(0)
 {
-
+     //dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     // Create chart view with the chart
     m_chart = new QChart();
-   if(ChartMouseStyle==1)
-   {
+    m_callout = new callout(this);
+  //  m_callout = new callout();
+//   if(ChartMouseStyle==1)
+//   {
         m_chartView = new QChartView(m_chart, this);
+//   }
+
+    m_chartView = new ChartView(m_chart,this);
+    m_chartView->installEventFilter(this);
+    m_chart->installEventFilter(this);
+
+    m_chartView->setRubberBand(QChartView::RectangleRubberBand);
 
 
-   }else{
-       m_chartView = new ChartView(m_chart);
+    this->setMouseTracking(true);
+    m_chartView->setInteractive(true);
 
-   }
-  m_chartView->setRubberBand(QChartView::RectangleRubberBand);
-
-
-////    m_chartView->setMouseTracking(true);
-////    m_chartView->setInteractive(true);
-
-////    m_chartView->installEventFilter(this);
-  //
-
-
-    m_chartView->setRenderHint(QPainter::Antialiasing);
+   // m_chartView->setRenderHint(QPainter::Antialiasing);
     // Create layout for grid and detached legend
-    m_mainLayout = new QGridLayout();
+    m_mainLayout = new QVBoxLayout();
+
     m_mainLayout->setSpacing(0);
     m_mainLayout->setMargin(0);
-    m_mainLayout->addWidget(m_chartView, 0, 0, -1, -1);
+    label_position= new QLabel("X:  Y:  ");
+    label_position->setAlignment(Qt::AlignHCenter);
+
+    m_mainLayout->addWidget(label_position);
+    m_mainLayout->addWidget(m_chartView);
+    m_mainLayout->setMargin(0);
+    m_mainLayout->setContentsMargins(0,0,0,0);
+    m_mainLayout->setSpacing(0);
     setLayout(m_mainLayout);
-   // m_mainLayout->setContentsMargins(0,0,0,0);
+    setseries();
+    m_chartView->setAutoFillBackground(true);
+     for(int i =0;i<4;i++)
+     {
+       connect(s_series.at(i),&QSplineSeries::hovered, this, &chartswidgt::clickpoint);
 
+     }
 
-     setseries();
+     connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
      connectMarkers();
      m_chart->createDefaultAxes();
     // m_chart->axisY()->setRange(0,5);
@@ -63,12 +74,6 @@ chartswidgt::chartswidgt(QWidget *parent) :
     m_chart->setTitle("Legendmarker example (click on legend)");
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
-
-
-
-
-
-   // m_mainLayout->installEventFilter(this);
 
     plotXaxis = 0;
     QList<QPointF> zerolist;
@@ -218,7 +223,7 @@ void chartswidgt::rxplotdata(QVector<QVector<double> >&plotdata)
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0) {
-        m_chart->zoom(2);
+        m_chart->zoom(1.5);
     } else {
         m_chart->zoom(0.5);
     }
@@ -230,12 +235,9 @@ void chartswidgt::wheelEvent(QWheelEvent *event)
 void chartswidgt::mousePressEvent(QMouseEvent *event)
 {
 
-    qDebug()<<"chartswidgt"<<"mousePressEvent";
+   qDebug()<<"chartswidgt"<<event->button();
  if (event->button() & Qt::RightButton) {
         m_chart->zoomReset();
-        if(ChartMouseStyle==1){
-            m_chart->zoom(2);
-        }
     }
 
     QWidget::mousePressEvent(event);
@@ -243,60 +245,73 @@ void chartswidgt::mousePressEvent(QMouseEvent *event)
 
 
 
+void chartswidgt::mouseMoveEvent(QMouseEvent *event)
+{
+    /* Setting the mouse position label on the axis from value to position */
+
+    qDebug()<<"chartswidgt"<<"mouseMoveEvent";
+    qreal xVal = m_chart->mapToValue(event->pos()).x();
+    qreal yVal = m_chart->mapToValue(event->pos()).y();
+    qDebug()<<"xVal"<<xVal;
+    qDebug()<<"xVal"<<yVal;
+
+   QWidget::mouseMoveEvent(event);
+}
 
 
+void chartswidgt::clickpoint(const QPointF &point, bool state){
+      if(state)
+      {
+
+       QString m_text = QString("X: %1 \nY: %2 ").arg(point.x()).arg(point.y());
+       QFontMetrics metrics(m_font);
+       m_textRect = metrics.boundingRect(QRect(0, 0, 150, 150), Qt::AlignLeft, m_text);
+       m_textRect.translate(5, 5);
+       m_rect = m_textRect.adjusted(-5, -5, 5, 5);
+       qDebug()<<"chartswidgt";
+       qDebug()<<point.x();
+       qDebug()<<point.y();
 
 
+       QToolTip::showText(this->mapToGlobal(m_chart->mapToPosition(point).toPoint()), m_text, this);
 
-/*
-void chartswidgt::rxdata(QVector<QVector<quint16> > pdata,quint16 pchannel,int Plotsize,int range){
-     removeSeries();
-      QList<QPointF> data;
-      double GainAD8421;
-      data.clear();
-      double Yrange;
-     QVector<QVector<quint16> >::iterator iter=pdata.begin();
-     //qDebug()<<(*iter).size();
-    // qDebug()<<(*iter).back();
-   qDebug()<<"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL";
-   if(range==0) {GainAD8421=1+9.9/0.205;Yrange=0.2;}
-   else if(range==1) {GainAD8421=1; Yrange=10;}
-       else if(range==2){ GainAD8421 =10;Yrange=1;}
-        else if(range==3){ GainAD8421=1.99;Yrange=5;}
-    for(int i=0;i<16;i++){
-        QSplineSeries *series =new QSplineSeries();
 
-        //s_series.append(series);
-        //series->clear();
-        series->setName(QString("Channel " + QString::number(i)));
-        if(pchannel%2){
-            for(int j=0;j<Plotsize;j++){
-                    qreal x=j;
-                    qreal y=((qint16)((*iter).at(j)))/65536.0*2*4.09*2.5/GainAD8421;
-                    qDebug()<<"LLLLLL:     "<<y;
-                   data.append(QPointF(x,y));
-                 }
-          //  iter++;
+//      m_callout->move(this->mapToGlobal(m_chart->mapToPosition(point).toPoint()));
+//      m_callout->m_label->setText(m_text);
+//      m_callout->show();
+
+      }
+//      QPoint a = this->mapToGlobal(m_chart->mapToPosition(point).toPoint());
+      else
+      {
+         // m_callout->hide();
+      }
+
+}
+
+void chartswidgt::show_position(const QPoint &point)
+{
+
+   label_position->setText(QString("X: %1  Y: %2 ").arg(m_chart->mapToValue(point).x()).arg(m_chart->mapToValue(point).y()));
+
+}
+
+bool chartswidgt::eventFilter(QObject *target , QEvent *event )
+{
+
+   // qDebug()<<"object"<<target<<"QEvent"<<event->type();
+    if(target == m_chartView)
+    {
+
+        if(event->type() == QEvent::MouseButtonPress)
+        {
+            qDebug()<<"dddd";
+            return true;
+
         }
-        else{
-            for(int j=0;j<Plotsize;j++){
-                    qreal x=j;
-                    qreal y=0;
-                   data.append(QPointF(x,y));
-                 }
-          //  iter++;
-        }
-        series->append(data);
-        m_chart->addSeries(series);
-        pchannel/=2;
-       // m_chart->addSeries(series);
-        data.clear();
-    }
-     connectMarkers();
-     m_chart->createDefaultAxes();
-     m_chart->axisX()->setRange(0,Plotsize);
-     m_chart->axisY()->setRange(-Yrange,Yrange);
-    }
 
-*/
+    }
+       return false;
+}
+
 

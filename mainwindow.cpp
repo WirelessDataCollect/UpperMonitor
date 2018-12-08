@@ -208,7 +208,7 @@ void MainWindow::on_button_UdpStart_clicked()
          timer->start(1000);
 
          heatbeattimer->start(5000);
-
+         heartbeat();
          connect(heatbeattimer, SIGNAL(timeout()), this, SLOT(heatbeatslot()));
          connect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 
@@ -256,6 +256,8 @@ void MainWindow::initoff(){
    for(int i=0; i<4;i++)
    disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
    disconnect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
+   disconnect(heatbeattimer, SIGNAL(timeout()), this, SLOT(heatbeatslot()));
+   disconnect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 }
 
 // local
@@ -279,7 +281,7 @@ void MainWindow::on_pushButton_local_clicked()
     }
     else{
         qDebug()<<"udp_txrx bindport error.";
-          QMessageBox::warning(this,QString::fromUtf8("本地UDP连接失败"),QString::fromUtf8("数据接受UDP"));
+          QMessageBox::warning(this,QStringLiteral("本地UDP连接失败"),QStringLiteral("失败"));
         return;
     }
 
@@ -309,7 +311,7 @@ void MainWindow::on_pushButton_remote_clicked()
 void MainWindow::AdcByteToData(const QString &from, const QByteArray &message)
 {
 
- // qDebug()<<"message.size()"<<message.size();
+  qDebug()<<"message.size()"<<message.size();
 
   if(message.size()<16 || (message.size()%8!=0))
   {
@@ -361,10 +363,10 @@ void MainWindow::UiDataShow()
     QVector<double> data;
     for(int i =0; i<4; i++)
     {
-       if(Adc_data[i][0].isEmpty()) ClientStatusEnable[i] = 0;
+       if(Adc_data[i][0].isEmpty());// ClientStatusEnable[i] = 0;
        else
        {
-           ClientStatusEnable[i] = 1;
+          // ClientStatusEnable[i] = 1;
            data.clear();
            for(int j= 0;j<4;j++)
             data.append(Adc_data[i][j].first());
@@ -598,6 +600,7 @@ void MainWindow::onTcpClientAppendMessage(const QString &from, const QByteArray 
 
 void MainWindow::heatbeatslot()
 {
+    emit myudpsent(syncTargetAddr,udpTargetPort,"test");
     checkheartbeat();
     heartbeat();
     ClientStatusShow();
@@ -945,6 +948,7 @@ void MainWindow::on_radioButton_clicked(bool checked)
         {
 
         }
+
 
     }
     else{

@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+﻿#include "login.h"
 #include <QApplication>
 #include "myeventfilter.h"
 int main(int argc, char *argv[])
@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     a.installEventFilter(new myEventFilter());
-    MainWindow w;
+    Login w;
     w.show();
 
     return a.exec();

@@ -26,8 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
      tcpClientTargetPort = 8080;
 
 
-
-
     Adc_data.clear();
     Adc_data.resize(4);
     Adc_data[0].resize(4);

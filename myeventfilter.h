@@ -14,7 +14,7 @@ public:
 protected:
   bool eventFilter(QObject* object, QEvent* event) {
     if(event->type() ==QEvent::MouseButtonRelease) {
-      qDebug()<<object;
+      //qDebug()<<object;
       return false; // make it unhandled and sent to other filters.
     } else
       return false;

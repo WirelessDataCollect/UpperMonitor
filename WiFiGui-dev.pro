@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     showwidget.cpp \
     mytcpclient.cpp \
     chartview.cpp \
-    callout.cpp
+    callout.cpp \
+    login.cpp \
+    md5.cpp
 
 HEADERS  += mainwindow.h \
     myudp.h \
@@ -39,9 +41,12 @@ HEADERS  += mainwindow.h \
     mytcpclient.h \
     chartview.h \
     myeventfilter.h \
-    callout.h
+    callout.h \
+    login.h \
+    md5.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    login.ui
 
 RESOURCES += \
     src.qrc

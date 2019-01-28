@@ -1,4 +1,6 @@
-﻿#include "showwidget.h"
+﻿#pragma execution_character_set("utf-8")
+#include "mainwindow.h"
+#include "showwidget.h"
 
 showwidget::showwidget(QWidget *parent) : QWidget(parent)
 {
@@ -14,7 +16,7 @@ showwidget::showwidget(QWidget *parent) : QWidget(parent)
  QGridLayout *mesageanalogLayout = new QGridLayout();
  QGridLayout *mesagedigitalLayout = new QGridLayout();
  modleset = new QPushButton("I/V");
- unit =  new QLabel(tr("单位"));
+ unit =  new QLabel("单位");
 
  data1 = new QLabel("0");
  data2 = new QLabel("0");
@@ -43,7 +45,7 @@ showwidget::showwidget(QWidget *parent) : QWidget(parent)
 
 messagedigital->setLayout(mesagedigitalLayout);
 
-QLabel *label_ch = new QLabel(tr("通道"));
+QLabel *label_ch = new QLabel("通道");
 QLabel *label_statusL = new QLabel("L");
 QLabel *label_statusH = new QLabel("H");
 QLabel *label_ch1 = new QLabel("CH1");

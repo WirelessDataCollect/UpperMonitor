@@ -97,10 +97,8 @@ void MyTCPClient::messageReady()
     emit newMessage(tcpSocket->peerAddress().toString(), array);
 }
 
-void MyTCPClient::sendMessage(QString string)
+void MyTCPClient::sendMessage(QByteArray Data)
 {
-    QByteArray Data;
-    Data.append(string);
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         tcpSocket->write(Data);

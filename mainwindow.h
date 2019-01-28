@@ -27,6 +27,7 @@
 #include <QtCore/QIODevice>
 #include<QQueue>
 #include"showwidget.h"
+#include"md5.h"
 #define  GET_TIME_SYNC          0xa1
 #define  TIME_SYNC_BOARD        0xa4
 
@@ -54,6 +55,7 @@ signals:
     void myudpsent(QHostAddress IP, quint16 senderPort, QByteArray Data);
     bool bindPort(QHostAddress addr, quint16 port);
     void sendplotdata(QVector<double> &plotdata);
+    void LoginIn();
 private slots:
 
 //    void onTcpServerSendMessage();
@@ -75,11 +77,6 @@ private slots:
     void onTcpClientTimeOut();
     void onTcpClientDisconnected();
     void onTcpClientAppendMessage(const QString &from, const QByteArray &message);
-    void on_comboBox_Interface_highlighted(int index);
-
-    void on_pushButton_local_clicked();
-
-    void on_pushButton_remote_clicked();
     void heatbeatslot();
 
     void on_radioButton_clicked(bool checked);
@@ -90,9 +87,13 @@ private slots:
 
     void on_radioButton_4_clicked(bool checked);
 
+    void on_pushButton_Remote_Local_clicked();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    bool RemoteAuthored;
+    QByteArray LoginMessage;
     MyUDP *myudp = nullptr;
     MyUDP *syncudp = nullptr;
     MyTCPClient *mytcpclient = nullptr;
@@ -138,8 +139,13 @@ public:
     quint16 ByteTouint16(QByteArray abyte0);
     QDateTime ByteToDatetime(QByteArray datebyte);
     double ByteToAdcdata(QByteArray abyte0);
-    void sleep(int msec);
 
+    void sleep(int msec);
+    bool ServerLogin(QString username, QString passwd);
+
+    bool LocalLogin();
+    void Local_Udp_Start();
+    void Remote_Tcp_Start();
 
 private:
     Ui::MainWindow *ui;
@@ -147,7 +153,7 @@ private:
     QTextTableFormat tableFormat;
     QList<QNetworkInterface> interfaceList;
 
-    void findLocalIPs();
+
     void testconnect();
     bool start(char channelnum);
     bool stop(char channelnum);

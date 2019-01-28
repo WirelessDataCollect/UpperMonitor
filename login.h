@@ -33,6 +33,8 @@ private slots:
     void on_exit_clicked();
     void on_comboBox_highlighted(int index);
 
+    void on_pushButton_2_clicked();
+
 private:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

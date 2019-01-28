@@ -6,6 +6,6 @@
 #include   <string.h>
 #include <QByteArray>
 void   MD5Digest(char   *pszInput,   unsigned   long   nInputSize,   char   *pszOutPut);
-QByteArray MD5Process(QString SALT, QString PASSWD);
+QByteArray MD5Process(QByteArray SALT, QByteArray PASSWD);
 
 #endif // MD5_H

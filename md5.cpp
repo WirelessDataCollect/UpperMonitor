@@ -1,5 +1,5 @@
-﻿#include "mainwindow.h"
-#include <QApplication>
+﻿#include <QApplication>
+#include<QDebug>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -231,13 +231,19 @@ bool getRandStr(char * randStr,int length){
 
 
 
-QByteArray MD5Process(QString SALT, QString PASSWD)
+QByteArray MD5Process(QByteArray SALT, QByteArray PASSWD)
 {
     QByteArray MessageDigest;
-    QByteArray passwd_array = PASSWD.toUtf8();
-    char *user_key=passwd_array.data();
-    QByteArray salt_array = SALT.toUtf8();
-    char *salt = salt_array.data();
+
+
+    char *user_key;
+     user_key  = PASSWD.data();
+    char *salt;
+    salt = SALT.data();
+//    qDebug()<<"SALT"<<SALT;
+//    qDebug()<<"PASSWD"<<PASSWD<<"PASSWD.len"<<PASSWD.size();
+//    qDebug()<<strlen(user_key);
+
 
  //说明：每次登陆需要发送salt（明文）、用户名（明文）、两次MD5后的消息摘要（md5(md5(密码明文)+salt)）
     char szDigest[20]={0};//消息摘要为128bits，共16字节，赋初值0
@@ -245,39 +251,15 @@ QByteArray MD5Process(QString SALT, QString PASSWD)
     //第一步，用户密码加密MD5
     MD5Digest(user_key,strlen(user_key),user_key_temp);
     int i;
-    printf("Md5 Key:");
-    for (i=0;i<16;i++)
-    {
-        printf("%02X",(unsigned char)user_key_temp[i]);
-    }
+
     //第二步，生成一个随机字符串，a-z,A-Z
-    getRandStr(salt,50);
-    printf("salt:");
-    for (i=0;salt[i];i++)
-    {
-        printf("%02X",(unsigned char)salt[i]);
-    }
-    printf("\n");
     //第三步，将用户密码MD5加密后的结果和随机字符串连接
     strcat(user_key_temp,salt);
-    printf("Md5 Key+salt:");
-    for (i=0;user_key_temp[i];i++)
-    {
-        printf("%02X",(unsigned char)user_key_temp[i]);
-    }
+
     //第四步，将连接后的数据进行MD5加密
     MD5Digest(user_key_temp,strlen(user_key_temp),szDigest);
-
-
-    printf("\nEncoded msg:");
-    for (i=0;i<16;i++)
-    {
-        printf("%02X",(unsigned char)szDigest[i]);
-        MessageDigest.append(szDigest[i]);
-    }
+    MessageDigest =QByteArray(szDigest,16).toHex();
     return MessageDigest;
-
-
 }
 /*
 int main(int argc, char *argv[])

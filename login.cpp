@@ -14,8 +14,7 @@ Login::Login(QWidget *parent) :
     ui->lineEdit_2->setEchoMode(QLineEdit::Password);
     loadcfg();
     find_ipadress();
-
-
+    connect(q,SIGNAL(LoginIn()),this,SLOT(show()));
 }
 
 Login::~Login()
@@ -25,9 +24,20 @@ Login::~Login()
 
 void Login::on_pushButton_clicked()
 {
-    savecfg();
+    username = ui->lineEdit->text();
+    passwd = ui->lineEdit_2->text();
 
-    this->hide();
+    if(q->ServerLogin(username,passwd))
+    {
+        this->hide();
+        q->show();
+        savecfg();
+    }
+
+}
+void Login::on_pushButton_2_clicked()
+{
+    q->LocalLogin();
     q->show();
 }
 
@@ -45,8 +55,7 @@ void Login::on_checkBox_clicked(bool checked)
 
 void Login::on_checkBox_2_clicked(bool checked)
 {
-    username = ui->lineEdit->text();
-    passwd = ui->lineEdit_2->text();
+
 
 
     if(checked){
@@ -68,7 +77,6 @@ void Login::savecfg()
     else{
          m_IniFile->setValue("username","用户名");
          m_IniFile->setValue("passwd","密码");
-
     }
 }
 
@@ -182,3 +190,5 @@ void Login::on_comboBox_highlighted(int index)
     }
 
 }
+
+

@@ -1,4 +1,5 @@
-﻿#include "mainwindow.h"
+﻿#pragma execution_character_set("utf-8")
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -11,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ClientStatusOnlineAll.resize(15);
     ClientStatusOnline.resize(5);
-    findLocalIPs();
 
     if (myudp == nullptr)
     {
@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
     udpListenPort = 5004;
     udpTargetPort = 5002;
 
-
+    RemoteAuthored = false;
     for(int i = 0;i<4;i++)
     connect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
 
@@ -105,31 +105,6 @@ MainWindow::~MainWindow()
 
 }
 
-
-/***********************************
- *
- * Find IP of local WiFi connections
- *
- ***********************************/
-void MainWindow::findLocalIPs()
-{
-   // ui->comboBox_Interface->clear();
-   interfaceList.clear();
-   interfaceList = QNetworkInterface::allInterfaces();
-
-
-    if (interfaceList.isEmpty())
-    {
-        // TODO wifilist is empty
-    }
-    else
-    {
-        for (int j = 0; j < interfaceList.size(); ++j)
-        {
-            ui->comboBox_Interface->addItem(interfaceList.at(j).humanReadableName());
-        }
-    }
-}
 
 
 void MainWindow::on_button_UdpSend_clicked()
@@ -157,7 +132,6 @@ void MainWindow::on_button_UdpStart_clicked()
     qDebug()<<ui->button_UdpStart->text();
     if (ui->button_UdpStart->text()=="Start"){
 
-        findLocalIPs();
         quint16 port = ui->lineEdit_UdpListenPort->text().toUShort();
         if(port) udpListenPort = port;
 
@@ -248,8 +222,6 @@ void MainWindow::initoff(){
    ui->lineEdit_UdpListenPort->setDisabled(false);
 
    disconnect(this, SIGNAL(udpsent(QHostAddress,quint16, QByteArray)),syncudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-  // disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-  // disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
    disconnect(syncudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(syncrxmessage(QString,QByteArray)));
    for(int i=0; i<4;i++)
    disconnect(datawidget[i],SIGNAL(uisendIVmodle(QByteArray)),this, SLOT(sendIVmodle(QByteArray)));
@@ -258,8 +230,59 @@ void MainWindow::initoff(){
    disconnect(timer, SIGNAL(timeout()), this, SLOT(UiDataShow()));
 }
 
+bool MainWindow::ServerLogin(QString username, QString passwd)
+{
+    Remote_Tcp_Start();
+    for(int i =0; i<10;i++)
+    {
+        sleep(100);
+        if(LoginMessage.isEmpty()==false)
+        {
+            qDebug()<<"LoginMessage"<<LoginMessage.data();
+            break;
+        }
+        if(i==10) return false;
+    }
+
+    QByteArray salt = LoginMessage.remove(0,8);
+    qDebug()<<"salt"<<salt.data();
+    QByteArray PASSWD = passwd.toUtf8();
+    QByteArray MessageDigest = MD5Process(salt,PASSWD);
+    QByteArray text = "Login+";
+    text = text.append(passwd);
+    text = text.append(";");
+    text = text.append(MessageDigest);
+    qDebug()<<text.data();
+    mytcpclient->sendMessage(text);
+    for(int i =0; i<10;i++)
+    {
+        sleep(100);
+        if(LoginMessage.isEmpty()==false)
+        {
+            qDebug()<<"LoginMessage"<<LoginMessage.data();
+            if(LoginMessage.contains("Logined"))
+            {
+                ui->pushButton_Remote_Local->setText("Login Out");
+                RemoteAuthored = true;
+
+                return true;
+
+
+            }
+        }
+        if(i==10) return false;
+    }
+}
+
+bool MainWindow::LocalLogin()
+{
+    Local_Udp_Start();
+    ui->pushButton_Remote_Local->setText("Login In");
+    return true;
+}
+
 // local
-void MainWindow::on_pushButton_local_clicked()
+void MainWindow::Local_Udp_Start()
 {
     //disable the tcp client
     mytcpclient->closeClient();
@@ -273,8 +296,6 @@ void MainWindow::on_pushButton_local_clicked()
 
          connect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)),Qt::QueuedConnection);
          connect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)),Qt::DirectConnection);
-         ui->pushButton_local->setDisabled(true);
-         ui->pushButton_remote->setDisabled(false);
           QMessageBox::information(this,QStringLiteral("UDP连接成功"),QStringLiteral("局域网UDP连接成功"));
     }
     else{
@@ -286,16 +307,13 @@ void MainWindow::on_pushButton_local_clicked()
 
 
 }
-
-void MainWindow::on_pushButton_remote_clicked()
+//open remote tcp
+void MainWindow::Remote_Tcp_Start()
 {
     //disable the udp
-
     myudp->unbindPort();
     disconnect(myudp, SIGNAL(newMessage(QString,QByteArray)),this,SLOT(AdcByteToData(QString,QByteArray)));
     disconnect(this, SIGNAL(myudpsent(QHostAddress,quint16, QByteArray)),myudp, SLOT(sendMessage(QHostAddress,quint16, QByteArray)));
-    ui->pushButton_local->setDisabled(false);
-
 
     //enable the tcp client
     connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
@@ -546,7 +564,6 @@ void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
     qDebug()<< "TCP Connected to " + from + ": " + QString::number(port);
 
     connect(mytcpclient, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
-    ui->pushButton_remote->setDisabled(true);
     QMessageBox::information(this,QStringLiteral("TCP连接成功"),"Remote Serve Ip Adress is "+from+ ":"+QString::number(port));
 }
 
@@ -564,7 +581,6 @@ void MainWindow::onTcpClientTimeOut()
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
     mytcpclient->closeClient();
-    ui->pushButton_remote->setDisabled(false);
     QMessageBox::warning(this,QStringLiteral("TCP连接超时"),"Remote Serve Ip Adress is "+tcpClientTargetAddr.toString()+ ":"+QString::number(tcpClientTargetPort));
 
 }
@@ -579,7 +595,6 @@ void MainWindow::onTcpClientDisconnected()
     ui->statusBar->showMessage("TCP Disconnected from server", 2000);
     disconnect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onTcpClientDisconnected()));
     disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(onTcpClientAppendMessage(QString, QString)));
-    ui->pushButton_remote->setDisabled(false);
     QMessageBox::warning(this,QStringLiteral("断开tcp"),"Remote Serve Ip Adress is "+tcpClientTargetAddr.toString()+ ":"+QString::number(tcpClientTargetPort));
 
 }
@@ -592,7 +607,13 @@ void MainWindow::onTcpClientDisconnected()
 
 void MainWindow::onTcpClientAppendMessage(const QString &from, const QByteArray &message)
 {
-    AdcByteToData(from, message);
+    if(RemoteAuthored){
+        AdcByteToData(from, message);
+    }
+    else{
+        LoginMessage = message;
+        qDebug()<<"LoginMessage:        "<<LoginMessage;
+    }
 
 }
 
@@ -611,7 +632,6 @@ void MainWindow::heartbeat()
     QString text = "heartbeat: "+ data.toHex();
     onUdpAppendMessage("Me", text);
     emit udpsent(syncTargetAddr,syncTargetPort,data);
-
 }
 void MainWindow::checkheartbeat()
 {
@@ -901,37 +921,6 @@ void MainWindow::sleep(int msec)
 }
 
 
-void MainWindow::on_comboBox_Interface_highlighted(int index)
-{
-    if (ui->comboBox_Interface->count() >= index)
-    {
-        ui->comboBox_Interface->setCurrentIndex(index);
-
-        for (int i = 0; i < interfaceList.at(index).addressEntries().size(); ++i)
-        {
-            if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
-            {
-                ui->label_LocalIP->setText(interfaceList.at(index).addressEntries().at(i).ip().toString());
-                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-
-            }
-        }
-    }
-    else if (ui->comboBox_Interface->count() > 0 && ui->comboBox_Interface->count() < index)
-    {
-        ui->comboBox_Interface->setCurrentIndex(0);
-        for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
-        {
-            if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
-            {
-                ui->label_LocalIP->setText(interfaceList.at(0).addressEntries().at(i).ip().toString());
-                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-            }
-        }
-    }
-
-}
-
 
 
 
@@ -956,7 +945,6 @@ void MainWindow::on_radioButton_clicked(bool checked)
 
 
 }
-
 
 void MainWindow::on_radioButton_2_clicked(bool checked)
 {
@@ -1017,5 +1005,17 @@ void MainWindow::on_radioButton_4_clicked(bool checked)
         if(stop(4)) ClientStatusEnable[3]= 0;
         else ClientStatusEnable[3]= 1;
     }
+
+}
+
+
+void MainWindow::on_pushButton_Remote_Local_clicked()
+{
+
+        initoff();
+        RemoteAuthored = false;
+        mytcpclient->disconnectCurrentConnection();
+        this->hide();
+        emit LoginIn();
 
 }

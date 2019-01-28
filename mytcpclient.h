@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   mytcpclient.h: header file of mytcpclient.cpp
  * 
  *   Copyright (C) 2017  Zhengyu Peng, https://zpeng.me
@@ -29,7 +29,7 @@ class MyTCPClient : public QTcpSocket
   public:
     explicit MyTCPClient(QObject *parent = nullptr);
     void connectTo(QHostAddress addr, quint16 port);
-    void sendMessage(QString string);
+    void sendMessage(QByteArray Data);
     void disconnectCurrentConnection();
     void closeClient();
     void abortConnection();

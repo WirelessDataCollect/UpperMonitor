@@ -20,55 +20,81 @@
 #include<QLabel>
 #include<QDialog>
 #include<QDockWidget>
+#include<QColor>
 #include"callout.h"
+#include<QPointF>
+#include<QTimer>
+
+#include "devicesystem.h"
+#include"devicesignal.h"
+#include"doubleslider.h"
 QT_CHARTS_USE_NAMESPACE
 
-#define ChartMouseStyle   1
 
-#define Alldatabuf 100
 class chartswidgt : public QWidget
 {
     Q_OBJECT
 
 
 public:
-    explicit chartswidgt(QWidget *parent = 0);
+    explicit chartswidgt(DeviceSystem *system, QWidget *parent = nullptr);
+    //QWidget *parent = 0
     QLabel *label_position;
-    bool eventFilter(QObject *target , QEvent *event );
-    QChartView *m_chartView;
+
+    ChartView *m_chartView;
+    void GetSeriesPoint(bool status);
+
 public slots:
-    //void addSeries();
-    void removeSeries();
+
     void connectMarkers();
     void disconnectMarkers();
 
     void handleMarkerClicked();
-    void rxplotdata(QVector<QVector<double> >&plotdata);
-    void clickpoint(const QPointF &point, bool state);
+
+    void clickpoint(const QPointF &point,bool status);
     void show_position(const QPoint &point);
-
-
-
-
+    void ReveiveFrameData(int device, int signal, QString name, QColor color,QList<QPointF> frame_uint_data,bool is_frame);
+    void UpdateChartView();
+    void UpdateChart();
 
 private:
     bool isClicking;
     int xOld;
     int yOld;
     QChart *m_chart;
+    //QSplineSeries
+    QVector< QVector<QLineSeries *>> series_list;
+     QVector< QVector<bool>> status_list;
+    QList<QList<QColor>*> color_list;
+    QList<QList<QString>*> name_list;
+    QVector<QVector<QList<QPointF>>> point_list;
     QList<QSplineSeries *> s_series;
+
     QVector<QVector<quint16> > pdata;
     quint16 pchannel;
 
-    QVBoxLayout *m_mainLayout;
+    QVBoxLayout *m_vbox_layout;
+    QHBoxLayout *m_hbox_layout;
 
     QList<QList<QPointF> > data;
+    bool get_point_status;
     qreal plotXaxis;
-    void setseries();
+
     QRectF m_rect;
     QRectF m_textRect;
     QFont m_font;
     callout *m_callout = nullptr;
+    QTimer *timer= nullptr;
+    DeviceSystem *device_system = nullptr;
+    DoubleSlider *h_slider;
+    DoubleSlider *v_slider;
+
+    void InitSeries();
+
+
+signals:
+    void AddPointData(QString time, QColor color, QString name, QString point);
+
 
 protected:
 

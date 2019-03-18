@@ -28,11 +28,15 @@ class MyTCPClient : public QTcpSocket
     Q_OBJECT
   public:
     explicit MyTCPClient(QObject *parent = nullptr);
-    void connectTo(QHostAddress addr, quint16 port);
+    bool connectTo(QHostAddress addr, quint16 port);
     void sendMessage(QByteArray Data);
+    void sendMessage(QString str);
     void disconnectCurrentConnection();
     void closeClient();
     void abortConnection();
+    virtual bool waitForReadyRead (int milliseconds) override final;
+    QTcpSocket *tcpSocket;
+    QByteArray receive_message;
 
   signals:
     void newMessage(const QString &from, const QByteArray &message);
@@ -47,7 +51,7 @@ class MyTCPClient : public QTcpSocket
     void onStateChanged(QAbstractSocket::SocketState state);
 
   private:
-    QTcpSocket *tcpSocket;
+
     QByteArray array;
 };
 

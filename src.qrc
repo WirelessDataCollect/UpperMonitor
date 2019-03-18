@@ -15,5 +15,23 @@
         <file>ico/mini.png</file>
         <file>ico/more.png</file>
         <file>ico/toolground.png</file>
+        <file>ico/icons/316.bmp</file>
+        <file>ico/icons/317.bmp</file>
+        <file>ico/icons/324.bmp</file>
+        <file>ico/icons/325.bmp</file>
+        <file>ico/icons/exit.bmp</file>
+        <file>ico/icons/exit2.bmp</file>
+        <file>ico/icons/416.bmp</file>
+        <file>ico/icons/418.bmp</file>
+        <file>ico/icons/318.bmp</file>
+        <file>ico/icons/319.bmp</file>
+        <file>ico/icons/103.bmp</file>
+        <file>ico/icons/104.bmp</file>
+        <file>ico/icons/300.bmp</file>
+        <file>ico/icons/301.bmp</file>
+        <file>ico/about.png</file>
+        <file>ico/icons/save1.bmp</file>
+        <file>ico/icons/save2.bmp</file>
+        <file>ico/icons/330.bmp</file>
     </qresource>
 </RCC>

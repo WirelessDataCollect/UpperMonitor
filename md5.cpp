@@ -240,6 +240,13 @@ QByteArray MD5Process(QByteArray SALT, QByteArray PASSWD)
      user_key  = PASSWD.data();
     char *salt;
     salt = SALT.data();
+    qDebug()<<"SALT"<<SALT.data();
+    printf("\nsalt");
+
+    for (int i=0;salt[i];i++)
+    {
+        printf("%02X",(unsigned char)salt[i]);
+    }
 //    qDebug()<<"SALT"<<SALT;
 //    qDebug()<<"PASSWD"<<PASSWD<<"PASSWD.len"<<PASSWD.size();
 //    qDebug()<<strlen(user_key);
@@ -258,7 +265,14 @@ QByteArray MD5Process(QByteArray SALT, QByteArray PASSWD)
 
     //第四步，将连接后的数据进行MD5加密
     MD5Digest(user_key_temp,strlen(user_key_temp),szDigest);
-    MessageDigest =QByteArray(szDigest,16).toHex();
+     printf("\nEncoded msg:");
+    for (i=0;i<16;i++)
+    {
+        printf("%02X",(unsigned char)szDigest[i]);
+    }
+    printf("\n");
+    MessageDigest = QByteArray(szDigest,16).toHex();
+    qDebug()<<"MessageDigest"<<MessageDigest;
     return MessageDigest;
 }
 /*

@@ -12,114 +12,238 @@
 #include <QtCore/QtMath>
 #include <QValueAxis>
 #include<QToolTip>
-#include "mainwindow.h"
+#include<QThread>
+
 
 QT_CHARTS_USE_NAMESPACE
 
-
-chartswidgt::chartswidgt(QWidget *parent) :
+chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     QWidget(parent),
     isClicking(false),
     xOld(0), yOld(0)
 {
-     //dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
-    // Create chart view with the chart
+
+
+    device_system = system;
     m_chart = new QChart();
-    m_callout = new callout(this);
-  //  m_callout = new callout();
-//   if(ChartMouseStyle==1)
-//   {
-        m_chartView = new QChartView(m_chart, this);
-//   }
 
     m_chartView = new ChartView(m_chart,this);
-    m_chartView->installEventFilter(this);
-    m_chart->installEventFilter(this);
 
-    m_chartView->setRubberBand(QChartView::RectangleRubberBand);
 
+    m_chartView->setRubberBand(QChartView::NoRubberBand);
 
     this->setMouseTracking(true);
     m_chartView->setInteractive(true);
+    h_slider = new DoubleSlider();
+    v_slider = new DoubleSlider();
 
    // m_chartView->setRenderHint(QPainter::Antialiasing);
     // Create layout for grid and detached legend
-    m_mainLayout = new QVBoxLayout();
+    m_vbox_layout = new QVBoxLayout();
 
-    m_mainLayout->setSpacing(0);
-    m_mainLayout->setMargin(0);
+
+
+    m_chart->layout()->setContentsMargins(0,0,0,0);
+    m_chart->setMargins(QMargins(0,0,0,0));
+
+
     label_position= new QLabel("X:  Y:  ");
+    label_position->setStyleSheet("background-color:white");
+
     label_position->setAlignment(Qt::AlignHCenter);
 
-    m_mainLayout->addWidget(label_position);
-    m_mainLayout->addWidget(m_chartView);
-    m_mainLayout->setMargin(0);
-    m_mainLayout->setContentsMargins(0,0,0,0);
-    m_mainLayout->setSpacing(0);
-    setLayout(m_mainLayout);
-    setseries();
-    m_chartView->setAutoFillBackground(true);
-     for(int i =0;i<4;i++)
-     {
-       connect(s_series.at(i),&QSplineSeries::hovered, this, &chartswidgt::clickpoint);
+    m_vbox_layout->addWidget(label_position);
+    m_vbox_layout->addWidget(m_chartView);
 
-     }
+
+    m_vbox_layout->addWidget(h_slider);
+    m_vbox_layout->setMargin(0);
+    m_vbox_layout->setSpacing(1);
+
+    //m_vbox_layout->setContentsMargins(0,0,0,0);
+
+    setLayout(m_vbox_layout);
+    m_chartView->setAutoFillBackground(true);
 
      connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
      connectMarkers();
-     m_chart->createDefaultAxes();
-    // m_chart->axisY()->setRange(0,5);
 
-    // Set the title and show legend
-    m_chart->setTitle("Legendmarker example (click on legend)");
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
+    InitSeries();
+    m_chart->createDefaultAxes();
 
-    plotXaxis = 0;
-    QList<QPointF> zerolist;
-    for(plotXaxis = 0;plotXaxis<Alldatabuf;plotXaxis++)
-    {
-     zerolist.append(QPointF(plotXaxis,0));
-    }
-    for(int i = 0;i<4;i++)
-    {
-        data.append(zerolist);
-    }
+     timer = new QTimer();
+     timer->start(300);
+     connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
+    m_chartView->setRenderHint(QPainter::Antialiasing);
 
-   // m_chartView->setRenderHint(QPainter::Antialiasing);
 }
 
-
-
-void chartswidgt::setseries()
+void chartswidgt::ReveiveFrameData(int device, int signal, QString name, QColor color, QList<QPointF> frame_uint_data, bool is_frame)
 {
-  while(s_series.count()<4){
-     QSplineSeries *series = new  QSplineSeries();
-     s_series.append(series);
-     series->setName(QString("Channel " + QString::number(s_series.count())));
-     QList<QPointF> data;
-     for(int i=0;i<Alldatabuf;i++){
-         qreal x=i;
-         qreal y=0;
-         data.append(QPointF(x,y));
-     }
-     //data.append(QPointF(Alldatabuf-1,10));
-     series->append(data);
-     m_chart->addSeries(series);
+
+  //  m_chartView->setUpdatesEnabled(false);
+
+     QLineSeries * series = series_list.at(device).at(signal);
+     point_list[device][signal].append(frame_uint_data);
+     status_list[device][signal] = true;
+
+    // if(series->color()!=color) series->setColor(color);
+   //  if(series->name()!=name) series->setName(name);
+
+//    qDebug()<<"frame_uint_data size"<<frame_uint_data.size();
+//   qDebug()<<"frame_uint_data (x,y)"<<frame_uint_data.at(0).x()<<frame_uint_data.at(0).y();
+
+//      qDebug()<<"series_list.size();"<<series_list.size();
+//      qDebug()<<"series_list.size();"<<series_list.size();
+
+   //  series->setName("dddd");
+//     series->replace(point_list[device][signal]);
+//    // m_chart->addSeries(series);
+//     if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+//     m_chart->createDefaultAxes();
+//     m_chartView->setUpdatesEnabled(true);
+}
+
+void chartswidgt::UpdateChart()
+{
+    m_chartView->setUpdatesEnabled(false);
+
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
+        {
+            QLineSeries * series = series_list.at(device).at(signal);
+            DeviceSignal *device_signal = device_system->device_vector.at(device)->signal_vector.at(signal);
+            bool status = device_signal->show_enable;
+
+            if(status && !device_signal->all_unit_data.isEmpty())
+            {
+                bool update =  device_signal->update_status;
+                if(update)
+                {
+                    if(series->color()!=device_signal->line_collor) series->setColor(device_signal->line_collor);
+                    if(series->name()!=device_signal->signal_name) series->setName(device_signal->signal_name);
+                        device_signal->update_status = false;
+                       qDebug()<<"ddddddddddd"<<device<<signal;
+                        series->replace(device_signal->all_unit_data);
+                       qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
+                        if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+                   }
+                }
+
+            else if(m_chart->series().contains(series)) m_chart->removeSeries(series);
+        }
+    }
+    connectMarkers();
+    m_chartView->setUpdatesEnabled(true);
+   // m_chartView->update();
+    m_chart->createDefaultAxes();
+}
+void chartswidgt::UpdateChartView()
+{
+    bool status = false;
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
+        {
+         status |= status_list[device][signal];
+         if(status) break;
+        }
+        if(status) break;
+    }
+    if(status==false)
+    {
+
+        return;
+    }
+
+   // m_chart->setEnabled(false);
+    m_chartView->setUpdatesEnabled(false);
+
+  for(int device=0;device<5;device++)
+  {
+      for(int signal =0;signal<6;signal++)
+      {
+          if(status_list[device][signal] &&device_system->device_vector.at(device)->signal_vector.at(signal)->update_status)
+          {
+              device_system->device_vector.at(device)->signal_vector.at(signal)->update_status =false;
+
+              status_list[device][signal] = false;
+               QLineSeries * series = series_list.at(device).at(signal);
+               //if(m_chart->series().contains(series)) m_chart->removeSeries(series);
+               series->replace(point_list.at(device).at(signal));
+
+               qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+               qDebug()<<"point_list.at(device).at(signal).size"<<point_list.at(device).at(signal).size();
+               if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+          }
+
+
+      }
   }
 
+ // m_chart->setEnabled(true);
+  connectMarkers();
+  m_chartView->setUpdatesEnabled(true);
+  m_chart->createDefaultAxes();
 }
 
-void chartswidgt::removeSeries()
+
+void chartswidgt::GetSeriesPoint(bool status)
 {
-    // Remove last series from chart
-    while (s_series.count() > 0) {
-        QLineSeries *series = s_series.last();
-        m_chart->removeSeries(series);
-        s_series.removeLast();
-        delete series;
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
+        {
+            series_list[device][signal]->setUseOpenGL(!status);
+
+        }
+
+}
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
+        {
+            connect(series_list[device][signal],SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
+
+        }
+}
+    get_point_status = status;
+    qDebug()<<"get_point_status"<<get_point_status;
+}
+
+void chartswidgt::InitSeries()
+{
+    m_chart->series().clear();
+    series_list.clear();
+    series_list.resize(5);
+    for(auto itor = series_list.begin();itor!=series_list.end();itor++)
+    {
+        for(int i=0;i<6;i++)
+        {
+            QLineSeries *series = new QLineSeries();
+
+
+            series->setUseOpenGL(true);
+
+            itor->append(series);
+        }
     }
-    s_series.clear();
+
+    point_list.resize(5);
+    for(auto itor = point_list.begin();itor!=point_list.end();itor++)
+    {
+        itor->resize(6);
+    }
+    status_list.resize(5);
+    for(auto itor = status_list.begin();itor!=status_list.end();itor++)
+    {
+        itor->resize(6);
+    }
+
 }
 
 void chartswidgt::connectMarkers()
@@ -203,22 +327,6 @@ void chartswidgt::handleMarkerClicked()
     }
 }
 
-void chartswidgt::rxplotdata(QVector<QVector<double> >&plotdata)
-{
-    plotXaxis++;
-    for(int i = 0; i < 4;i++){
-
-         QSplineSeries *series =s_series.at(i);
-
-
-         series->append(QPointF(plotXaxis,plotdata.at(i).at(0)));
-         qDebug()<<"plotdata.at(i).length()"<<plotdata.at(i).length();
-         series->removePoints(0,1);
-    }
-
-    m_chart->axisX()->setRange(plotXaxis-Alldatabuf,plotXaxis);
-}
-
 
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {
@@ -229,7 +337,6 @@ void chartswidgt::wheelEvent(QWheelEvent *event)
     }
 
     QWidget::wheelEvent(event);
-
 }
 
 void chartswidgt::mousePressEvent(QMouseEvent *event)
@@ -259,33 +366,26 @@ void chartswidgt::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void chartswidgt::clickpoint(const QPointF &point, bool state){
-      if(state)
-      {
+
+void chartswidgt::clickpoint(const QPointF &point,bool status){
+    if(status)
+    {
+       QLineSeries *series = (QLineSeries *)sender();
+       QString name = series->name();
+       QColor color = series->color();
 
        QString m_text = QString("X: %1 \nY: %2 ").arg(point.x()).arg(point.y());
        QFontMetrics metrics(m_font);
        m_textRect = metrics.boundingRect(QRect(0, 0, 150, 150), Qt::AlignLeft, m_text);
        m_textRect.translate(5, 5);
        m_rect = m_textRect.adjusted(-5, -5, 5, 5);
-       qDebug()<<"chartswidgt";
-       qDebug()<<point.x();
-       qDebug()<<point.y();
-
-
        QToolTip::showText(this->mapToGlobal(m_chart->mapToPosition(point).toPoint()), m_text, this);
+       QString time = QString::number(point.x(), 10, 3);
+       QString value= QString::number(point.y(), 10, 3);
+       emit AddPointData(time,color,name,value);
+       qDebug()<<"AddPointData send";
+}
 
-
-//      m_callout->move(this->mapToGlobal(m_chart->mapToPosition(point).toPoint()));
-//      m_callout->m_label->setText(m_text);
-//      m_callout->show();
-
-      }
-//      QPoint a = this->mapToGlobal(m_chart->mapToPosition(point).toPoint());
-      else
-      {
-         // m_callout->hide();
-      }
 
 }
 
@@ -293,25 +393,4 @@ void chartswidgt::show_position(const QPoint &point)
 {
 
    label_position->setText(QString("X: %1  Y: %2 ").arg(m_chart->mapToValue(point).x()).arg(m_chart->mapToValue(point).y()));
-
 }
-
-bool chartswidgt::eventFilter(QObject *target , QEvent *event )
-{
-
-   // qDebug()<<"object"<<target<<"QEvent"<<event->type();
-    if(target == m_chartView)
-    {
-
-        if(event->type() == QEvent::MouseButtonPress)
-        {
-            qDebug()<<"dddd";
-            return true;
-
-        }
-
-    }
-       return false;
-}
-
-

@@ -2,8 +2,12 @@
 #define LOGIN_H
 
 #include <QWidget>
-#include"mainwindow.h"
+#include<QSettings>
 #include"md5.h"
+#include"mainwin.h"
+#include"dialogconf.h"
+
+
 namespace Ui {
 class Login;
 }
@@ -35,13 +39,18 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_pushButton_3_clicked();
+
+    void on_TcpConnectStatus(bool status, QString str);
+
 private:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     QPoint dragVector;
     Ui::Login *ui;
-    MainWindow *q;
-    QSettings *m_IniFile;
+    //MainWindow *q = nullptr;
+    MainWin *qq= nullptr;
+    QSettings *m_IniFile = nullptr;
     QString		username;
     QString		passwd;
     QString		AutoLogin;

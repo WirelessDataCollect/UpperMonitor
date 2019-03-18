@@ -18,6 +18,7 @@ signals:
 public:
     ChartView(QChart *chart, QWidget *parent = 0);
 
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);

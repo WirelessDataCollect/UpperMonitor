@@ -18,6 +18,8 @@
  */
 
 #include "myudp.h"
+#include<QEventLoop>
+#include<QTimer>
 
 MyUDP::MyUDP(QObject *parent) : QUdpSocket(parent)
 {
@@ -30,7 +32,7 @@ bool MyUDP::bindPort(QHostAddress addr, quint16 port)
 
     bool isBinded = socket->bind(addr, port);
     qDebug()<< "bindPort :" <<  addr<<port<<isBinded ;
-//     qDebug()<<socket->errorString();//此处为错误打印
+     qDebug()<<socket->errorString();//此处为错误打印
     if (isBinded)
     {
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),Qt::DirectConnection);
@@ -64,13 +66,27 @@ void MyUDP::readyRead()
 
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
+   // qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
     emit newMessage(sender.toString(), buffer);
-    qDebug()<<"   senderPort --> me"<<sender.toString()<<":"<< senderPort<<"-->"<<socket->localPort();
 
 }
 
 void MyUDP::unbindPort()
 {
     disconnect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    socket->disconnectFromHost();
     socket->close();
 }
+bool MyUDP::waitForReadyRead(int milliseconds)
+{
+        QEventLoop eventLoop;
+        QTimer timer;
+        connect(this->socket, SIGNAL(readyRead()), &eventLoop, SLOT(quit()));
+        connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
+        timer.setSingleShot(true);
+        timer.start(milliseconds);
+        eventLoop.exec();
+        return timer.isActive();
+
+}
+

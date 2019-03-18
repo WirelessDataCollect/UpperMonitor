@@ -90,9 +90,9 @@
    <widget class="QFrame" name="frame_4">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>320</x>
       <y>0</y>
-      <width>61</width>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -123,6 +123,26 @@ border-image: url(:/ico/ico/toolground.png);</string>
       <number>0</number>
      </property>
      <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="minimumSize">
+        <size>
+         <width>21</width>
+         <height>21</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string notr="true">关于</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{border-image: url(:/ico/ico/about.png)}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="more">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -136,9 +156,12 @@ border-image: url(:/ico/ico/toolground.png);</string>
          <height>21</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>设置终端连接WIFI密码</string>
+       </property>
        <property name="styleSheet">
-        <string notr="true">
-border-image: url(:/ico/ico/more.png);</string>
+        <string notr="true">QPushButton{border-image: url(:/ico/ico/more.png)}
+</string>
        </property>
        <property name="text">
         <string/>
@@ -159,8 +182,12 @@ border-image: url(:/ico/ico/more.png);</string>
          <height>21</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>最小</string>
+       </property>
        <property name="styleSheet">
-        <string notr="true">border-image: url(:/ico/ico/mini.png);</string>
+        <string notr="true">QPushButton{border-image: url(:/ico/ico/mini.png)}
+</string>
        </property>
        <property name="text">
         <string/>
@@ -181,8 +208,12 @@ border-image: url(:/ico/ico/more.png);</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>关闭</string>
+       </property>
        <property name="styleSheet">
-        <string notr="true">border-image: url(:/ico/ico/close.png);</string>
+        <string notr="true">QPushButton{border-image: url(:/ico/ico/close.png)}
+</string>
        </property>
        <property name="text">
         <string/>
@@ -190,40 +221,26 @@ border-image: url(:/ico/ico/more.png);</string>
       </widget>
      </item>
     </layout>
-    <zorder></zorder>
+    <zorder>exit</zorder>
+    <zorder>more</zorder>
     <zorder>minimum</zorder>
+    <zorder>pushButton_3</zorder>
    </widget>
-  </widget>
-  <widget class="QFrame" name="frame">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>150</y>
-     <width>41</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
   </widget>
   <widget class="QLabel" name="label_LocalIP">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>310</x>
      <y>300</y>
-     <width>71</width>
-     <height>16</height>
+     <width>111</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>IP: </string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>130</x>

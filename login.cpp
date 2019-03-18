@@ -1,4 +1,6 @@
 ﻿#pragma execution_character_set("utf-8")
+#include<QNetworkInterface>
+#include<QMessageBox>
 #include "login.h"
 #include "ui_login.h"
 
@@ -8,38 +10,60 @@ Login::Login(QWidget *parent) :
 {
     setWindowFlags(Qt::FramelessWindowHint); //去边框
 
-    q=new MainWindow(this);
+    //q=new MainWindow(this);
+    qq = new MainWin();
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    setWindowModality(Qt::WindowModal);
      m_IniFile = new QSettings("loginconfig.ini",QSettings::IniFormat);
     ui->setupUi(this);
     ui->lineEdit_2->setEchoMode(QLineEdit::Password);
     loadcfg();
     find_ipadress();
-    connect(q,SIGNAL(LoginIn()),this,SLOT(show()));
+
+    connect(qq->device_system,SIGNAL(TcpConnectStatus(bool,QString)),this,SLOT(on_TcpConnectStatus(bool, QString)));
+
 }
 
 Login::~Login()
 {
     delete ui;
+    delete qq;
+}
+void Login:: on_TcpConnectStatus(bool status, QString str)
+{
+    if(status)
+    {
+        this->close();
+        qq->showMaximized();
+      }
+    else QMessageBox::warning(this,QStringLiteral("连接错误"),str);
 }
 
 void Login::on_pushButton_clicked()
 {
+
+    //远程登陆
     username = ui->lineEdit->text();
     passwd = ui->lineEdit_2->text();
-
-    if(q->ServerLogin(username,passwd))
-    {
-        this->hide();
-        q->show();
-        savecfg();
-    }
-
+    qq->device_system->RemoteTcpStart(username,passwd);
+    savecfg();
 }
+
+
 void Login::on_pushButton_2_clicked()
 {
-    q->LocalLogin();
-    q->show();
+
+   // q->LocalLogin();
+  //  q->show();
+    //本地
+    qq->showMaximized();
+
+    qq->device_system->LocalOrderUdpStart();
+
+    this->close();
+
 }
+
 
 void Login::on_checkBox_clicked(bool checked)
 {
@@ -55,8 +79,6 @@ void Login::on_checkBox_clicked(bool checked)
 
 void Login::on_checkBox_2_clicked(bool checked)
 {
-
-
 
     if(checked){
         autologin = true;
@@ -125,6 +147,11 @@ void Login::mouseMoveEvent(QMouseEvent *event)
 
 void Login::on_more_clicked()
 {
+    DialogConf *dlg_conf = new DialogConf();
+    int ret = dlg_conf->exec();
+    qDebug()<<ret;
+
+
 
 }
 
@@ -170,9 +197,9 @@ void Login::on_comboBox_highlighted(int index)
         {
             if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
-                ui->label_LocalIP->setText(interfaceList.at(index).addressEntries().at(i).ip().toString());
+                ui->label_LocalIP->setText("IP: "+interfaceList.at(index).addressEntries().at(i).ip().toString());
                 localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-
+                qq->device_system->local_addr  = localAddr;
             }
         }
     }
@@ -183,8 +210,9 @@ void Login::on_comboBox_highlighted(int index)
         {
             if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
-                ui->label_LocalIP->setText(interfaceList.at(0).addressEntries().at(i).ip().toString());
+                ui->label_LocalIP->setText("IP: "+ interfaceList.at(0).addressEntries().at(i).ip().toString());
                 localAddr = interfaceList.at(index).addressEntries().at(i).ip();
+                 qq->device_system->local_addr  = localAddr;
             }
         }
     }
@@ -192,3 +220,11 @@ void Login::on_comboBox_highlighted(int index)
 }
 
 
+
+void Login::on_pushButton_3_clicked()
+{
+    QString dlgTitle="about消息框";
+    QString strInfo="无线数据采集系统";
+
+    QMessageBox::about(this, dlgTitle, strInfo);
+}

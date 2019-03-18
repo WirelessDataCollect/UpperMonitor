@@ -24,32 +24,46 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
         myudp.cpp \
     chartswidgt.cpp \
-    showwidget.cpp \
     mytcpclient.cpp \
     chartview.cpp \
     callout.cpp \
     login.cpp \
-    md5.cpp
+    md5.cpp \
+    setting.cpp \
+    device.cpp \
+    devicesignal.cpp \
+    devicesystem.cpp \
+    mainwin.cpp \
+    dialogconf.cpp \
+    doubleslider.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     myudp.h \
     chartswidgt.h \
-    showwidget.h \
     mytcpclient.h \
     chartview.h \
     myeventfilter.h \
     callout.h \
     login.h \
-    md5.h
+    md5.h \
+    setting.h \
+    device.h \
+    devicesignal.h \
+    devicesystem.h \
+    mainwin.h \
+    dialogconf.h \
+    doubleslider.h
 
-FORMS    += mainwindow.ui \
-    login.ui
+FORMS    += login.ui \
+    setting.ui \
+    mainwin.ui \
+    dialogconf.ui
 
 RESOURCES += \
     src.qrc
 
 DISTFILES += \
     readme.md
+

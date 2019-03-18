@@ -18,38 +18,47 @@
  */
 
 #include "mytcpclient.h"
-
+#include<QEventLoop>
+#include<QTimer>
 MyTCPClient::MyTCPClient(QObject *parent) : QTcpSocket(parent)
 {
     tcpSocket = new QTcpSocket();
 }
 
-void MyTCPClient::connectTo(QHostAddress addr, quint16 port)
+bool MyTCPClient::connectTo(QHostAddress addr, quint16 port)
 {
+
     tcpSocket->connectToHost(addr, port);
+
+    // tcpSocket->waitForConnected(1000);
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
     connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    return tcpSocket->waitForConnected(1000);//等待连接时间
 }
 
 void MyTCPClient::onConnected()
 {
     disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
     emit myClientConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
+
     qDebug()<<"tcpSocket->peerAddress().toString()"<<tcpSocket->peerAddress().toString();
-    qDebug()<<"tcpSocket->peerPort().toString()"<<tcpSocket->peerPort();
+    //qDebug()<<"tcpSocket->peerPort().toString()"<<tcpSocket->peerPort();
 
 }
 
 void MyTCPClient::onStateChanged(QAbstractSocket::SocketState state)
 {
     disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    //qDebug()<<state;
     switch (state)
     {
+
     case QAbstractSocket::UnconnectedState:
         emit connectionFailed();
-        //qDebug()<<"connecting timeout";
+      //  qDebug()<<"connecting timeout";
         break;
     case QAbstractSocket::HostLookupState:
         //qDebug()<<"HostLookupState";
@@ -92,9 +101,9 @@ void MyTCPClient::abortConnection()
 
 void MyTCPClient::messageReady()
 {
-    array = tcpSocket->readAll();
-    qDebug()<<"messageReady"<<array.size();
-    emit newMessage(tcpSocket->peerAddress().toString(), array);
+      receive_message = tcpSocket->readAll();
+     qDebug()<<"messageReady"<<receive_message.data();
+    emit newMessage(tcpSocket->peerAddress().toString(), receive_message);
 }
 
 void MyTCPClient::sendMessage(QByteArray Data)
@@ -106,7 +115,29 @@ void MyTCPClient::sendMessage(QByteArray Data)
     }
 }
 
+void MyTCPClient::sendMessage(QString str)
+{
+    QByteArray Data = str.toUtf8();
+    if (tcpSocket->state() == QTcpSocket::ConnectedState)
+    {
+        tcpSocket->write(Data);
+        tcpSocket->flush();
+    }
+}
+
 void MyTCPClient::disconnectCurrentConnection()
 {
     tcpSocket->disconnectFromHost();
+}
+bool MyTCPClient::waitForReadyRead(int milliseconds)
+{
+        QEventLoop eventLoop;
+        QTimer timer;
+        connect(this->tcpSocket, SIGNAL(readyRead()), &eventLoop, SLOT(quit()));
+        connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
+        timer.setSingleShot(true);
+        timer.start(milliseconds);
+        eventLoop.exec();
+        return timer.isActive();
+
 }

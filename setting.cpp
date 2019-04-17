@@ -30,9 +30,7 @@ Setting::Setting(DeviceSystem *system,QWidget *parent) :
     //ui->tableWidget->resizeColumnsToContents();
     ui->frame->setMaximumWidth(300);
     TreeInit();
-
-  // ReadTable();
-  // ColorSet(ui->tableWidget);
+    TabelViewInit();
 }
 
 Setting::~Setting()
@@ -74,12 +72,6 @@ void Setting::TreeInit()
         item_device->setCheckState(0,Qt::Unchecked);
         ui->treeWidget->topLevelItem(0)->addChild(item_device);
 
-//        QTreeWidgetItem *item_analog = new QTreeWidgetItem(100);
-//        item_analog->setText(0,"模拟通道");
-//        item_analog->setFlags(item->flags()&(~Qt::ItemIsEnabled));
-
-//        item_analog->setCheckState(0,Qt::Unchecked);
-//        item_device->addChild(item_analog);
         for(int j=0;j<4;j++)
         {
             QTreeWidgetItem *item_signal = new QTreeWidgetItem(10*i+j);
@@ -88,11 +80,12 @@ void Setting::TreeInit()
             item_signal->setCheckState(0,Qt::Unchecked);
             item_device->addChild(item_signal);
 
-            QTreeWidgetItem *vol_curr_1 = new QTreeWidgetItem(10*i+j+6);
-            vol_curr_1->setText(0,"电压模式");
-            vol_curr_1->setFlags(vol_curr_1->flags() | Qt::ItemIsUserCheckable);
-            vol_curr_1->setCheckState(0,Qt::Unchecked);
-            item_signal->addChild(vol_curr_1);
+            QTreeWidgetItem *vol_curr_I = new QTreeWidgetItem(8);
+            vol_curr_I->setText(0,"电流/电压模式");
+            vol_curr_I->setFlags(vol_curr_I->flags() | Qt::ItemIsUserCheckable);
+            vol_curr_I->setCheckState(0,Qt::Unchecked);
+            item_signal->addChild(vol_curr_I);
+
         }
         for(int j=0;j<2;j++)
         {
@@ -102,10 +95,60 @@ void Setting::TreeInit()
             item_signal->setCheckState(0,Qt::Unchecked);
             item_device->addChild(item_signal);
         }
+        for(int j=0;j<2;j++)
+        {
+            QTreeWidgetItem *item_signal = new QTreeWidgetItem(10*i+j+6);
+            item_signal->setText(0,"CAN"+QString::number(j+1));
+            item_signal->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
+            item_signal->setCheckState(0,Qt::Unchecked);
+            item_device->addChild(item_signal);
+
+            QTreeWidgetItem *item_signal_H = new QTreeWidgetItem(9);
+            item_signal_H->setText(0,"500K/250K");
+            item_signal_H->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
+            item_signal_H->setCheckState(0,Qt::Unchecked);
+            item_signal->addChild(item_signal_H);
+        }
+
     }
-
-
 }
+void Setting::TabelViewInit()
+{
+    theModel = new QStandardItemModel(0,8,this);
+     theSelection = new QItemSelectionModel(theModel);//Item选择模型
+    QStringList headers;
+    headers << QStringLiteral("使能")<<QStringLiteral("终端")<<QStringLiteral("通道")<<QStringLiteral("ID")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("表达式")<<QStringLiteral("数量");
+     theModel->setHorizontalHeaderLabels(headers);
+      ui->tableView->setModel(theModel); //设置数据模型
+      ui->tableView->setSelectionModel(theSelection);//设置选择模型
+      ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+      ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
+
+      combox_delegate_1.combox_list.append("1");
+      combox_delegate_1.combox_list.append("2");
+      combox_delegate_1.combox_list.append("3");
+      combox_delegate_1.combox_list.append("4");
+      combox_delegate_1.combox_list.append("5");
+      ui->tableView->setItemDelegateForColumn(1,&combox_delegate_1);  //测深，整数
+      combox_delegate_2.combox_list.append("1");
+      combox_delegate_2.combox_list.append("2");
+      ui->tableView->setItemDelegateForColumn(2,&combox_delegate_2);
+
+
+
+      theModel_2 = new QStandardItemModel(0,4,this);
+      theSelection_2 = new QItemSelectionModel(theModel_2);//Item选择模型
+      headers.clear();
+      headers << QStringLiteral("使能")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("计算公式");
+       theModel_2->setHorizontalHeaderLabels(headers);
+       ui->tableView_2->setModel(theModel_2); //设置数据模型
+       ui->tableView_2->setSelectionModel(theSelection_2);//设置选择模型
+       ui->tableView_2->setSelectionMode(QAbstractItemView::ExtendedSelection);
+       ui->tableView_2->setSelectionBehavior(QAbstractItemView::SelectItems);
+
+       connect(this->theModel,SIGNAL(itemChanged(QStandardItem *)),this, SLOT(on_itemChanged(QStandardItem *)));
+}
+
 void Setting::TabelInit()
 {
     ui->tableWidget->setColumnCount(8);
@@ -175,17 +218,10 @@ void Setting::TabelInit()
             item_vector_0[i]->setFlags(item_vector_0[i]->flags()& (~Qt::ItemIsEditable));
             ui->tableWidget->setItem(6*i,0,item_vector_0[i]);
         }
+    }
 
     }
 
-       // ReadTable();
-    }
-
-//void Setting::TableDeviceEnable()
-//{
-
-
-//}
 
 bool Setting::ReadTable(){
 
@@ -194,7 +230,6 @@ bool Setting::ReadTable(){
             qDebug()<<"ReadTable Error: cannot open file";
             return false;
         }
-
         qDebug()<<"ReadTable";
         QDataStream in(&file);
         for(int i=0;i<ui->tableWidget->rowCount();i++)
@@ -209,12 +244,8 @@ bool Setting::ReadTable(){
                 qDebug()<<"ReadTable"<<i<<j<<ui->tableWidget->item(i,j)->text();
             }
         }
-
-
         ui->tableWidget->update();
-
         file.close();
-
         return true;
 }
 
@@ -276,14 +307,9 @@ void Setting::on_tableWidget_cellClicked(int row, int column)
     if(column == 2)
     {
         QColor color = QColorDialog::getColor(Qt::red, this);
-            //QString msg = QString("r: %1, g: %2, b: %3").arg(QString::number(color.red()), QString::number(color.green()), QString::number(color.blue()));
-            //QMessageBox::information(NULL, "Selected color", msg);
-
         ui->tableWidget->item(row,2)->setBackgroundColor(color);
     }
 }
-
-
 
 void Setting::on_tableWidget_cellChanged(int row, int column)
 {
@@ -300,9 +326,7 @@ void Setting::on_tableWidget_cellChanged(int row, int column)
 
             else ui->tableWidget->item(row,column)->setText("0");
     }
-   // qDebug()<<"on_tableWidget_cellChanged"<<row<<column<<signal->line_collor<<device_system->device_vector.at(row/6)->signal_vector.at(row%6)->signal_name<<signal->min_v<<signal->max_v<<signal->min_uint<<signal->max_unit;
 }
-
 
 void Setting::on_pushButton_3_clicked()
 {
@@ -313,6 +337,7 @@ void Setting::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
 {
     //向下同步
     int type= item->type();
+    int type_parent =  item->parent()->type();
     if(type== 1000)
     {
         for(int i=0;i<item->childCount();i++)
@@ -353,7 +378,19 @@ void Setting::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
                 device_system->device_vector.at(type/10)->signal_vector.at(type%10)->SetSignalStatus(status);
                 qDebug()<<"信号使能"<<type/10<<type%10;
             }
-            else device_system->device_vector.at(type/10)->signal_vector.at(type%10 - 6)->SetIVStatus(status);
+            if(type%10==6 ||type%10==7)
+            {
+                device_system->device_vector.at(type/10)->can_vector.at(type%10-6)->SetSignalStatus(status);
+            }
+            if(type%10==8)
+            {
+                device_system->device_vector.at(type_parent/10)->signal_vector.at(type_parent%10)->SetIVStatus(status);
+            }
+            if(type%10==9)
+            {
+                device_system->device_vector.at(type_parent/10)->can_vector.at(type_parent%10-6)->SetBaudRate(status);
+                qDebug()<<"CAN STATUS"<<type_parent/10<<type_parent%10-6<<status;
+            }
         }
     }
 }
@@ -362,4 +399,130 @@ void Setting::on_spinBox_valueChanged(int arg1)
 {
     device_system->SetFilterLength(arg1);
     qDebug()<<"on_spinBox_valueChanged"<<arg1;
+}
+
+void Setting::on_itemChanged(QStandardItem *item)
+{
+    QModelIndex index = theModel->indexFromItem(item);
+    if(index.column() == 0)
+    {
+       int row = index.row();
+       bool status;
+       int device = theModel->item(row,1)->text().toInt(&status,10);
+       int channel = theModel->item(row,2)->text().toInt(&status,10);
+       uint filter_id = theModel->item(row,3)->text().toUInt(&status,16);
+
+       QColor color = theModel->item(row,4)->background().color();
+       QString name = theModel->item(row,5)->text();
+       QString express_str = theModel->item(row,6)->text().toUpper();
+       qDebug()<<"filter_id"<<filter_id<<theModel->item(row,3)->text();
+        if(item->checkState() == Qt::Checked)
+        {
+            if( device!=0 && channel!=0 && filter_id!=0)
+            {
+                if(device_system->device_vector.at(device-1)->can_vector.at(channel-1)->AddFilter(filter_id, color,name,express_str))
+                for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(false);
+                else  theModel->item(row,0)->setCheckState(Qt::Unchecked);
+                qDebug()<<device<<channel<<device_system->device_vector.at(device-1)->can_vector.at(channel-1)->filter_list.size();
+            }
+            else
+            {
+                for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(true);
+                theSelection->selectedRows(row);
+                theModel->item(row,0)->setCheckState(Qt::Unchecked);
+            }
+        }
+        else
+        {
+             if( device!=0 && channel!=0 && filter_id!=0)
+             {
+                 for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(true);
+                  device_system->device_vector.at(device-1)->can_vector.at(channel-1)->RemoveFilter(color,name,express_str);
+                 qDebug()<<device<<channel<<device_system->device_vector.at(device-1)->can_vector.at(channel-1)->filter_list.size();
+             }
+        }
+    }
+}
+void Setting::on_pushButton_add_1_clicked()
+{//插入行
+
+    QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
+    QStandardItem   *aItem;
+    aItem=new QStandardItem("使能"); //新建一个QStandardItem
+    aItem->setCheckable(true);
+    aItem->setEditable(false);
+    aItemList<<aItem;//添加到列表类
+    for(int j=1;j<theModel->columnCount();j++)
+    {
+        aItem=new QStandardItem(); //新建一个QStandardItem
+         aItem->setSelectable(false);
+        aItemList<<aItem;//添加到列表类
+    }
+    theModel->insertRow(theModel->rowCount(),aItemList); //插入一行，需要每个Cell的Item
+    QModelIndex curIndex=theModel->index(theModel->rowCount()-1,0);//创建最后一行的ModelIndex
+    theSelection->clearSelection();//清空选择项
+    theSelection->setCurrentIndex(curIndex,QItemSelectionModel::Select);//设置刚插入的行为当前选择行
+}
+
+void Setting::on_pushButton_add_2_clicked()
+{
+    QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
+    QStandardItem   *aItem;
+    aItem=new QStandardItem("使能"); //新建一个QStandardItem
+    aItem->setCheckable(true);
+    aItem->setEditable(false);
+    aItemList<<aItem;//添加到列表类
+    for(int j=1;j<theModel_2->columnCount();j++)
+    {
+        aItem=new QStandardItem(); //新建一个QStandardItem
+        aItem->setSelectable(false);
+        aItemList<<aItem;//添加到列表类
+    }
+    theModel_2->insertRow(theModel_2->rowCount(),aItemList); //插入一行，需要每个Cell的Item
+    QModelIndex curIndex=theModel_2->index(theModel_2->rowCount()-1,0);//创建最后一行的ModelIndex
+    theSelection_2->clearSelection();//清空选择项
+    theSelection_2->setCurrentIndex(curIndex,QItemSelectionModel::Select);//设置刚插入的行为当前选择行
+}
+
+void Setting::on_pushButton_remove_1_clicked()
+{
+    QModelIndex curIndex=theSelection->currentIndex();//获取当前选择单元格的模型索引
+
+    if (curIndex.row()==theModel->rowCount()-1)//最后一行
+        theModel->removeRow(curIndex.row()); //删除最后一行
+    else
+    {
+        theModel->removeRow(curIndex.row());//删除一行，并重新设置当前选择行
+        theSelection->setCurrentIndex(curIndex,QItemSelectionModel::Select);
+    }
+}
+void Setting::on_pushButton_remove_2_clicked()
+{
+    QModelIndex curIndex=theSelection_2->currentIndex();//获取当前选择单元格的模型索引
+
+    if (curIndex.row()==theModel_2->rowCount()-1)//最后一行
+        theModel_2->removeRow(curIndex.row()); //删除最后一行
+    else
+    {
+        theModel_2->removeRow(curIndex.row());//删除一行，并重新设置当前选择行
+        theSelection_2->setCurrentIndex(curIndex,QItemSelectionModel::Select);
+    }
+}
+
+
+void Setting::on_tableView_clicked(const QModelIndex &index)
+{
+
+    if(index.column()==4  &&theModel->item(index.row(),0)->checkState()==Qt::Unchecked)
+    {
+        QColor color = QColorDialog::getColor(Qt::red, this);
+        QBrush brush(color);
+        theModel->setData(index,color,Qt::BackgroundColorRole);
+    }
+}
+
+void Setting::on_pushButton_update_1_clicked()
+{
+
+    emit can_filter_update();
 }

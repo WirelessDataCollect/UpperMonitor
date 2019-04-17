@@ -4,6 +4,7 @@
 #
 #-------------------------------------------------
 
+
 QT       += core gui network charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -37,7 +38,11 @@ SOURCES += main.cpp\
     devicesystem.cpp \
     mainwin.cpp \
     dialogconf.cpp \
-    doubleslider.cpp
+    doubleslider.cpp \
+    qwcomboboxdelegate.cpp \
+    devicecan.cpp \
+    exprtk.cpp \
+    signaldata.cpp
 
 HEADERS  += \
     myudp.h \
@@ -54,7 +59,13 @@ HEADERS  += \
     devicesystem.h \
     mainwin.h \
     dialogconf.h \
-    doubleslider.h
+    doubleslider.h \
+    mytcpclient.h \
+    qwcomboboxdelegate.h \
+    devicecan.h \
+    exprtk.hpp \
+    exprtk.h \
+    signaldata.h
 
 FORMS    += login.ui \
     setting.ui \
@@ -66,4 +77,4 @@ RESOURCES += \
 
 DISTFILES += \
     readme.md
-
+win32:QMAKE_CXXFLAGS +=/bigobj

@@ -1,5 +1,5 @@
 ﻿#include "doubleslider.h"
-
+#include"math.h"
 DoubleSlider::DoubleSlider(QWidget *parent) : QWidget(parent)
   , m_min(0.0f)
   , m_max(99.0f)

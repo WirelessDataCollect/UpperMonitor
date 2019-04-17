@@ -24,7 +24,7 @@ public:
     int device_id;
     QList<QPoint> all_raw_data;
     QList<QPoint> frame_raw_data;
-    QTimer *timer;
+
 
     QList<double> filter_list;
     int filter_length;

@@ -251,9 +251,15 @@ void MainWin::on_action_8_triggered()
    time.append("a");
    time.append("b");
    time.append("c");
-  on_UpdataDocsnames(name,time);
+   on_UpdataDocsnames(name,time);
 
-   device_system->LocalTestStop();
+  // device_system->LocalTestStop();
+
+   device_system->SendCanFilter();
+   QVector<quint8> test;
+   for(quint8 i=0;i<8;i++) test.append(i);
+   qDebug()<<device_system->device_vector.at(0)->can_vector.at(0)->filter_list.size();
+
 }
 
 void MainWin::on_pushButton_clicked()
@@ -266,6 +272,7 @@ void MainWin::on_pushButton_clicked()
       emit FindDocsNames(begin_date,end_date);
     //device_system->FindDocs();
 }
+
 void MainWin::on_AddPointData(QString time,QColor color, QString name, QString value)
 {
 
@@ -277,7 +284,6 @@ void MainWin::on_AddPointData(QString time,QColor color, QString name, QString v
     item_color->setBackground(brush);
     QStandardItem *item_name= new QStandardItem(name);
     QStandardItem *item_value= new QStandardItem(value);
-
     row.append(item_time);
     row.append(item_color);
     row.append(item_name);

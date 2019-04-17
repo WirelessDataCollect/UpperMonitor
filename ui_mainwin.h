@@ -170,6 +170,7 @@ public:
         splitter_4->setOrientation(Qt::Horizontal);
         frame_2 = new QFrame(splitter_4);
         frame_2->setObjectName(QStringLiteral("frame_2"));
+        frame_2->setMinimumSize(QSize(400, 0));
         frame_2->setFrameShape(QFrame::Box);
         frame_2->setFrameShadow(QFrame::Raised);
         gridLayout_5 = new QGridLayout(frame_2);

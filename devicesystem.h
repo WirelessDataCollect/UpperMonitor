@@ -96,10 +96,12 @@ public:
     bool SendRemoteAdress(QHostAddress ip, quint16 port);
     bool LocalTestSyncTime();
     bool LocalTestName();
+    bool SendCanFilter();
     void ReceiveDocsName(const QByteArray &message);
     void RemoteTcpLogin(QByteArray salt);
     void ReciveDeviceData();
     void  SetFilterLength(int length);
+    void ClearCanFilter();
     QByteArray device_data;
     class DocName
     {

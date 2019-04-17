@@ -204,7 +204,7 @@ bool DeviceSystem::LocalOrderUdpStart()
     {
         connect(udp_order,SIGNAL(newMessage(QString,QByteArray)),this, SLOT(onUdpOrderMessage(QString,QByteArray)));
 
-        heart_beat_timer->start(3000);
+        heart_beat_timer->start(10000);
         connect(heart_beat_timer, SIGNAL(timeout()), this, SLOT(UdpHeartBeat()));
 
 
@@ -275,6 +275,8 @@ void DeviceSystem::onUdpDataMessage(const QString &from, const QByteArray &messa
 
      }
 
+     qDebug()<<"node_id"<<node_id;
+     qDebug()<<"message type"<<int(message.at(13));
      if(node_id>0 &&node_id<5) device_vector.at(node_id-1)->AddData(message);
 
  //    qDebug()<<"ALL date size"<<device_vector.at(1)->signal_vector.at(1)->all_raw_data.size();
@@ -496,6 +498,49 @@ bool  DeviceSystem::LocalTestIVModel()
     }
     return true;
 }
+bool DeviceSystem::SendCanFilter()
+{
+    QByteArray order;
+    QByteArray value;
+    value.clear();
+    order.append(GET_CAN_SEND_EN);
+
+     char filter_size;
+     DeviceCan *device_can;
+     bool is_success;
+     quint32 id;
+    for(char i=0;i<device_num;i++)
+    {
+        for(char j=0;j<2;j++)
+        {
+            device_can = device_vector.at(i)->can_vector.at(j);
+            if(device_can->show_enable &&! device_can->filter_list.isEmpty())
+            {
+                value.clear();
+                value.append(i+1); //device
+                value.append(j+1); //channel
+                value.append(device_can->baud_rate);//baud_rate
+                filter_size =char(device_can->filter_list.size());
+                value.append(filter_size); //size
+                for(char k=0;k<filter_size;k++)
+                {
+                     id = device_can->filter_list.at(k)->id;
+
+                    value.append(Uint32ToByte(id));
+                    qDebug()<<"decive:"<<int(i)<<"Channel"<<int(j)<<"id"<<id<<filter_size<<value.toHex();
+                }
+
+
+            for(int k=0;k<3;k++)
+            {
+              is_success=UdpSendCheck(order,value);
+              if(is_success) break;
+            }
+            }
+            }
+        }
+    return true;
+}
 
 bool DeviceSystem::LocalTestSyncTime()
 {
@@ -554,7 +599,6 @@ bool DeviceSystem::SendRemoteAdress(QHostAddress ip, quint16 port)
     }
     return false;
 }
-
 
 void DeviceSystem::SetDevStatus(bool status, int index)
 {
@@ -621,6 +665,7 @@ void DeviceSystem::NewLocalTest(QString name)
    else qDebug()<<"LocalTestStart wrongxxxxxxxxxxxx";
    if(LocalDataUdpStart())
        qDebug()<<"LocalDataUdpStart OK";
+   SendCanFilter();
 }
 
 void DeviceSystem::EndLocalTest()
@@ -811,6 +856,16 @@ void  DeviceSystem:: SetFilterLength(int length)
         for(int j=0;j<device_vector.at(i)->signal_number;j++)
         {
             device_vector.at(i)->signal_vector.at(j)->SetFilterLength(length);
+        }
+    }
+}
+void DeviceSystem::ClearCanFilter()
+{
+    for(int i=0;i<device_num;i++)
+    {
+        for(int j=0;j<2;j++)
+        {
+            device_vector.at(i)->can_vector.at(j)->filter_list.clear();
         }
     }
 }

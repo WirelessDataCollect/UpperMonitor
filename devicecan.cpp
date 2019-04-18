@@ -30,6 +30,7 @@ bool DeviceCan::AddFilter(uint id, QColor color, QString name, QString express_s
         message->express_str = express_str;
         filter_list.append(message);
         qDebug()<<color<<name<<express_str;
+        update_size = true;
         return true;
     }
     else
@@ -56,6 +57,7 @@ void DeviceCan::RemoveFilter(QColor color, QString name, QString express_str)
             filter_list.at(i)->time_list.clear();
             filter_list.at(i)->val_list.clear();
             filter_list.removeAt(i);
+            update_size =true;
         }
     }
     return;

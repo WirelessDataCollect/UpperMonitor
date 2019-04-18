@@ -23,7 +23,6 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     xOld(0), yOld(0)
 {
 
-
     device_system = system;
     m_chart = new QChart();
 
@@ -106,6 +105,46 @@ void chartswidgt::ReveiveFrameData(int device, int signal, QString name, QColor 
 //     m_chartView->setUpdatesEnabled(true);
 }
 
+//void chartswidgt::on_ReveiveSignalData(int device, int signal, QString name, QColor color,QList<QPointF> frame_data, int type)
+//{
+//    QLineSeries * series;
+//    int index = IndexofSeries(series, device, signal, name, color);
+//    if(type ==0)
+//    {
+//        series->append(frame_data);
+//    }
+//    if(type == -1)
+//    {
+//        m_chart->removeSeries(series);
+//        series_vector[device][signal].remove(index);
+//        delete series;
+//        point_vector[device][signal].remove(index);
+//    }
+//     status_list[device][signal] = true;
+    
+//}
+
+//int chartswidgt::IndexofSeries(QLineSeries *series, int device, int signal,QString name, QColor color)
+//{
+//    QVector<QLineSeries *>  series_list = series_vector.at(device).at(signal);
+//    for(int i=0;i<series_list.size();i++)
+//    {
+//        if(series_list.at(i)->color() == color && series_list.at(i)->name() == name)
+//        {
+//            series = series_list[i];
+//            return i;
+//        }
+//    }
+//        series = new QLineSeries();
+//        series->setName(name);
+//        series->setColor(color);
+//        series_list.append(series);
+//        m_chart->addSeries(series);
+//        point_vector[device][signal].resize(series_list.size());
+//        return  series_list.size()-1;
+
+//}
+
 void chartswidgt::UpdateChart()
 {
     m_chartView->setUpdatesEnabled(false);
@@ -136,6 +175,60 @@ void chartswidgt::UpdateChart()
 
             else if(m_chart->series().contains(series)) m_chart->removeSeries(series);
         }
+        for(int channel=0;channel<2;channel++)
+        {
+              QVector<QLineSeries *> series_list = series_can[device][channel];
+              bool status;
+              SignalData *device_signal;
+               QLineSeries * series;
+
+               if(device_system->device_vector.at(device)->can_vector.at(channel)->update_size)
+               {
+                   device_system->device_vector.at(device)->can_vector.at(channel)->update_size = false;
+
+                   for(int i =0;i<series_list.size();i++)
+                   {
+                       m_chart->removeSeries(series_list[1]);
+                       delete series_list[i];
+                   }
+                   series_list.clear();
+
+                   for(int i=0;i<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
+                   {
+                       series = new QLineSeries();
+                       series_list.append(series);
+                       m_chart->addSeries(series);
+                   }
+                   qDebug()<<"-------------------------------------------";
+                   qDebug()<<"series_list.size()"<<series_list.size();
+
+               }
+
+              for(int i =0;i<series_list.size();i++)
+              {
+
+                  device_signal = device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i);
+                  status = device_signal->show_enable;
+                  if(status)
+                  {
+                       bool update =  device_signal->update_status;
+                       if(update && !device_signal->all_unit_data.isEmpty())
+                       {
+                           series = series_list.at(i);
+                           if(series->color()!=device_signal->color) series->setColor(device_signal->color);
+                           if(series->name()!=device_signal->name) series->setName(device_signal->name);
+                               device_signal->update_status = false;
+
+                               series->replace(device_signal->all_unit_data);
+                              qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
+                               if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+                          }
+
+                  }
+              }
+        }
+
     }
     connectMarkers();
     m_chartView->setUpdatesEnabled(true);
@@ -144,51 +237,74 @@ void chartswidgt::UpdateChart()
 }
 void chartswidgt::UpdateChartView()
 {
-    bool status = false;
-    for(int device=0;device<5;device++)
-    {
-        for(int signal =0;signal<6;signal++)
+        bool status = false;
+        for(int device=0;device<5;device++)
         {
-         status |= status_list[device][signal];
-         if(status) break;
+            for(int signal =0;signal<8;signal++)
+            {
+             status |= status_list[device][signal];
+             if(status) break;
+            }
+            if(status) break;
         }
-        if(status) break;
-    }
-    if(status==false)
-    {
+        if(status==false)
+        {
 
-        return;
-    }
+            return;
+        }
 
-   // m_chart->setEnabled(false);
+    m_chart->setEnabled(false);
     m_chartView->setUpdatesEnabled(false);
+        for(int device=0;device<5;device++)
+        {
 
-  for(int device=0;device<5;device++)
-  {
-      for(int signal =0;signal<6;signal++)
-      {
-          if(status_list[device][signal] &&device_system->device_vector.at(device)->signal_vector.at(signal)->update_status)
-          {
-              device_system->device_vector.at(device)->signal_vector.at(signal)->update_status =false;
+            }
 
-              status_list[device][signal] = false;
-               QLineSeries * series = series_list.at(device).at(signal);
-               //if(m_chart->series().contains(series)) m_chart->removeSeries(series);
-               series->replace(point_list.at(device).at(signal));
+//    bool status = false;
+//    for(int device=0;device<5;device++)
+//    {
+//        for(int signal =0;signal<6;signal++)
+//        {
+//         status |= status_list[device][signal];
+//         if(status) break;
+//        }
+//        if(status) break;
+//    }
+//    if(status==false)
+//    {
 
-               qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-               qDebug()<<"point_list.at(device).at(signal).size"<<point_list.at(device).at(signal).size();
-               if(!m_chart->series().contains(series)) m_chart->addSeries(series);
-          }
+//        return;
+//    }
+
+//   // m_chart->setEnabled(false);
+//    m_chartView->setUpdatesEnabled(false);
+
+//  for(int device=0;device<5;device++)
+//  {
+//      for(int signal =0;signal<6;signal++)
+//      {
+//          if(status_list[device][signal] &&device_system->device_vector.at(device)->signal_vector.at(signal)->update_status)
+//          {
+//              device_system->device_vector.at(device)->signal_vector.at(signal)->update_status =false;
+
+//              status_list[device][signal] = false;
+//               QLineSeries * series = series_list.at(device).at(signal);
+//               //if(m_chart->series().contains(series)) m_chart->removeSeries(series);
+//               series->replace(point_list.at(device).at(signal));
+
+//               qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+//               qDebug()<<"point_list.at(device).at(signal).size"<<point_list.at(device).at(signal).size();
+//               if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+//          }
 
 
-      }
-  }
+//      }
+//  }
 
- // m_chart->setEnabled(true);
-  connectMarkers();
-  m_chartView->setUpdatesEnabled(true);
-  m_chart->createDefaultAxes();
+// // m_chart->setEnabled(true);
+//  connectMarkers();
+//  m_chartView->setUpdatesEnabled(true);
+//  m_chart->createDefaultAxes();
 }
 
 
@@ -243,6 +359,21 @@ void chartswidgt::InitSeries()
     {
         itor->resize(6);
     }
+
+
+    series_can.resize(5);
+    for(auto itor = series_can.begin();itor!=series_can.end();itor++)
+    {
+        itor->resize(2);
+    }
+
+    point_vector.resize(5);
+    for(auto itor = point_vector.begin();itor!=point_vector.end();itor++)
+    {
+        itor->resize(8);
+    }
+
+
 
 }
 

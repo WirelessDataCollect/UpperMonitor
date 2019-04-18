@@ -28,6 +28,7 @@
 #include "devicesystem.h"
 #include"devicesignal.h"
 #include"doubleslider.h"
+#include"signaldata.h"
 QT_CHARTS_USE_NAMESPACE
 
 
@@ -63,14 +64,17 @@ private:
     int yOld;
     QChart *m_chart;
     //QSplineSeries
+
     QVector< QVector<QLineSeries *>> series_list;
-     QVector< QVector<bool>> status_list;
+    QVector< QVector<QVector<QLineSeries *> > > series_can;
+    QVector<QVector<QVector<QList<QPointF>>>> point_vector;
+    QVector< QVector <QVector<bool>>> status_vector;
+    QVector< QVector<bool>> status_list;
     QList<QList<QColor>*> color_list;
     QList<QList<QString>*> name_list;
     QVector<QVector<QList<QPointF>>> point_list;
     QList<QSplineSeries *> s_series;
 
-    QVector<QVector<quint16> > pdata;
     quint16 pchannel;
 
     QVBoxLayout *m_vbox_layout;
@@ -90,6 +94,7 @@ private:
     DoubleSlider *v_slider;
 
     void InitSeries();
+    int IndexofSeries(QLineSeries *series, int device, int signal,QString name, QColor color);
 
 
 signals:

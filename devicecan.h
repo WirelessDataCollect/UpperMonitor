@@ -22,6 +22,7 @@ public:
     bool AddFilter(uint id, QColor color, QString name, QString express_str);
     void RemoveFilter(QColor color, QString name, QString express_str);
     void AddFrameData(quint32 id,double time, QByteArray data);
+    bool update_size;
 
 private:
 

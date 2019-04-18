@@ -7,6 +7,10 @@ SignalData::SignalData()
     symbol_table.add_constants();
     symbol_table.add_vector("X",view);
     expression.register_symbol_table(symbol_table);
+
+     update_status = true;
+     show_enable = true;
+
 }
 
 bool SignalData::isExpreesionValue(QString express_str)
@@ -20,12 +24,14 @@ bool SignalData::isExpreesionValue(QString express_str)
 }
 void SignalData::AddData(double time,QByteArray data)
 {
-    time_list.append(time);
+   // time_list.append(time);
     message_list.append(data);
     double val = EvaluateExpress(data);
     //qDebug()<<val;
-    val_list.append(val);
+   // val_list.append(val);
     //emit signal
+    all_unit_data.append(QPointF(time,val));
+    update_status = true;
 }
 
 double SignalData::EvaluateExpress(QByteArray data)

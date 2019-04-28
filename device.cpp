@@ -1,6 +1,7 @@
 ﻿#include "device.h"
 #include "devicesignal.h"
 #include<QDebug>
+#include<math.h>
 
 
 int Device::test_headtime=0;
@@ -10,6 +11,7 @@ Device::Device()
     signal_number = 6;
     for(int i =0;i<6;i++)
     {
+
         DeviceSignal *signal = new DeviceSignal();
         signal->signal_id = i;
         signal->device_id = device_id;
@@ -20,9 +22,26 @@ Device::Device()
     for(int i=0;i<2;i++)
     {
         DeviceCan *can = new DeviceCan();
+        can->signal_id = i;
+        can->device_id = device_id;
         can_vector.append(can);
     }
 
+    setting_status = false;
+}
+
+Device::~Device()
+{
+    for(int i =0;i<signal_vector.size();i++)
+    {
+        delete signal_vector[i];
+    }
+    signal_vector.clear();
+
+    for(int i =0;i<can_vector.size();i++)
+    {
+        delete can_vector[i];
+    }
 }
 
 void Device::SetDeviceStatus(bool status)
@@ -39,14 +58,6 @@ void Device::AddData(const QByteArray &message)
     int size = message.size();
     int frame_length = ByteToInt32(message.mid(8,4));
 
-//    if(frame_length+48>size)  //包残缺
-//    {
-//        frame_length = (size-48)/8*8;
-//        qDebug()<<"数据包数据不足";
-//        return;
-//    }
-
-
     int frame_time = ByteToInt32(message.mid(4,4))-test_headtime;//(100us)
     qDebug()<<"frame_time*************"<<frame_time;
      qDebug()<<"frame_length*************"<<frame_length;
@@ -55,8 +66,6 @@ void Device::AddData(const QByteArray &message)
     qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
-
-
     if(frame_length+48<size)
     {
         QByteArray extern_message = message.right(size-frame_length-48);
@@ -66,29 +75,34 @@ void Device::AddData(const QByteArray &message)
 
 void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)
 {
-    int y=0;
+    static int count;
+    count++;
+
+    double time;
+    int val;
+    qDebug()<<"AddAdcData============================";
+
     for(int i=0;i<frame_length;)
     {
+        time= (frame_time+i/8*10)*0.0001;
+        if(i==0)
+        {
+            qDebug()<<"time:"<<time<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            qDebug()<<qint16(adcbyte.at(0)*256+adcbyte.at(1))<<qint16(adcbyte.at(2)*256+adcbyte.at(3))<<qint16(adcbyte.at(4)*256+adcbyte.at(5))<<qint16(adcbyte.at(6)*256+adcbyte.at(7));
+        }
+
         for(int j=0;j<4;j++)
         {
-             QPoint point;
-            point.setX(frame_time+10*(i/8));
-            int x = point.x();
-
-             y = uchar(adcbyte.at(i++))*256;
-             y += uchar(adcbyte.at(i++));
-            point.setY(y);
-            y = point.y();
-           if(j==0) qDebug()<<x<<y;
-            signal_vector.at(j)->AddData(point);
-        }
+            val = uchar(adcbyte.at(i++))*256;
+            val += uchar(adcbyte.at(i++));
+            val = qint16(val);
+            signal_vector.at(j)->signal_data->AddData(time,val);
+        } 
     }
-    for(int j=0;j<4;j++)
-    {
-        signal_vector.at(j)->AddFrameData();
-    }
+//   if(count%100==0)
+//    for(int i = 0;i<signal_vector.at(0)->signal_data->all_unit_data.size();i++)
+//    qDebug()<<signal_vector.at(0)->signal_data->all_unit_data.at(i);
 }
-
 
 void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
 {
@@ -96,7 +110,7 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
     int frame_time;
     double time;
     int channel;
-    quint32 can_id;
+    int can_id;
     qDebug()<<canbyte.length()<<canbyte.toHex();
 
     for(int i=0;i<frame_count;i++)// 1+4+20
@@ -107,19 +121,17 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
             frame_time = ByteToInt32(canbyte.mid(i*25+1,4))-test_headtime;//(100us)
             time = frame_time * 0.0001;
 
-            can_id = quint32(ByteToInt32(canbyte.mid(i*25+9,4)));
-            qDebug()<<"can_id"<<canbyte.mid(i*25+9,4).toHex();
+            can_id = ByteToInt32(canbyte.mid(i*25+9,4));
+            qDebug()<<"can_id"<<canbyte.mid(i*25+9,4).toHex()<<can_id;
             qDebug()<<"channel"<<channel;
             qDebug()<<"frame_time"<<frame_time;
             qDebug()<<"canbyte.mid(i*25+16,8))"<<canbyte.mid(i*25+16,8).toHex();
-           // can_vector.at(channel)->AddFrameData(can_id,time,canbyte.mid(i*25+16,8));
-
+            can_vector.at(channel-1)->AddFrameData(can_id,time,canbyte.mid(i*25+16,8));
         }
         else
         {
             qDebug()<<"FRAME ERROR";
         }
-
     }
 }
 
@@ -138,8 +150,7 @@ int Device:: ByteToInt32(QByteArray abyte0)
 }
 void Device::ClearReceiveData()
 {
-    for(int i=0;i<signal_number;i++)
-    {
-        signal_vector.at(i)->ClearReceiveData();
-    }
+    for(int i=0;i<6;i++) signal_vector.at(i)->ClearReceiveData();
+    for(int i=0;i<2;i++) can_vector.at(i)->ClearReceiveData();
 }
+

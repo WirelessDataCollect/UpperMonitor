@@ -13,6 +13,8 @@
 #include"devicesystem.h"
 #include"devicesignal.h"
 #include<QDir>
+#include<QDateTime>
+#include<QRegExp>
 Setting::Setting(DeviceSystem *system,QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Setting)
@@ -20,22 +22,21 @@ Setting::Setting(DeviceSystem *system,QWidget *parent) :
     device_system = system;
     ui->setupUi(this);
 
-    TabelInit();
+    //TabelInit();
 
     QString current_path = QCoreApplication::applicationDirPath();
     ui->lineEdit->setText(current_path);
-    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
-    ui->tableWidget->resizeColumnsToContents();
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    //ui->tableWidget->resizeColumnsToContents();
     ui->frame->setMaximumWidth(300);
-    TreeInit();
     TabelViewInit();
+    TreeInit();
+    ReadTableView();
 }
 
 Setting::~Setting()
 {
+    WriteTableView();
     delete ui;
+
 }
 
 void Setting::on_pushButton_clicked()
@@ -50,10 +51,11 @@ void Setting::on_pushButton_clicked()
         device_system->data_path = selectedDir;
     }
 }
+
 void Setting::TreeInit()
 {
     QStringList headers;
-    headers << QStringLiteral("选择终端");
+    headers << QStringLiteral("终端使能");
     ui->treeWidget->setHeaderLabels(headers);
 
     QTreeWidgetItem *item = new QTreeWidgetItem(1000);
@@ -63,55 +65,39 @@ void Setting::TreeInit()
     item->setCheckState(0,Qt::Unchecked);
     ui->treeWidget->addTopLevelItem(item);
 
-
     for(int i=0;i<5;i++)
     {
-        QTreeWidgetItem *item_device = new QTreeWidgetItem(100+i);
+        QTreeWidgetItem *item_device = new QTreeWidgetItem(100*i);
         item_device->setText(0,"终端"+QString::number(i+1));
-        item_device->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item_device->setFlags(item_device->flags() | Qt::ItemIsUserCheckable);
         item_device->setCheckState(0,Qt::Unchecked);
-        ui->treeWidget->topLevelItem(0)->addChild(item_device);
+        item->addChild(item_device);
 
-        for(int j=0;j<4;j++)
-        {
-            QTreeWidgetItem *item_signal = new QTreeWidgetItem(10*i+j);
-            item_signal->setText(0,"模拟通道"+QString::number(j+1));
-            item_signal->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
-            item_signal->setCheckState(0,Qt::Unchecked);
-            item_device->addChild(item_signal);
-
-            QTreeWidgetItem *vol_curr_I = new QTreeWidgetItem(8);
-            vol_curr_I->setText(0,"电流/电压模式");
-            vol_curr_I->setFlags(vol_curr_I->flags() | Qt::ItemIsUserCheckable);
-            vol_curr_I->setCheckState(0,Qt::Unchecked);
-            item_signal->addChild(vol_curr_I);
-
-        }
         for(int j=0;j<2;j++)
         {
-            QTreeWidgetItem *item_signal = new QTreeWidgetItem(10*i+j+4);
-            item_signal->setText(0,"数字通道"+QString::number(j+1));
-            item_signal->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
-            item_signal->setCheckState(0,Qt::Unchecked);
-            item_device->addChild(item_signal);
-        }
-        for(int j=0;j<2;j++)
-        {
-            QTreeWidgetItem *item_signal = new QTreeWidgetItem(10*i+j+6);
-            item_signal->setText(0,"CAN"+QString::number(j+1));
-            item_signal->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
-            item_signal->setCheckState(0,Qt::Unchecked);
-            item_device->addChild(item_signal);
+            QTreeWidgetItem *item_can = new QTreeWidgetItem(100*i+(j+1)*10);
+            item_can->setText(0,"CAN通道"+QString::number(j+1));
+            item_can->setFlags(item_can->flags() | Qt::ItemIsUserCheckable);
+            item_can->setCheckState(0,Qt::Unchecked);
+            item_device->addChild(item_can);
 
-            QTreeWidgetItem *item_signal_H = new QTreeWidgetItem(9);
-            item_signal_H->setText(0,"500K/250K");
-            item_signal_H->setFlags(item_signal->flags() | Qt::ItemIsUserCheckable);
-            item_signal_H->setCheckState(0,Qt::Unchecked);
-            item_signal->addChild(item_signal_H);
+                 QTreeWidgetItem *item_canbaud_1 = new QTreeWidgetItem(100*i+(j+1)*10+1);
+                 item_canbaud_1->setText(0,"500K");
+                 item_canbaud_1->setFlags(item_can->flags() | Qt::ItemIsUserCheckable);
+                 item_canbaud_1->setCheckState(0,Qt::Checked);
+                 item_can->addChild(item_canbaud_1);
+
+                 QTreeWidgetItem *item_canbaud_2 = new QTreeWidgetItem(100*i+(j+1)*10+2);
+                 item_canbaud_2->setText(0,"250K");
+                 item_canbaud_2->setFlags(item_canbaud_2->flags() | Qt::ItemIsUserCheckable);
+                 item_canbaud_2->setCheckState(0,Qt::Unchecked);
+                 item_can->addChild(item_canbaud_2);
+            }
         }
+
 
     }
-}
+
 void Setting::TabelViewInit()
 {
     theModel = new QStandardItemModel(0,8,this);
@@ -134,266 +120,148 @@ void Setting::TabelViewInit()
       combox_delegate_2.combox_list.append("2");
       ui->tableView->setItemDelegateForColumn(2,&combox_delegate_2);
 
-
-
-      theModel_2 = new QStandardItemModel(0,4,this);
+      theModel_2 = new QStandardItemModel(0,5,this);
       theSelection_2 = new QItemSelectionModel(theModel_2);//Item选择模型
       headers.clear();
-      headers << QStringLiteral("使能")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("计算公式");
+      headers << QStringLiteral("时间")<<QStringLiteral("终端")<<QStringLiteral("通道")<<QStringLiteral("标识符")<<QStringLiteral("数据帧");
        theModel_2->setHorizontalHeaderLabels(headers);
        ui->tableView_2->setModel(theModel_2); //设置数据模型
        ui->tableView_2->setSelectionModel(theSelection_2);//设置选择模型
        ui->tableView_2->setSelectionMode(QAbstractItemView::ExtendedSelection);
        ui->tableView_2->setSelectionBehavior(QAbstractItemView::SelectItems);
-
+       ui->tableView_2->resizeColumnsToContents();
        connect(this->theModel,SIGNAL(itemChanged(QStandardItem *)),this, SLOT(on_itemChanged(QStandardItem *)));
+
+       theModel_3 = new QStandardItemModel(0,7,this);
+      theSelection_3 = new QItemSelectionModel(theModel_3);//Item选择模型
+      headers.clear();
+      headers << QStringLiteral("终端")<<QStringLiteral("")<<QStringLiteral("使能")<<QStringLiteral("颜色")<<QStringLiteral("模式")<<QStringLiteral("名称")<<QStringLiteral("表达式")<<QStringLiteral("数量");
+      theModel_3->setHorizontalHeaderLabels(headers);
+       ui->tableView_3->setModel(theModel_3);              //设置数据模型
+       ui->tableView_3->setSelectionModel(theSelection_3);//设置选择模型
+       ui->tableView_3->setSelectionMode(QAbstractItemView::ExtendedSelection);
+       ui->tableView_3->setSelectionBehavior(QAbstractItemView::SelectItems);
+       connect(this->theModel_3,SIGNAL(itemChanged(QStandardItem *)),this, SLOT(on_itemChanged_3(QStandardItem *)));
+
+
+      QHeaderView *headerGoods =  ui->tableView_3->horizontalHeader();
+      //connect(headerGoods, SIGNAL(sectionClicked(int)), this, SLOT(on_section_3Clicked(int)));
+
+      combox_delegate_3.combox_list.append("电压模式");
+      combox_delegate_3.combox_list.append("电流模式");
+
+      ui->tableView_3->setItemDelegateForColumn(4,&combox_delegate_3);
+
+      QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
+      QStandardItem   *aItem;
+      QStringList device = {"一","二","三","四","五","六"};
+
+       for(int i=0;i<5;i++)
+       {
+           for(int j=0;j<6;j++)
+           {
+               aItemList.clear();
+               aItem=new QStandardItem("终端"+device.at(i)); //新建一个QStandardItem
+
+               aItem->setEditable(false);
+               aItemList<<aItem;
+                if(j<4)
+                {
+                    aItem=new QStandardItem("模拟通道"+device.at(j)); //新建一个QStandardItem
+                    aItem->setEditable(false);
+                    aItemList<<aItem;
+                }
+                else
+                {
+                    aItem=new QStandardItem("数字通道"+device.at(j-4)); //新建一个QStandardItem
+                    aItem->setEditable(false);
+                    aItemList<<aItem;
+                }
+                aItem=new QStandardItem("使能"); //新建一个QStandardItem
+                aItem->setCheckable(true);
+                aItem->setEditable(false);
+                 aItem->setSelectable(false);
+                aItemList<<aItem;
+
+                aItem=new QStandardItem(); //color
+                aItem->setData(QColor(Qt::white),Qt::BackgroundColorRole);
+                aItem->setEditable(false);
+                aItem->setSelectable(false);
+                aItemList<<aItem;
+
+                if(j<4)
+                {
+                    aItem=new QStandardItem("电压模式"); //采集模式
+                    aItem->setSelectable(false);
+                    aItemList<<aItem;
+                }
+                else
+                {
+                    aItem=new QStandardItem();
+                    aItem->setEditable(false);
+                    aItem->setSelectable(false);
+                    aItemList<<aItem;
+
+                }
+
+
+                aItem=new QStandardItem("通道"+device.at(j)+"名称"); //新建一个QStandardItem
+                aItemList<<aItem;
+
+                aItem=new QStandardItem("X"); //新建一个QStandardItem
+                aItemList<<aItem;
+
+                aItem=new QStandardItem("0"); //新建一个QStandardItem
+                aItem->setEditable(false);
+                aItemList<<aItem;
+                theModel_3->appendRow(aItemList);
+           }
+           ui->tableView_3->setSpan(i*6,0,6,1);
+       }
 }
 
-void Setting::TabelInit()
-{
-    ui->tableWidget->setColumnCount(8);
-    ui->tableWidget->setRowCount(30);
-    ui->tableWidget->setSpan(0,0,6,1);
-    ui->tableWidget->setSpan(6,0,6,1);
-    ui->tableWidget->setSpan(12,0,6,1);
-    ui->tableWidget->setSpan(18,0,6,1);
-    ui->tableWidget->setSpan(24,0,6,1);
-
-    QStringList headers;
-    headers << QStringLiteral("终端") << QStringLiteral("通道") << QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("最小值")<<QStringLiteral("最大值")<<QStringLiteral("单位最小值")<<QStringLiteral("单位最大值");
-    ui->tableWidget->setHorizontalHeaderLabels(headers);
-    connect( ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)),
-                    this, SLOT(onHeaderClicked(int)));
-    connect( ui->tableWidget->horizontalHeader(), SIGNAL(sectionDoubleClicked(int)),
-                    this, SLOT(onHeaderDoubleClicked(int)));
-    //if(!ReadTable())//读取失败
-    {
-        QVector<QTableWidgetItem *> item_vector_0;
-        QVector<QTableWidgetItem *> item_vector_1;
-        item_vector_0.resize(5);
-        item_vector_1.resize(30);
-        for(int i= 0;i<30;i++)
-        {
-            //终端
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setFlags(item_vector_1[i]->flags()& (~Qt::ItemIsEditable));
-            ui->tableWidget->setItem(i,0,item_vector_1[i]);
-            //通道
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setFlags(item_vector_1[i]->flags()& (~Qt::ItemIsEditable));
-            if(i%6 < 4) item_vector_1[i]->setText("模拟"+QString::number(i%6+1));
-            else item_vector_1[i]->setText("数字"+QString::number(i%6-3));
-            ui->tableWidget->setItem(i,1,item_vector_1[i]);
-            //颜色
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setFlags(Qt::NoItemFlags);
-            ui->tableWidget->setItem(i,2,item_vector_1[i]);
-            //名称
-            item_vector_1[i] = new QTableWidgetItem;
-            if(i%6 < 4) item_vector_1[i]->setText("模拟"+QString::number(i%6+1));
-            else item_vector_1[i]->setText("数字"+QString::number(i%6-3));
-            ui->tableWidget->setItem(i,3,item_vector_1[i]);
-
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setText("0.8");
-            ui->tableWidget->setItem(i,4,item_vector_1[i]);
-
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setText("4.5");
-            ui->tableWidget->setItem(i,5,item_vector_1[i]);
-
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setText("1");
-            ui->tableWidget->setItem(i,6,item_vector_1[i]);
-
-            item_vector_1[i] = new QTableWidgetItem;
-            item_vector_1[i]->setText("10");
-            ui->tableWidget->setItem(i,7,item_vector_1[i]);
-        }
-        for(int i=0;i<5;i++)
-        {
-
-            item_vector_0[i] =  new QTableWidgetItem;
-            item_vector_0[i]->setText("终端"+QString::number(i+1));
-            item_vector_0[i]->setFlags(item_vector_0[i]->flags()& (~Qt::ItemIsEditable));
-            ui->tableWidget->setItem(6*i,0,item_vector_0[i]);
-        }
-    }
-
-    }
-
-
-bool Setting::ReadTable(){
-
-        QFile file("settingconfig");
-        if (!file.open(QFile::ReadOnly | QFile::Text)){
-            qDebug()<<"ReadTable Error: cannot open file";
-            return false;
-        }
-        qDebug()<<"ReadTable";
-        QDataStream in(&file);
-        for(int i=0;i<ui->tableWidget->rowCount();i++)
-        {
-            for(int j=0;j<ui->tableWidget->columnCount();j++)
-            {
-                QTableWidgetItem *item = new QTableWidgetItem();
-                item->read(in);
-                if(j ==0 || j==1) item->setFlags(item->flags()& (~Qt::ItemIsEditable));;
-                if(j==2) item->setFlags(Qt::NoItemFlags);
-                ui->tableWidget->setItem(i,j,item);
-                qDebug()<<"ReadTable"<<i<<j<<ui->tableWidget->item(i,j)->text();
-            }
-        }
-        ui->tableWidget->update();
-        file.close();
-        return true;
-}
-
-bool Setting::WriteTable(){
-
-        QFile file("settingconfig");
-        if (!file.open(QFile::WriteOnly | QFile::Text)){
-            qDebug() << "WriteTable Error: cannot open file";
-            return false;
-        }
-        qDebug()<<"WriteTable";
-        QDataStream out(&file);
-        for(int i=0;i<ui->tableWidget->rowCount();i++)
-        {
-            for(int j=0;j<ui->tableWidget->columnCount();j++)
-            {
-
-                qDebug()<<i<<j<<ui->tableWidget->item(i,j);
-                ui->tableWidget->item(i,j)->write(out);
-            }
-        }
-
-        file.close();
-        return true;
-}
-
-void Setting::onHeaderClicked(int index)
-{
-    if(2 ==index)
-    {
-        for(int i=0;i<ui->tableWidget->rowCount();i++)
-        {
-            QColor qc=QColor::fromHsl(rand()%360,rand()%256,rand()%200);
-
-            ui->tableWidget->item(i,index)->setBackgroundColor(qc);
-        }
-    }
-}
-void Setting::onHeaderDoubleClicked(int index)
-{
-    if(2 ==index)
-    {
-        for(int i=0;i<ui->tableWidget->rowCount();i++)
-        {
-            QColor qc=QColor(255,255,255);
-
-            ui->tableWidget->item(i,index)->setBackgroundColor(qc);
-        }
-    }
-}
-void Setting::on_pushButton_2_clicked()
-{
-    WriteTable();
-}
-
-
-void Setting::on_tableWidget_cellClicked(int row, int column)
-{
-    if(column == 2)
-    {
-        QColor color = QColorDialog::getColor(Qt::red, this);
-        ui->tableWidget->item(row,2)->setBackgroundColor(color);
-    }
-}
-
-void Setting::on_tableWidget_cellChanged(int row, int column)
-{
-        bool valid;
-        QString string = ui->tableWidget->item(row,column)->text();
-        DeviceSignal *signal = device_system->device_vector.at(row/6)->signal_vector.at(row%6);
-        if(2 == column) signal->SetSignalColor(ui->tableWidget->item(row,column)->backgroundColor());
-        if(3 == column) signal->SetSignalName(string.trimmed());
-        if(column>3)
-        {
-            double number = string.toDouble(&valid);
-
-            if(valid &&signal->SetUnitVol(column-3,number));
-
-            else ui->tableWidget->item(row,column)->setText("0");
-    }
-}
-
-void Setting::on_pushButton_3_clicked()
-{
-    ReadTable();
-}
 
 void Setting::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
 {
     //向下同步
     int type= item->type();
-    int type_parent =  item->parent()->type();
+   // int type_parent =  item->parent()->type();
     if(type== 1000)
     {
         for(int i=0;i<item->childCount();i++)
         {
             item->child(i)->setCheckState(0,item->checkState(0));
         }
-
     }
     //写入状态
     else
     {
         bool status = item->checkState(0)==Qt::Checked? true:false;
-        if(type/100>0)
-        {
-            //设备使能
-            device_system->device_vector.at(type%100)->SetDeviceStatus(status);
-            if(status)
-            {
-                for(int i =0; i< item->childCount();i++)
-                {
-                    item->child(i)->setFlags(item->child(i)->flags()| Qt::ItemIsEnabled);
-                }
-            }
-            else
-            {
-
-                for(int i =0; i< item->childCount();i++)
-                {
-                    item->child(i)->setFlags(item->child(i)->flags()& (~Qt::ItemIsEnabled) );
-                }
-            }
-        }
-        //信号使能
+        if(type%100 == 0)  device_system->device_vector.at(type/100)->SetDeviceStatus(status);
         else
         {
-            if(type%10<6)
+            if(type%10 == 0) device_system->device_vector.at(type/100)->can_vector.at(type/10%10-1)->SetSignalStatus(status);
+            else
             {
-                device_system->device_vector.at(type/10)->signal_vector.at(type%10)->SetSignalStatus(status);
-                qDebug()<<"信号使能"<<type/10<<type%10;
-            }
-            if(type%10==6 ||type%10==7)
-            {
-                device_system->device_vector.at(type/10)->can_vector.at(type%10-6)->SetSignalStatus(status);
-            }
-            if(type%10==8)
-            {
-                device_system->device_vector.at(type_parent/10)->signal_vector.at(type_parent%10)->SetIVStatus(status);
-            }
-            if(type%10==9)
-            {
-                device_system->device_vector.at(type_parent/10)->can_vector.at(type_parent%10-6)->SetBaudRate(status);
-                qDebug()<<"CAN STATUS"<<type_parent/10<<type_parent%10-6<<status;
+                if(type%10 ==1)
+                {
+                     qDebug()<<"DEVICE"<<type/100<<"CAN"<<type/10%10-1;
+                    device_system->device_vector.at(type/100)->can_vector.at(type/10%10-1)->SetBaudRate(status);
+
+                    if(status) item->parent()->child(1)->setCheckState(0,Qt::Unchecked);
+                    else item->parent()->child(1)->setCheckState(0,Qt::Checked);
+                }
+                if(type%10 ==2)
+                {
+                    if(status) item->parent()->child(0)->setCheckState(0,Qt::Unchecked);
+                    else item->parent()->child(0)->setCheckState(0,Qt::Checked);
+                }
+
             }
         }
     }
 }
+
 
 void Setting::on_spinBox_valueChanged(int arg1)
 {
@@ -443,8 +311,276 @@ void Setting::on_itemChanged(QStandardItem *item)
         }
     }
 }
+
+void Setting::on_itemChanged_3(QStandardItem *item)
+{
+    QModelIndex index = theModel_3->indexFromItem(item);
+    if(index.column() == 2)
+    {
+        int row = index.row();
+        QColor color = theModel_3->item(row,3)->background().color();
+        QString model = theModel_3->item(row,4)->text();
+        QString name = theModel_3->item(row,5)->text();
+        QString express_str = theModel_3->item(row,6)->text().toUpper();
+        int device = row/6;
+        int channel = row%6;
+        bool vol_enable;
+        if(model == QString("电压模式")) vol_enable = true;
+        else vol_enable = false;
+        qDebug()<<"model"<<model<<vol_enable;
+        if(item->checkState() == Qt::Checked)
+        {
+            if(device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->isExpreesionValue(express_str))
+            {
+                device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->color = color;
+                 device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->name = name;
+                 device_system->device_vector.at(device)->signal_vector.at(channel)->SetIVStatus(vol_enable);
+                 device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->show_enable = true;
+                 for(int j=4;j<7;j++) theModel_3->item(row,j)->setEditable(false);
+            }
+            else
+            {
+                item->setCheckState(Qt::Unchecked);
+            }
+        }
+       else
+        {
+             for(int j=4;j<7;j++) theModel_3->item(row,j)->setEditable(true);
+             device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->show_enable = false;
+        }
+    }
+}
+bool Setting::ReadTableView(QString file_name)
+{
+    if(file_name.isEmpty()) file_name= "configure.txt";
+
+    QFile file(file_name);
+    if (!file.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "ReadTabelView Error: cannot open file";
+        return false;
+    }
+     qDebug() << "ReadTabelView ";
+    QStringList fFileContent;
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    while(!in.atEnd())
+    {
+        QString str = in.readLine();
+        fFileContent.append(str);
+
+    }
+    file.close();
+    QString linetext;
+    QStringList linetextlist;
+    Qt::CheckState status;
+
+    for(int i=0;i<fFileContent.count();i++)
+    {
+        linetext = fFileContent.at(i);
+        if(linetext.contains("Device configure start"))
+        {
+            i++;
+            for(int j=0;j<5;j++)
+            {
+                i++;
+                linetext = fFileContent.at(i);
+                linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+                 qDebug()<<linetextlist;
+                status = Qt::Unchecked;
+                if(linetextlist.at(1) =="1") status =Qt::Checked;
+                ui->treeWidget->topLevelItem(0)->child(j)->setCheckState(0,status);
+
+                 status = Qt::Unchecked;
+                if(linetextlist.at(2) == "1") status =Qt::Checked;
+                ui->treeWidget->topLevelItem(0)->child(j)->child(0)->setCheckState(0,status);
+
+                status = Qt::Unchecked;
+               if(linetextlist.at(3) == "50") status =Qt::Checked;
+               ui->treeWidget->topLevelItem(0)->child(j)->child(0)->child(0)->setCheckState(0,status);
+
+               status = Qt::Unchecked;
+              if(linetextlist.at(4) == "1") status =Qt::Checked;
+              ui->treeWidget->topLevelItem(0)->child(j)->child(1)->setCheckState(0,status);
+
+              status = Qt::Unchecked;
+              if(linetextlist.at(5) == "50") status =Qt::Checked;
+              ui->treeWidget->topLevelItem(0)->child(j)->child(1)->child(0)->setCheckState(0,status);
+            }
+
+        }
+        if(linetext.contains("CAN configure start"))
+        {
+            on_pushButton_clear_1_clicked(); //clear the table
+
+            i=i+2;
+            linetext = fFileContent.at(i);
+            linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+            int row = linetextlist.at(0).toInt();
+            i++;
+            for(int j=0;j<row;j++)
+            {
+                i++;
+                linetext = fFileContent.at(i);
+                linetextlist = linetext.split(QRegExp(",\\s+"),QString::KeepEmptyParts);
+                on_pushButton_add_1_clicked();
+                qDebug()<<linetextlist;
+                for(int k=1;k<theModel->columnCount();k++)
+                {
+                    if(k==4) theModel->item(j,k)->setData(QColor(linetextlist.at(k)),Qt::BackgroundColorRole);
+                    else theModel->item(j,k)->setText(linetextlist.at(k));
+                }
+                 status = Qt::Unchecked;
+                if(linetextlist.at(0) == "true")  status = Qt::Checked;
+                theModel->item(j,0)->setCheckState(status);
+            }
+        }
+
+        if(linetext.contains("Signal configure start"))
+        {
+            i=i+2;
+            linetext = fFileContent.at(i);
+            linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+            int row = linetextlist.at(0).toInt();
+            i++;
+            for(int j =0;j<row;j++)
+            {
+
+                i++;
+
+                linetext = fFileContent.at(i);
+                linetextlist = linetext.split(QRegExp(",\\s+"),QString::KeepEmptyParts);
+                qDebug()<<linetextlist;
+                for(int k = 4;k<theModel_3->columnCount();k++)
+                {
+                    qDebug()<<k;
+                    theModel_3->item(j,k)->setText(linetextlist.at(k));
+                }
+
+                theModel_3->item(j,3)->setData(QColor(linetextlist.at(3)),Qt::BackgroundColorRole);
+
+                status = Qt::Unchecked;
+                if(linetextlist.at(2) == "true")  status = Qt::Checked;
+                theModel_3->item(j,2)->setCheckState(status);
+            }
+        }
+    }
+}
+
+bool Setting::WriteTableView(QString file_name)
+{
+    if(file_name.isEmpty()) file_name = "configure.txt";
+    QFile file(file_name);
+    if (!file.open(QFile::WriteOnly | QFile::Text)){
+        qDebug() << "WriteTable Error: cannot open file";
+        return false;
+    }
+    qDebug()<<"WriteTable";
+    QString str;
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out<<"Configure File \n";
+    out<<"Save Time: "<<QDateTime::currentDateTime().toString(Qt::ISODate)<<"\n";
+    out<<"Test Time: "<<device_system->test_time.toString(Qt::ISODate)<<"\n";
+    out<<"\n";
+    qDebug()<<"WriteTablecccccccccccccccccccccccc";
+
+     out<<"Device configure start---------------------------------------\n";
+     str =  "终端"; out<<str; out<<",    ";
+     str = "使能"; out<<str; out<<",    ";
+     str = "CAN1使能";out<<str; out<<",    ";
+     str = "CAN1波特率"; out<<str; out<<",    ";
+     str = "CAN2使能";out<<str; out<<",    ";
+     str = "CAN2波特率"; out<<str<<"\n";
+
+
+     for(int i=0;i<5;i++)
+     {
+         out<<i+1<<",    "<<device_system->device_vector.at(i)->setting_status<<",    ";
+         out<<device_system->device_vector.at(i)->can_vector.at(0)->show_enable<<",    "<<int(device_system->device_vector.at(i)->can_vector.at(0)->baud_rate)<<",    ";
+          out<<device_system->device_vector.at(i)->can_vector.at(1)->show_enable<<",    "<<int(device_system->device_vector.at(i)->can_vector.at(1)->baud_rate);
+           out<<"\n";
+     }
+  out<<"Device configure end---------------------------------------\n";
+  out<<"\n";
+
+ qDebug()<<"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+
+
+    // tableview
+    out<<"CAN configure start---------------------------------------"<<"\n";
+    out<<"Table Size:\n"<<theModel->rowCount()<<",    "<<theModel->columnCount()<<"\n";
+
+    str =  "状态"; out<<str; out<<",    ";
+    str =  "终端"; out<<str; out<<",    ";
+    str =  "通道"; out<<str; out<<",    ";
+    str =  "ID(hex)";  out<<str; out<<",    ";
+    str =  "颜色"; out<<str; out<<",    ";
+
+    str =  "名称"; out<<str; out<<",    ";
+    str =  "表达式"; out<<str; out<<",    ";
+    str =  "数量"; out<<str;
+    out<<"\n";
+    QString status;
+
+
+    for(int i=0;i<theModel->rowCount();i++)
+    {
+        if(theModel->item(i,0)->checkState() == Qt::Checked) status = "true";
+        else status = "false";
+        out<<status;
+        for(int j=1;j<theModel->columnCount();j++)
+        {
+            out<<",    ";
+           if(j== 4)  out<< theModel->item(i,j)->data(Qt::BackgroundColorRole).toString();
+           else  out<< theModel->item(i,j)->text();
+        }
+        out<<"\n";
+        }
+      out<<"CAN configure end---------------------------------------\n";
+      out<<"\n";
+
+ qDebug()<<"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+
+
+    out<<"Signal configure start---------------------------------------"<<"\n";
+    out<<"Table Size:\n"<<theModel_3->rowCount()<<",    "<<theModel_3->columnCount()<<"\n";
+    str =  "终端"; out<<str; out<<",    ";
+    str =  "通道"; out<<str; out<<",    ";
+     str =  "状态"; out<<str; out<<",    ";
+
+    str =  "颜色"; out<<str; out<<",    ";
+     str =  "模式"; out<<str; out<<",    ";
+    str =  "名称"; out<<str; out<<",    ";
+    str =  "表达式"; out<<str; out<<",    ";
+    str =  "数量"; out<<str;
+    out<<"\n";
+
+    for(int i=0;i<theModel_3->rowCount();i++)
+    {
+        if(theModel_3->item(i,2)->checkState() == Qt::Checked) status = "true";
+        else status = "false";
+        for(int j=0;j<theModel_3->columnCount();j++)
+        {
+
+           if(j==2)   out<<status;
+           else if(j== 3)  out<< theModel_3->item(i,j)->data(Qt::BackgroundColorRole).toString();
+                else  out<< theModel_3->item(i,j)->text();
+           out<<",    ";
+        }
+        out<<"\n";
+    }
+    out<<"Signal configure end---------------------------------------";
+    out<<"\n";
+    out.flush();
+    file.close();
+    qDebug()<<"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+    return true;
+
+}
 void Setting::on_pushButton_add_1_clicked()
-{//插入行
+{
+    //插入行
 
     QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
     QStandardItem   *aItem;
@@ -455,8 +591,9 @@ void Setting::on_pushButton_add_1_clicked()
     for(int j=1;j<theModel->columnCount();j++)
     {
         aItem=new QStandardItem(); //新建一个QStandardItem
-         aItem->setSelectable(false);
+        aItem->setSelectable(false);
         aItemList<<aItem;//添加到列表类
+        if(j==4) aItem->setData(QColor(Qt::white),Qt::BackgroundColorRole);
     }
     theModel->insertRow(theModel->rowCount(),aItemList); //插入一行，需要每个Cell的Item
     QModelIndex curIndex=theModel->index(theModel->rowCount()-1,0);//创建最后一行的ModelIndex
@@ -468,11 +605,9 @@ void Setting::on_pushButton_add_2_clicked()
 {
     QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
     QStandardItem   *aItem;
-    aItem=new QStandardItem("使能"); //新建一个QStandardItem
-    aItem->setCheckable(true);
-    aItem->setEditable(false);
-    aItemList<<aItem;//添加到列表类
-    for(int j=1;j<theModel_2->columnCount();j++)
+
+
+    for(int j=0;j<theModel_2->columnCount();j++)
     {
         aItem=new QStandardItem(); //新建一个QStandardItem
         aItem->setSelectable(false);
@@ -488,14 +623,18 @@ void Setting::on_pushButton_remove_1_clicked()
 {
     QModelIndex curIndex=theSelection->currentIndex();//获取当前选择单元格的模型索引
 
+    if(theModel->item(curIndex.row(),0)->checkState() == Qt::Checked) return;
+
     if (curIndex.row()==theModel->rowCount()-1)//最后一行
         theModel->removeRow(curIndex.row()); //删除最后一行
     else
     {
         theModel->removeRow(curIndex.row());//删除一行，并重新设置当前选择行
         theSelection->setCurrentIndex(curIndex,QItemSelectionModel::Select);
-    }
+        }
 }
+
+
 void Setting::on_pushButton_remove_2_clicked()
 {
     QModelIndex curIndex=theSelection_2->currentIndex();//获取当前选择单元格的模型索引
@@ -510,8 +649,10 @@ void Setting::on_pushButton_remove_2_clicked()
 }
 
 
-void Setting::on_tableView_clicked(const QModelIndex &index)
+
+void Setting::on_tableView_clicked(const QModelIndex &index)//CAN颜色点击
 {
+
 
     if(index.column()==4  &&theModel->item(index.row(),0)->checkState()==Qt::Unchecked)
     {
@@ -521,8 +662,27 @@ void Setting::on_tableView_clicked(const QModelIndex &index)
     }
 }
 
-void Setting::on_pushButton_update_1_clicked()
+
+void Setting::on_tableView_3_clicked(const QModelIndex &index) //信号颜色点击
 {
 
-    emit can_filter_update();
+    if(index.column()==3)
+    {
+        QColor color = QColorDialog::getColor(Qt::red, this);
+        QBrush brush(color);
+        theModel_3->setData(index,color,Qt::BackgroundColorRole);
+        int row = index.row();
+        int device = row/6;
+        int channel = row%6;
+        device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->color = color;
+    }
+}
+
+void Setting::on_pushButton_clear_1_clicked()
+{
+    for(int i=0;i<theModel->rowCount();i++)
+    {
+        theModel->item(i,0)->setCheckState(Qt::Unchecked);
+    }
+    theModel->removeRows(0,theModel->rowCount());
 }

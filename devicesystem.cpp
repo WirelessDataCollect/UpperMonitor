@@ -6,7 +6,10 @@
 #include<QDebug>
 #include "devicesystem.h"
 #include<QThread>
+#include<QFile>
+
 #include"md5.h"
+#include"signaldata.h"
 DeviceSystem::DeviceSystem()
 {
     device_num = 5;
@@ -16,6 +19,7 @@ DeviceSystem::DeviceSystem()
         Device *device = new Device();
         device->device_id = i;
         for(int j=0;j<device->signal_number;j++) device->signal_vector.at(j)->device_id = i;
+        for(int j=0;j<2;j++) device->can_vector.at(j)->device_id = i;
         device_vector.append(device);
     }
     udp_order = new MyUDP();
@@ -40,6 +44,9 @@ DeviceSystem::DeviceSystem()
    heart_beat_timer = new QTimer();
    LocalThread();
    tcp_message_flag = 0;
+   test_name = "no_test";
+   auto_stop = new QTimer();
+   connect(auto_stop,SIGNAL(timeout()),this,SLOT(LocalTestStop()));
 
 
 }
@@ -77,11 +84,15 @@ DeviceSystem::~DeviceSystem()
     udp_order->unbindPort();
   //  delete  udp_order;
 
-
     if(is_local_status)
     {
 
     }
+    for(int i=0;i<device_vector.size();i++)
+    {
+        delete device_vector[i];
+    }
+    device_vector.clear();
 }
 
 void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
@@ -161,7 +172,7 @@ void DeviceSystem::onTcpConnectFailed()
 void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArray &message)
 {
     Tcp_Data= message;
-
+   qDebug()<<message;
   //  qDebug()<<"tcp_message_flag"<<tcp_message_flag;
    // qDebug()<<"message.contains(MongoFindDocsNames:)"<<message.contains("MongoFindDocsNames:");
 
@@ -379,8 +390,8 @@ bool DeviceSystem::UdpSendCheck(QByteArray order, QByteArray value)
     for(int i = 0;i<2;i++)
     {
         qDebug()<<i<<"______"<<send_data.toHex();
-        udp_order->waitForReadyRead(300);
-        sleep(100);
+        udp_order->waitForReadyRead(100);
+        sleep(10);
         if(value.isEmpty()) //广播
         {
             if(checkreturn(order.at(0)) == device_all_status.mid(0,5))
@@ -444,26 +455,22 @@ bool DeviceSystem::LocalTestStart()
 
 bool DeviceSystem::LocalTestStop()
 {
+    auto_stop->stop();
+
     QByteArray order;
     QByteArray value;
     order.append(GET_WIFI_SEND_DISABLE);
     bool is_success = false;
     for(char i=0;i<device_num;i++)
     {
-       // if(device_vector.at(i)->actual_status)
-       // {
             value.clear();
             value.append(i+1);
-            for(int j=0;j<3;j++)
+            for(int j=0;j<2;j++)
             {
                 is_success=UdpSendCheck(order,value);
                 if(is_success) break;
 
             }
-            //if(!is_success) return false;
-
-      //  }
-
     }
     return true;
 }
@@ -477,6 +484,7 @@ bool  DeviceSystem::LocalTestIVModel()
     QByteArray iv_model;
     for(char i=0;i<device_num;i++)
     {
+
         if(device_vector.at(i)->actual_status)
         {
 
@@ -487,7 +495,9 @@ bool  DeviceSystem::LocalTestIVModel()
             {
                 iv_model.append(device_vector.at(i)->signal_vector.at(k)->vol_enable);
             }
+
             value.append(iv_model);
+            qDebug()<<"LocalTestIVModel"<<value;
             for(int j=0;j<3;j++)
             {
                 is_success=UdpSendCheck(order,value);
@@ -629,12 +639,13 @@ void DeviceSystem::SetTestDeep(QString str)
 
 void DeviceSystem::ClearData()
 {
-    SetTestName("");
-    SetTestTime(QDateTime::currentDateTime());
     for(int i =0;i<device_num;i++)
     {
         device_vector.at(i)->ClearReceiveData();
     }
+
+
+
 }
 
 void DeviceSystem::NewLocalTest(QString name)
@@ -681,13 +692,74 @@ bool DeviceSystem::FindDocsNames(QDate begin, QDate end)
     QString order = MongoFindDocsNames;
     Tcp_Data_list.clear();
     doc_name.cleardata();
-
     //order.append()
     tcp_client->sendMessage(order);
     tcp_client->waitForReadyRead(3000);
     if(Tcp_Data.isEmpty()) return false;
     else return true;
 }
+
+
+
+bool DeviceSystem::GetRTdata()
+{
+     QString order = ReceiveRtdata;
+     QString value;
+     TcpSendCheck(order,value);
+      return true;
+
+
+}
+
+bool DeviceSystem::StopGetRTdata()
+{
+     QString order = StopReceiveRtdata;
+     QString value;
+     TcpSendCheck(order,value);
+      return true;
+
+
+}
+
+bool DeviceSystem::SendConfigureFile()
+{
+
+    QString order = SendConfigure;
+    QString value("test_name;");
+    emit SaveConfigureFile();
+    QFile file("configure.txt");
+    if (!file.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "WriteTable Error: cannot open file";
+        return false;
+    }
+
+
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    QString filetext = in.readAll();
+
+    qDebug()<<"send configure begin   size:"<<filetext.size();
+    value +=QString::number(filetext.size()+1);
+    value +=";";
+    value+=filetext;
+
+
+    for(int i=0;i<3;i++)
+    {
+       if( TcpSendCheck(order,value))
+           return true;
+    }
+    return false;
+
+}
+
+void DeviceSystem::FindConfigureFile()
+{
+    QString order = ReceiveConfigure;
+    order+="+test_name";
+    tcp_client->sendMessage(order);
+}
+
 void DeviceSystem::ReceiveDocsName(const QByteArray &message)
 {
     QList<QByteArray> list = message.split('\n');
@@ -729,6 +801,7 @@ void DeviceSystem::ReceiveDocsName(const QByteArray &message)
 
      }
 }
+
 
 bool DeviceSystem::FindDocs(int index)
 {
@@ -859,6 +932,7 @@ void  DeviceSystem:: SetFilterLength(int length)
         }
     }
 }
+
 void DeviceSystem::ClearCanFilter()
 {
     for(int i=0;i<device_num;i++)
@@ -869,3 +943,157 @@ void DeviceSystem::ClearCanFilter()
         }
     }
 }
+
+bool DeviceSystem::SaveDataFile(QString file_name)
+{
+    if(file_name.isEmpty()) file_name.append(test_name).append("_data.txt");
+
+    QFile file(file_name);
+    if (!file.open(QFile::WriteOnly | QFile::Text)){
+        qDebug() << "WriteTable Error: cannot open file";
+        return false;
+    }
+    qDebug()<<"SaveDataFile";
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out<<"Test Data File \n";
+    out<<"Save Time: "<<QDateTime::currentDateTime().toString(Qt::ISODate)<<"\n";
+     out<<"Test Time: "<<test_time.toString(Qt::ISODate)<<"\n";
+     out<<"Frenquence: 1ms \n";
+     out<<"\n";
+
+     QString str;
+
+     QVector<int> length_vector;
+     SignalData *signaldata;
+
+     for(int i=0;i<device_num;i++)
+     {
+         out<<"Device"<< i+1<<" data start ---------------------------------------\n";
+         for(int k=0;k<6;k++)
+         {
+              signaldata = device_vector.at(i)->signal_vector.at(k)->signal_data;
+             out<<"Signal data start-----------------------------------------------\n";
+             out<<"Device, Channel, Length:\n";
+             out<<i+1<<",    "<<k+1<<",    "<<signaldata->val_list.size()<<"\n";
+              out<<"Time(s),    Value\n";
+             for(int j=0;j<signaldata->val_list.size();j++)
+             {
+                 out<<  signaldata->time_list.at(j)<<",    "<<signaldata->val_list.at(j)<<"\n";
+               //  qDebug()<<signaldata->time_list.at(j)<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
+             }
+              out<<"Signal data end-----------------------------------------------\n";
+              out<<"\n";
+         }
+         for(int k =0;k<2;k++)
+         {
+             for(int j = 0;j<device_vector.at(i)->can_vector.at(k)->filter_list.size();j++)
+             {
+                 signaldata = device_vector.at(i)->can_vector.at(k)->filter_list.at(j);
+                 out<<"CAN data start-----------------------------------------------\n";
+                 out<<"Device,    Channel,    ID(hex),    Length\n";
+                 out<<i+1<<",    "<<k+1<<",    "<<QString::number(signaldata->id,16)<<",     "<<signaldata->message_list.size()<<"\n";
+
+                 for(int m =0;m<signaldata->message_list.size();m++)
+                 {
+                     out<<signaldata->time_list.at(m)<<",    ";
+                     out<<signaldata->message_list.at(m).toHex();                     out<<"\n";
+                 }
+                 out<<"Can data end-----------------------------------------------\n";
+                 out<<"\n";
+             }
+         }
+           out<<"Device"<< i+1<<" data end ---------------------------------------\n";
+           out<<"\n";
+     }
+     return true;
+}
+bool DeviceSystem::LoadDataFile(QString file_name)
+{
+    if(file_name.isEmpty()) file_name= "configure.txt";
+
+    QFile file(file_name);
+    if (!file.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "LoadDataFile Error: cannot open file";
+        return false;
+    }
+
+    qDebug() << "LoadDataFile";
+   QStringList fFileContent;
+   QTextStream in(&file);
+   in.setCodec("UTF-8");
+   while(!in.atEnd())
+   {
+       QString str = in.readLine();
+       fFileContent.append(str);
+   }
+   QString linetext;
+   QStringList linetextlist;
+   int device, channel,length;
+   double time;
+   int val;
+   int id;
+   bool ok;
+   QByteArray data;
+   for(int i=0;i<fFileContent.count();i++)
+   {
+       linetext = fFileContent.at(i);
+       if(linetext.contains("Signal data start"))
+       {
+           i+=2;
+           linetext = fFileContent.at(i);
+           linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+           device = linetextlist.at(0).toInt();
+           channel = linetextlist.at(1).toInt();
+           length =  linetextlist.at(2).toInt();
+
+           qDebug()<<"Signal data start";
+           qDebug()<<"device:"<<device<<"channel"<<channel<<"length"<<length;
+
+           for(int j = 0;j< length; j++)
+           {
+               i++;
+               linetext = fFileContent.at(i);
+               linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+               time= linetextlist.at(0).toDouble();
+               val = linetextlist.at(1).toInt();
+               device_vector.at(device-1)->signal_vector.at(channel-1)->signal_data->AddData(time,val);
+           }
+       }
+       if(linetext.contains("CAN data start"))
+       {
+
+           i+=2;
+           linetext = fFileContent.at(i);
+           linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+           device = linetextlist.at(0).toInt();
+           channel = linetextlist.at(1).toInt();
+           id = linetextlist.at(2).toInt(&ok,16);
+           qDebug()<<"Can data read start";
+           length =  linetextlist.at(3).toInt();
+            qDebug()<<"device:"<<device<<"channel:"<<channel<<"id:"<<id<<"length:"<<length;
+           for(int j = 0; j<length;j++)
+           {
+               i++;
+               linetext = fFileContent.at(i);
+               linetextlist = linetext.split(QRegExp(",\\s+"),QString::SkipEmptyParts);
+               time= linetextlist.at(0).toDouble();
+               data.clear();
+               for(int k=0;k<8;k++)
+               {
+                   char c = char(linetextlist.at(1).mid(k*2,2).toInt(&ok,16));
+                   if(ok) data.append(c);
+               }
+                device_vector.at(device-1)->can_vector.at(channel-1)->AddFrameData(id,time,data);
+           }
+       }
+    }
+   return true;
+}
+
+void DeviceSystem::AutoStop(int time)
+{
+    if(time>0) auto_stop->start(time);
+}
+

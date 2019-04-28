@@ -11,6 +11,7 @@ class Device: public QObject
 
 public:
     Device();
+    ~Device();
     //seting
     bool setting_status;
     //Actually

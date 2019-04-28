@@ -13,7 +13,8 @@ class DeviceCan
 {
 public:
     DeviceCan();
-    char can_id;
+    int device_id;
+    int signal_id;
     char baud_rate;
     bool show_enable;
     QVector<SignalData *> filter_list;
@@ -21,8 +22,10 @@ public:
     void SetBaudRate(bool status);
     bool AddFilter(uint id, QColor color, QString name, QString express_str);
     void RemoveFilter(QColor color, QString name, QString express_str);
-    void AddFrameData(quint32 id,double time, QByteArray data);
-    bool update_size;
+    void AddFrameData(int id,double time, QByteArray data);
+    void ClearReceiveData();
+    bool update_status;
+
 
 private:
 

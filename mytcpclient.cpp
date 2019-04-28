@@ -111,6 +111,7 @@ void MyTCPClient::sendMessage(QByteArray Data)
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         tcpSocket->write(Data);
+
         tcpSocket->flush();
     }
 }
@@ -120,7 +121,8 @@ void MyTCPClient::sendMessage(QString str)
     QByteArray Data = str.toUtf8();
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(Data);
+        qint64 number = tcpSocket->write(Data);
+        qDebug()<<"sendMessage sendsize"<<number;
         tcpSocket->flush();
     }
 }

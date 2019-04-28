@@ -22,6 +22,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
@@ -39,7 +40,6 @@ class Ui_MainWin
 {
 public:
     QAction *action;
-    QAction *action_2;
     QAction *action_3;
     QAction *action_4;
     QAction *action_5;
@@ -47,6 +47,10 @@ public:
     QAction *action_7;
     QAction *action_8;
     QAction *action_9;
+    QAction *action_10;
+    QAction *action_11;
+    QAction *action_12;
+    QAction *action_2;
     QWidget *centralwidget;
     QGridLayout *gridLayout_6;
     QSplitter *splitter_4;
@@ -103,6 +107,10 @@ public:
     QWidget *widget_chart;
     QTableView *tableView;
     QMenuBar *menubar;
+    QMenu *menu;
+    QMenu *menu_2;
+    QMenu *menu_3;
+    QMenu *menu_4;
     QStatusBar *statusbar;
     QToolBar *toolBar;
 
@@ -117,50 +125,57 @@ public:
         QIcon icon;
         icon.addFile(QStringLiteral(":/ico/ico/icons/316.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action->setIcon(icon);
-        action_2 = new QAction(MainWin);
-        action_2->setObjectName(QStringLiteral("action_2"));
-        action_2->setCheckable(true);
-        QIcon icon1;
-        icon1.addFile(QStringLiteral(":/ico/ico/icons/318.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_2->setIcon(icon1);
         action_3 = new QAction(MainWin);
         action_3->setObjectName(QStringLiteral("action_3"));
-        QIcon icon2;
-        icon2.addFile(QStringLiteral(":/ico/ico/icons/324.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_3->setIcon(icon2);
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/ico/ico/icons/324.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_3->setIcon(icon1);
         action_4 = new QAction(MainWin);
         action_4->setObjectName(QStringLiteral("action_4"));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/ico/ico/icons/exit.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_4->setIcon(icon3);
+        QIcon icon2;
+        icon2.addFile(QStringLiteral(":/ico/ico/icons/exit.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_4->setIcon(icon2);
         action_5 = new QAction(MainWin);
         action_5->setObjectName(QStringLiteral("action_5"));
         action_5->setCheckable(true);
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/ico/ico/icons/418.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_5->setIcon(icon4);
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/ico/ico/icons/418.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_5->setIcon(icon3);
         action_6 = new QAction(MainWin);
         action_6->setObjectName(QStringLiteral("action_6"));
         action_6->setCheckable(true);
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/ico/ico/icons/103.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_6->setIcon(icon5);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/ico/ico/icons/103.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_6->setIcon(icon4);
         action_7 = new QAction(MainWin);
         action_7->setObjectName(QStringLiteral("action_7"));
         action_7->setCheckable(true);
-        QIcon icon6;
-        icon6.addFile(QStringLiteral(":/ico/ico/icons/300.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_7->setIcon(icon6);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/ico/ico/icons/300.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_7->setIcon(icon5);
         action_8 = new QAction(MainWin);
         action_8->setObjectName(QStringLiteral("action_8"));
-        QIcon icon7;
-        icon7.addFile(QStringLiteral(":/ico/ico/icons/save1.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_8->setIcon(icon7);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/ico/ico/icons/save1.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_8->setIcon(icon6);
         action_9 = new QAction(MainWin);
         action_9->setObjectName(QStringLiteral("action_9"));
+        QIcon icon7;
+        icon7.addFile(QStringLiteral(":/ico/ico/icons/330.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_9->setIcon(icon7);
+        action_10 = new QAction(MainWin);
+        action_10->setObjectName(QStringLiteral("action_10"));
+        action_10->setIcon(icon2);
+        action_11 = new QAction(MainWin);
+        action_11->setObjectName(QStringLiteral("action_11"));
+        action_11->setIcon(icon2);
+        action_12 = new QAction(MainWin);
+        action_12->setObjectName(QStringLiteral("action_12"));
+        action_2 = new QAction(MainWin);
+        action_2->setObjectName(QStringLiteral("action_2"));
         QIcon icon8;
-        icon8.addFile(QStringLiteral(":/ico/ico/icons/330.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        action_9->setIcon(icon8);
+        icon8.addFile(QStringLiteral(":/ico/ico/icons/420.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_2->setIcon(icon8);
         centralwidget = new QWidget(MainWin);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_6 = new QGridLayout(centralwidget);
@@ -425,7 +440,15 @@ public:
         MainWin->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWin);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1207, 26));
+        menubar->setGeometry(QRect(0, 0, 1207, 23));
+        menu = new QMenu(menubar);
+        menu->setObjectName(QStringLiteral("menu"));
+        menu_2 = new QMenu(menubar);
+        menu_2->setObjectName(QStringLiteral("menu_2"));
+        menu_3 = new QMenu(menubar);
+        menu_3->setObjectName(QStringLiteral("menu_3"));
+        menu_4 = new QMenu(menubar);
+        menu_4->setObjectName(QStringLiteral("menu_4"));
         MainWin->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWin);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -435,15 +458,33 @@ public:
         toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         MainWin->addToolBar(Qt::TopToolBarArea, toolBar);
 
+        menubar->addAction(menu->menuAction());
+        menubar->addAction(menu_3->menuAction());
+        menubar->addAction(menu_2->menuAction());
+        menubar->addAction(menu_4->menuAction());
+        menu->addAction(action_10);
+        menu->addAction(action_8);
+        menu->addSeparator();
+        menu->addAction(action_11);
+        menu->addAction(action_12);
+        menu_2->addAction(action);
+        menu_2->addAction(action_3);
+        menu_2->addSeparator();
+        menu_2->addAction(action_4);
+        menu_3->addAction(action_6);
+        menu_3->addAction(action_7);
+        menu_3->addSeparator();
+        menu_3->addAction(action_5);
+        menu_3->addAction(action_2);
+        menu_4->addAction(action_9);
         toolBar->addAction(action);
-        toolBar->addAction(action_2);
         toolBar->addAction(action_3);
         toolBar->addAction(action_8);
         toolBar->addAction(action_6);
         toolBar->addAction(action_7);
         toolBar->addAction(action_5);
+        toolBar->addAction(action_2);
         toolBar->addAction(action_4);
-        toolBar->addAction(action_9);
 
         retranslateUi(MainWin);
 
@@ -455,19 +496,21 @@ public:
         MainWin->setWindowTitle(QApplication::translate("MainWin", "MainWindow", Q_NULLPTR));
         action->setText(QApplication::translate("MainWin", "\346\226\260\345\273\272\345\256\236\351\252\214", Q_NULLPTR));
         action->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+N", Q_NULLPTR));
-        action_2->setText(QApplication::translate("MainWin", "\346\232\202\345\201\234\345\256\236\351\252\214", Q_NULLPTR));
-        action_2->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+S", Q_NULLPTR));
         action_3->setText(QApplication::translate("MainWin", "\347\273\223\346\235\237\345\256\236\351\252\214", Q_NULLPTR));
         action_3->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+C", Q_NULLPTR));
         action_4->setText(QApplication::translate("MainWin", "\350\256\276\347\275\256", Q_NULLPTR));
         action_5->setText(QApplication::translate("MainWin", "\346\224\276\345\244\247", Q_NULLPTR));
         action_6->setText(QApplication::translate("MainWin", "\345\217\226\347\202\271", Q_NULLPTR));
         action_7->setText(QApplication::translate("MainWin", "\345\210\240\347\202\271", Q_NULLPTR));
-        action_8->setText(QApplication::translate("MainWin", "\344\277\235\345\255\230", Q_NULLPTR));
+        action_8->setText(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\225\260\346\215\256", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
         action_8->setToolTip(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\265\213\350\257\225\347\273\223\346\236\234", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         action_9->setText(QApplication::translate("MainWin", "\345\270\256\345\212\251\346\226\207\346\241\243", Q_NULLPTR));
+        action_10->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\346\225\260\346\215\256", Q_NULLPTR));
+        action_11->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
+        action_12->setText(QApplication::translate("MainWin", "\345\257\274\345\207\272\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
+        action_2->setText(QApplication::translate("MainWin", "\346\270\205\345\261\217", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
@@ -488,6 +531,10 @@ public:
         radioButton_8->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2573", Q_NULLPTR));
         radioButton_9->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2574", Q_NULLPTR));
         radioButton_10->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2575", Q_NULLPTR));
+        menu->setTitle(QApplication::translate("MainWin", "\346\226\207\344\273\266", Q_NULLPTR));
+        menu_2->setTitle(QApplication::translate("MainWin", "\345\256\236\351\252\214", Q_NULLPTR));
+        menu_3->setTitle(QApplication::translate("MainWin", "\350\247\206\345\233\276", Q_NULLPTR));
+        menu_4->setTitle(QApplication::translate("MainWin", "\345\270\256\345\212\251", Q_NULLPTR));
         toolBar->setWindowTitle(QApplication::translate("MainWin", "toolBar", Q_NULLPTR));
     } // retranslateUi
 

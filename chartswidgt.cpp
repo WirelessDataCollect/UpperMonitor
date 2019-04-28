@@ -73,10 +73,9 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     m_chart->createDefaultAxes();
 
      timer = new QTimer();
-     timer->start(300);
+     timer->start(500);
      connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
-
 }
 
 void chartswidgt::ReveiveFrameData(int device, int signal, QString name, QColor color, QList<QPointF> frame_uint_data, bool is_frame)
@@ -145,6 +144,7 @@ void chartswidgt::ReveiveFrameData(int device, int signal, QString name, QColor 
 
 //}
 
+
 void chartswidgt::UpdateChart()
 {
     m_chartView->setUpdatesEnabled(false);
@@ -154,27 +154,27 @@ void chartswidgt::UpdateChart()
         for(int signal =0;signal<6;signal++)
         {
             QLineSeries * series = series_list.at(device).at(signal);
-            DeviceSignal *device_signal = device_system->device_vector.at(device)->signal_vector.at(signal);
-            bool status = device_signal->show_enable;
+            SignalData *device_signal = device_system->device_vector.at(device)->signal_vector.at(signal)->signal_data;
 
-            if(status && !device_signal->all_unit_data.isEmpty())
+            if(device_signal->show_enable)
             {
                 bool update =  device_signal->update_status;
+                if(series->color()!=device_signal->color) series->setColor(device_signal->color);
+                if(series->name()!=device_signal->name) series->setName(device_signal->name);
+                // && !device_signal->all_unit_data.isEmpty()
                 if(update)
                 {
-                    if(series->color()!=device_signal->line_collor) series->setColor(device_signal->line_collor);
-                    if(series->name()!=device_signal->signal_name) series->setName(device_signal->signal_name);
-                        device_signal->update_status = false;
-                       qDebug()<<"ddddddddddd"<<device<<signal;
-                        series->replace(device_signal->all_unit_data);
-                       qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
-                        if(!m_chart->series().contains(series)) m_chart->addSeries(series);
-                   }
+                    device_signal->update_status = false;
+
+                  series->replace(device_signal->all_unit_data);
+                    qDebug()<<"Signal plot------------------------------------";
+                     qDebug()<<device_signal->all_unit_data.size();
+                   if(!m_chart->series().contains(series)) m_chart->addSeries(series);
                 }
-
-            else if(m_chart->series().contains(series)) m_chart->removeSeries(series);
+            }
         }
+
         for(int channel=0;channel<2;channel++)
         {
               QVector<QLineSeries *> series_list = series_can[device][channel];
@@ -182,9 +182,9 @@ void chartswidgt::UpdateChart()
               SignalData *device_signal;
                QLineSeries * series;
 
-               if(device_system->device_vector.at(device)->can_vector.at(channel)->update_size)
+               if(device_system->device_vector.at(device)->can_vector.at(channel)->update_status)
                {
-                   device_system->device_vector.at(device)->can_vector.at(channel)->update_size = false;
+                   device_system->device_vector.at(device)->can_vector.at(channel)->update_status = false;
 
                    for(int i =0;i<series_list.size();i++)
                    {
@@ -197,7 +197,7 @@ void chartswidgt::UpdateChart()
                    {
                        series = new QLineSeries();
                        series_list.append(series);
-                       m_chart->addSeries(series);
+                      // m_chart->addSeries(series);
                    }
                    qDebug()<<"-------------------------------------------";
                    qDebug()<<"series_list.size()"<<series_list.size();
@@ -208,8 +208,8 @@ void chartswidgt::UpdateChart()
               {
 
                   device_signal = device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i);
-                  status = device_signal->show_enable;
-                  if(status)
+
+                  if(device_signal->show_enable)
                   {
                        bool update =  device_signal->update_status;
                        if(update && !device_signal->all_unit_data.isEmpty())
@@ -217,18 +217,14 @@ void chartswidgt::UpdateChart()
                            series = series_list.at(i);
                            if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                            if(series->name()!=device_signal->name) series->setName(device_signal->name);
-                               device_signal->update_status = false;
-
-                               series->replace(device_signal->all_unit_data);
-                              qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-
-                               if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+                           device_signal->update_status = false;
+                           series->replace(device_signal->all_unit_data);
+                           qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                           if(!m_chart->series().contains(series)) m_chart->addSeries(series);
                           }
-
                   }
               }
         }
-
     }
     connectMarkers();
     m_chartView->setUpdatesEnabled(true);
@@ -258,7 +254,8 @@ void chartswidgt::UpdateChartView()
         for(int device=0;device<5;device++)
         {
 
-            }
+        }
+
 
 //    bool status = false;
 //    for(int device=0;device<5;device++)
@@ -331,6 +328,7 @@ void chartswidgt::GetSeriesPoint(bool status)
     qDebug()<<"get_point_status"<<get_point_status;
 }
 
+
 void chartswidgt::InitSeries()
 {
     m_chart->series().clear();
@@ -341,10 +339,7 @@ void chartswidgt::InitSeries()
         for(int i=0;i<6;i++)
         {
             QLineSeries *series = new QLineSeries();
-
-
             series->setUseOpenGL(true);
-
             itor->append(series);
         }
     }
@@ -359,8 +354,6 @@ void chartswidgt::InitSeries()
     {
         itor->resize(6);
     }
-
-
     series_can.resize(5);
     for(auto itor = series_can.begin();itor!=series_can.end();itor++)
     {
@@ -372,9 +365,6 @@ void chartswidgt::InitSeries()
     {
         itor->resize(8);
     }
-
-
-
 }
 
 void chartswidgt::connectMarkers()
@@ -458,7 +448,6 @@ void chartswidgt::handleMarkerClicked()
     }
 }
 
-
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0) {
@@ -516,7 +505,6 @@ void chartswidgt::clickpoint(const QPointF &point,bool status){
        emit AddPointData(time,color,name,value);
        qDebug()<<"AddPointData send";
 }
-
 
 }
 

@@ -25,7 +25,6 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
-#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QWidget>
 
@@ -47,7 +46,7 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab_3;
     QGridLayout *gridLayout;
-    QTableWidget *tableWidget;
+    QTableView *tableView_3;
     QWidget *tab_4;
     QGridLayout *gridLayout_6;
     QGroupBox *groupBox;
@@ -58,7 +57,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QPushButton *pushButton_add_1;
     QPushButton *pushButton_remove_1;
-    QPushButton *pushButton_update_1;
+    QPushButton *pushButton_clear_1;
     QSpacerItem *horizontalSpacer;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_5;
@@ -127,13 +126,10 @@ public:
         tab_3->setObjectName(QStringLiteral("tab_3"));
         gridLayout = new QGridLayout(tab_3);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        tableWidget = new QTableWidget(tab_3);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        tableWidget->setStyleSheet(QLatin1String("\n"
-"selection-background-color: rgb(0,120,215);\n"
-""));
+        tableView_3 = new QTableView(tab_3);
+        tableView_3->setObjectName(QStringLiteral("tableView_3"));
 
-        gridLayout->addWidget(tableWidget, 0, 0, 1, 1);
+        gridLayout->addWidget(tableView_3, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
@@ -199,23 +195,23 @@ public:
 
         horizontalLayout->addWidget(pushButton_remove_1);
 
-        pushButton_update_1 = new QPushButton(frame_2);
-        pushButton_update_1->setObjectName(QStringLiteral("pushButton_update_1"));
-        sizePolicy.setHeightForWidth(pushButton_update_1->sizePolicy().hasHeightForWidth());
-        pushButton_update_1->setSizePolicy(sizePolicy);
-        pushButton_update_1->setMinimumSize(QSize(20, 20));
-        pushButton_update_1->setMaximumSize(QSize(20, 20));
-        pushButton_update_1->setStyleSheet(QLatin1String("\n"
+        pushButton_clear_1 = new QPushButton(frame_2);
+        pushButton_clear_1->setObjectName(QStringLiteral("pushButton_clear_1"));
+        sizePolicy.setHeightForWidth(pushButton_clear_1->sizePolicy().hasHeightForWidth());
+        pushButton_clear_1->setSizePolicy(sizePolicy);
+        pushButton_clear_1->setMinimumSize(QSize(20, 20));
+        pushButton_clear_1->setMaximumSize(QSize(20, 20));
+        pushButton_clear_1->setStyleSheet(QLatin1String("\n"
 "QPushButton{\n"
-"border-image: url(:/ico/ico/icons/322.bmp);\n"
+"border-image: url(:/ico/ico/icons/324.bmp);\n"
 "\n"
 "}\n"
 "QPushButton:pressed{\n"
 "    \n"
-"    border-image: url(:/ico/ico/icons/323.bmp)\n"
+"    border-image: url(:/ico/ico/icons/325.bmp)\n"
 "}"));
 
-        horizontalLayout->addWidget(pushButton_update_1);
+        horizontalLayout->addWidget(pushButton_clear_1);
 
 
         gridLayout_3->addLayout(horizontalLayout, 0, 0, 1, 1);
@@ -312,7 +308,7 @@ public:
 
         retranslateUi(Setting);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Setting);
@@ -329,8 +325,8 @@ public:
         groupBox->setTitle(QApplication::translate("Setting", "\350\277\207\346\273\244\345\231\250\347\273\204", Q_NULLPTR));
         pushButton_add_1->setText(QString());
         pushButton_remove_1->setText(QString());
-        pushButton_update_1->setText(QString());
-        groupBox_2->setTitle(QApplication::translate("Setting", "\346\225\260\346\215\256\346\216\245\346\224\266", Q_NULLPTR));
+        pushButton_clear_1->setText(QString());
+        groupBox_2->setTitle(QApplication::translate("Setting", "\346\225\260\346\215\256\346\230\276\347\244\272", Q_NULLPTR));
         pushButton_add_2->setText(QString());
         pushButton_remove_2->setText(QString());
         pushButton_clear_2->setText(QString());

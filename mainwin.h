@@ -53,7 +53,7 @@ private slots:
     void AddTableRaw(QColor color, QString name, QString number);
     void on_action_3_triggered();
 
-    void on_action_2_toggled(bool arg1);
+
 
     void on_action_6_triggered(bool checked);
 
@@ -67,6 +67,12 @@ private slots:
     void on_UpdataDocsnames(QList<QString> name,QList<QString> time);
     void on_currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void on_action_9_triggered();
+
+    void on_action_10_triggered(bool checked);
+
+    void on_action_10_triggered();
+
+    void on_action_2_triggered();
 
 private:
     Ui::MainWin *ui;

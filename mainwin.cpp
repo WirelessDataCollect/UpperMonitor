@@ -5,6 +5,9 @@
 #include<QGridLayout>
 #include<QInputDialog>
 #include<QMessageBox>
+#include<QFileDialog>
+#include<QDialogButtonBox>
+#include<QFormLayout>
 #include"md5.h"
 #include<QThread>
 
@@ -113,7 +116,7 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
 
     //action
     ui->action->setEnabled(true);
-    ui->action_2->setDisabled(true);
+
     ui->action_3->setDisabled(true);
 
 
@@ -129,8 +132,12 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
 
 MainWin::~MainWin()
 {
+    delete settingui;
     delete ui;
     delete  device_system;
+
+    delete chart_widget;
+
 }
 
 
@@ -179,45 +186,71 @@ void MainWin::on_action_5_triggered(bool checked)
 void MainWin::on_action_triggered()
 {
     //ui
-    QString dlgTitle = "新建实验";
-    QString txtLabel = "实验名称";
-    QString default_input = "实验1";
-    QLineEdit::EchoMode echo_mode = QLineEdit::Normal;
-    bool ok = false;
-    QString text = QInputDialog::getText(this,dlgTitle,txtLabel,echo_mode,default_input,&ok);
-    if(ok && !text.isEmpty())
-    {
-    ui->action->setDisabled(true);
-    ui->action_2->setEnabled(true);
-    ui->action_3->setEnabled(true);
-    //新建实验
-    device_system->NewLocalTest(text);
-    ui->plainTextEdit->appendPlainText(device_system->test_name);
+//    QString dlgTitle = "新建实验";
+//    QString txtLabel = "实验名称";
+//    QString default_input = "实验1";
+//    QLineEdit::EchoMode echo_mode = QLineEdit::Normal;
+//    bool ok = false;
+//    QString text = QInputDialog::getText(this,dlgTitle,txtLabel,echo_mode,default_input,&ok);
+//    if(ok && !text.isEmpty())
+//    {
+//    ui->action->setDisabled(true);
+
+//    ui->action_3->setEnabled(true);
+//    //新建实验
+//    device_system->NewLocalTest(text);
+//    ui->plainTextEdit->appendPlainText(device_system->test_name);
+
+//    }
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    dialog.setWindowTitle("新建实验");
+
+
+
+    // Value1
+    QString value1 = QString("实验名称: ");
+    QString test_name("实验1");
+    QLineEdit *line_edit = new QLineEdit("实验1");
+    form.addRow(value1, line_edit);
+    // Value2
+
+    QString value2 = QString("测试时长(s): ");
+    QSpinBox *spinbox = new QSpinBox(&dialog);
+    spinbox->setMaximum(1000000);
+    form.addRow(value2, spinbox);
+
+    // Add Cancel and OK button
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    form.setSizeConstraint(QLayout::SetFixedSize);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    if (dialog.exec() == QDialog::Accepted) {
+        test_name = line_edit->text();
+        int time = spinbox->value()*1000;
+        ui->action->setDisabled(true);
+        ui->action_3->setEnabled(true);
+           //新建实验
+           device_system->NewLocalTest(test_name);
+           device_system->AutoStop(time);
+           ui->plainTextEdit->appendPlainText(device_system->test_name);
     }
 }
-
 
 void MainWin::on_action_3_triggered()
 {
     //结束实验
     ui->action->setEnabled(true);
-    ui->action_2->setDisabled(true);
+
     ui->action_3->setDisabled(true);
     device_system->EndLocalTest();
 }
 
 
-void MainWin::on_action_2_toggled(bool arg1)
-{
-    if(arg1)
-    {
-        ui->action_2->setText("继续");
-    }
-    else
-    {
-        ui->action_2->setText("暂停");
-    }
-}
+
+
 
 void MainWin::on_action_6_triggered(bool checked)
 
@@ -239,26 +272,47 @@ void MainWin::on_action_7_triggered(bool checked)
 }
 void MainWin::on_action_8_triggered()
 {
-    //保存测量结果
+    QString curPath = QCoreApplication::applicationDirPath();
+   // curPath = QDir::currentPath();
+    QString dlgTile = "选择一个目录";
+    QString selectedDir = QFileDialog::getExistingDirectory(this,dlgTile,curPath,QFileDialog::ShowDirsOnly);
 
-   //qDebug()<<enable_group->checkedId();
-   QList<QString> name;
-   QList<QString> time;
-   name.append("1");
-   name.append("2");
-   name.append("3");
+    if(!selectedDir.isEmpty())
+    {
+        selectedDir+="/";
+        selectedDir+=device_system->test_name;
+        QDir dir;
+        if(!dir.exists(selectedDir)) dir.mkpath(selectedDir);
+        QString data_file = selectedDir+"/"+"data.txt";
+        QString configure_file = selectedDir+"/"+"configure.txt";
+        device_system->SaveDataFile(data_file);
+        settingui->WriteTableView(configure_file);
+    }
+//    //保存测量结果
 
-   time.append("a");
-   time.append("b");
-   time.append("c");
-   on_UpdataDocsnames(name,time);
+//   //qDebug()<<enable_group->checkedId();
+//   QList<QString> name;
+//   QList<QString> time;
+//   name.append("1");
+//   name.append("2");
+//   name.append("3");
+
+//   time.append("a");
+//   time.append("b");
+//   time.append("c");
+//   on_UpdataDocsnames(name,time);
+//   device_system->SendConfigureFile();
+   //settingui->ReadTableView();
 
   // device_system->LocalTestStop();
 
-   device_system->SendCanFilter();
-   QVector<quint8> test;
-   for(quint8 i=0;i<8;i++) test.append(i);
-   qDebug()<<device_system->device_vector.at(0)->can_vector.at(0)->filter_list.size();
+   //device_system->SendCanFilter();
+ //  QVector<quint8> test;
+  // for(quint8 i=0;i<8;i++) test.append(i);
+ //  QByteArray a;
+ //  for(int i=1;i<9;i++)
+ //      a.append(a);
+   //qDebug()<<device_system->device_vector.at(0)->can_vector.at(0)->filter_list.at(0)->EvaluateExpress(a);
 
 }
 
@@ -349,6 +403,7 @@ void MainWin::on_currentRowChanged(const QModelIndex &current, const QModelIndex
 void MainWin::on_action_9_triggered()
 {
     //帮助文档
+    device_system->FindConfigureFile();
     qDebug()<<"HELP";
     if(help_process == nullptr) help_process = new QProcess();
     QString exe("./release/assistant.exe");
@@ -358,8 +413,34 @@ void MainWin::on_action_9_triggered()
     if (!help_process->waitForStarted()) {
         QMessageBox::critical(0, QObject::tr("Tips"),
             QObject::tr("Unable to launch Qt Assistant (%1)").arg(exe));
-         qDebug()<<"HELPxxxxxxxxxxx";
-
+         //qDebug()<<"HELPxxxxxxxxxxx";
     }
+}
+
+void MainWin::on_action_10_triggered(bool checked)
+{
+    if(checked) device_system->GetRTdata();
+    else device_system->StopGetRTdata();
+}
+
+void MainWin::on_action_10_triggered()
+{
+    //导入数据
+
+    QString curPath = QCoreApplication::applicationDirPath();
+   // curPath = QDir::currentPath();
+    QString dlgTile = "选择一个目录";
+    QString selectedDir = QFileDialog::getExistingDirectory(this,dlgTile,curPath,QFileDialog::ShowDirsOnly);
+    QString data_file = selectedDir+"/"+"data.txt";
+    QString configure_file = selectedDir+"/"+"configure.txt";
+    settingui->ReadTableView(configure_file);
+    device_system->LoadDataFile(data_file);
+
+}
+
+void MainWin::on_action_2_triggered()
+{
+    //清除数据
+    device_system->ClearData();
 
 }

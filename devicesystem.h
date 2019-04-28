@@ -26,8 +26,10 @@
 
 #define MongoFindDocsNames  "MongoFindDocsNames"
 #define MongoFindDocs "MongoFindDocs"
-
-
+#define SendConfigure "StartTest"
+#define ReceiveConfigure "GetTestConfig"
+#define ReceiveRtdata "GetRtdata"
+#define StopReceiveRtdata "StopGetRtdata"
 #define PACKAGE_HEAD_FRAME_LENGTH 48
 class DeviceSystem: public QObject
 {
@@ -102,6 +104,13 @@ public:
     void ReciveDeviceData();
     void  SetFilterLength(int length);
     void ClearCanFilter();
+    bool SendConfigureFile();
+    void FindConfigureFile();
+    bool GetRTdata();
+    bool StopGetRTdata();
+    bool SaveDataFile(QString file_name);
+    bool LoadDataFile(QString file_name);
+    void AutoStop(int time);
     QByteArray device_data;
     class DocName
     {
@@ -123,6 +132,7 @@ signals:
     void ReceiveRadstr(QByteArray str);
     void TcpConnectStatus(bool status, QString str = "");
     void UpdataDocsnames(QList<QString> name,QList<QString> time);
+    void SaveConfigureFile();
 
 
 
@@ -156,7 +166,9 @@ private:
 
     void sleep(int msec);
     QTimer *heart_beat_timer =nullptr;
+    QTimer *auto_stop = nullptr;
     int time_count;
+
 
 
 

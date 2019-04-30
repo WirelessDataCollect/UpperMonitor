@@ -1,5 +1,5 @@
 Configure File 
-Save Time: 2019-04-28T21:06:53
+Save Time: 2019-04-30T11:08:12
 Test Time: 
 
 Device configure start---------------------------------------
@@ -15,7 +15,7 @@ CAN configure start---------------------------------------
 Table Size:
 2,    8
 状态,    终端,    通道,    ID(hex),    颜色,    名称,    表达式,    数量
-false,    ,    ,    ,    #ffffff,    ,    ,    
+false,    1,    1,    ,    #000000,    ,    ,    
 false,    ,    ,    ,    #ffffff,    ,    ,    
 CAN configure end---------------------------------------
 

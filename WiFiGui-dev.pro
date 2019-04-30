@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     qwcomboboxdelegate.cpp \
     devicecan.cpp \
     exprtk.cpp \
-    signaldata.cpp
+    signaldata.cpp \
+    datadialog.cpp
 
 HEADERS  += \
     myudp.h \
@@ -67,12 +68,14 @@ HEADERS  += \
     devicecan.h \
     exprtk.hpp \
     exprtk.h \
-    signaldata.h
+    signaldata.h \
+    datadialog.h
 
 FORMS    += login.ui \
     setting.ui \
     mainwin.ui \
-    dialogconf.ui
+    dialogconf.ui \
+    datadialog.ui
 
 RESOURCES += \
     src.qrc

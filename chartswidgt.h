@@ -44,6 +44,9 @@ public:
 
     ChartView *m_chartView;
     void GetSeriesPoint(bool status);
+    void showDataDialog();
+
+
 
 public slots:
 
@@ -57,6 +60,10 @@ public slots:
     void ReveiveFrameData(int device, int signal, QString name, QColor color,QList<QPointF> frame_uint_data,bool is_frame);
     void UpdateChartView();
     void UpdateChart();
+    void setMaxRange();
+    void setMinRange();
+    void setMaxValue(float val);
+    void setMinValue(float val);
 
 private:
     bool isClicking;
@@ -95,7 +102,10 @@ private:
 
     void InitSeries();
     int IndexofSeries(QLineSeries *series, int device, int signal,QString name, QColor color);
-
+    float m_min;
+    float m_max;
+    QLineEdit *lineEditMaxRange;
+    QLineEdit *lineEditMinRange;
 
 signals:
     void AddPointData(QString time, QColor color, QString name, QString point);
@@ -105,7 +115,6 @@ protected:
 
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
-    void mouseMoveEvent(QMouseEvent * event);
 
 };
 

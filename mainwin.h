@@ -74,6 +74,8 @@ private slots:
 
     void on_action_2_triggered();
 
+    void on_action_13_triggered();
+
 private:
     Ui::MainWin *ui;
 

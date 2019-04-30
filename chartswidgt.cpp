@@ -13,8 +13,10 @@
 #include <QValueAxis>
 #include<QToolTip>
 #include<QThread>
-
-
+#include<QLineEdit>
+#include<QDialog>
+#include<QTableWidget>
+#include"datadialog.h"
 QT_CHARTS_USE_NAMESPACE
 
 chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
@@ -26,15 +28,17 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     device_system = system;
     m_chart = new QChart();
 
-    m_chartView = new ChartView(m_chart,this);
+  //  m_chartView = new ChartView(m_chart,this);
+  //  m_chartView->setRubberBand(QChartView::NoRubberBand);
 
-
-    m_chartView->setRubberBand(QChartView::NoRubberBand);
+        m_chartView = new ChartView(m_chart);
+       m_chartView->setRubberBand(QChartView::RectangleRubberBand);
+    m_chartView->setInteractive(true);
 
     this->setMouseTracking(true);
-    m_chartView->setInteractive(true);
+
     h_slider = new DoubleSlider();
-    v_slider = new DoubleSlider();
+
 
    // m_chartView->setRenderHint(QPainter::Antialiasing);
     // Create layout for grid and detached legend
@@ -45,7 +49,6 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     m_chart->layout()->setContentsMargins(0,0,0,0);
     m_chart->setMargins(QMargins(0,0,0,0));
 
-
     label_position= new QLabel("X:  Y:  ");
     label_position->setStyleSheet("background-color:white");
 
@@ -53,9 +56,23 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
 
     m_vbox_layout->addWidget(label_position);
     m_vbox_layout->addWidget(m_chartView);
-
-
     m_vbox_layout->addWidget(h_slider);
+
+    lineEditMinRange = new QLineEdit("0.000");
+    lineEditMaxRange = new QLineEdit("99.000");
+    m_min =0;
+    m_max = 99;
+    lineEditMaxRange->setMaximumWidth(50);
+    lineEditMinRange->setMaximumWidth(50);
+
+    QHBoxLayout * m_hbox_layout = new QHBoxLayout();
+
+    m_hbox_layout->addWidget(lineEditMinRange);
+    m_hbox_layout->addWidget(lineEditMaxRange);
+    m_hbox_layout->insertStretch(1,10);
+    m_vbox_layout->addLayout(m_hbox_layout);
+
+
     m_vbox_layout->setMargin(0);
     m_vbox_layout->setSpacing(1);
 
@@ -64,18 +81,25 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     setLayout(m_vbox_layout);
     m_chartView->setAutoFillBackground(true);
 
-     connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
+   //  connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
+
      connectMarkers();
 
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
     InitSeries();
-    m_chart->createDefaultAxes();
 
      timer = new QTimer();
      timer->start(500);
      connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
+    connect(h_slider,SIGNAL(minValueChanged(float)),this,SLOT(setMinValue(float)));
+     connect(h_slider,SIGNAL(maxValueChanged(float)),this,SLOT(setMaxValue(float)));
+     connect(lineEditMinRange,SIGNAL(editingFinished()),this,SLOT(setMinRange()));
+     connect(lineEditMaxRange,SIGNAL(editingFinished()),this,SLOT(setMaxRange()));
+
+     m_chart->createDefaultAxes();
+
 }
 
 void chartswidgt::ReveiveFrameData(int device, int signal, QString name, QColor color, QList<QPointF> frame_uint_data, bool is_frame)
@@ -170,7 +194,14 @@ void chartswidgt::UpdateChart()
                   series->replace(device_signal->all_unit_data);
                     qDebug()<<"Signal plot------------------------------------";
                      qDebug()<<device_signal->all_unit_data.size();
-                   if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+                   if(!m_chart->series().contains(series))
+                   {
+                       m_chart->addSeries(series);
+                       m_chart->createDefaultAxes();
+                       QPen pen = series->pen();
+                       pen.setWidth(2);
+                       series->setPen(pen);
+                   }
                 }
             }
         }
@@ -212,7 +243,7 @@ void chartswidgt::UpdateChart()
                   if(device_signal->show_enable)
                   {
                        bool update =  device_signal->update_status;
-                       if(update && !device_signal->all_unit_data.isEmpty())
+                       if(update)
                        {
                            series = series_list.at(i);
                            if(series->color()!=device_signal->color) series->setColor(device_signal->color);
@@ -220,16 +251,24 @@ void chartswidgt::UpdateChart()
                            device_signal->update_status = false;
                            series->replace(device_signal->all_unit_data);
                            qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-                           if(!m_chart->series().contains(series)) m_chart->addSeries(series);
+                           if(!m_chart->series().contains(series))
+                           {
+
+                               m_chart->addSeries(series);
+                               m_chart->createDefaultAxes();
+                               QPen pen = series->pen();
+                               pen.setWidth(2);
+                               series->setPen(pen);
                           }
-                  }
+                      }
               }
         }
     }
+    }
+
     connectMarkers();
     m_chartView->setUpdatesEnabled(true);
    // m_chartView->update();
-    m_chart->createDefaultAxes();
 }
 void chartswidgt::UpdateChartView()
 {
@@ -303,7 +342,6 @@ void chartswidgt::UpdateChartView()
 //  m_chartView->setUpdatesEnabled(true);
 //  m_chart->createDefaultAxes();
 }
-
 
 void chartswidgt::GetSeriesPoint(bool status)
 {
@@ -451,9 +489,14 @@ void chartswidgt::handleMarkerClicked()
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0) {
-        m_chart->zoom(1.5);
+        m_chart->zoom(1.2);
+        m_chart->axisX()->setMin(h_slider->minValue());
+        m_chart->axisX()->setMax(h_slider->maxValue());
+
     } else {
-        m_chart->zoom(0.5);
+        m_chart->zoom(0.8);
+        m_chart->axisX()->setMin(h_slider->minValue());
+        m_chart->axisX()->setMax(h_slider->maxValue());
     }
 
     QWidget::wheelEvent(event);
@@ -461,30 +504,17 @@ void chartswidgt::wheelEvent(QWheelEvent *event)
 
 void chartswidgt::mousePressEvent(QMouseEvent *event)
 {
+//   qDebug()<<"chartswidgt Presss"<<event->button();
+// if (event->button() & Qt::LeftButton) {
 
-   qDebug()<<"chartswidgt"<<event->button();
- if (event->button() & Qt::RightButton) {
-        m_chart->zoomReset();
-    }
+//        m_chart->axisX()->setMin(h_slider->minValue());
+//        m_chart->axisX()->setMax(h_slider->maxValue());
+//        m_chart->axisY()->setMin(-1000);
+//         m_chart->axisY()->setMax(1000);
+//    }
 
     QWidget::mousePressEvent(event);
 }
-
-
-
-void chartswidgt::mouseMoveEvent(QMouseEvent *event)
-{
-    /* Setting the mouse position label on the axis from value to position */
-
-    qDebug()<<"chartswidgt"<<"mouseMoveEvent";
-    qreal xVal = m_chart->mapToValue(event->pos()).x();
-    qreal yVal = m_chart->mapToValue(event->pos()).y();
-    qDebug()<<"xVal"<<xVal;
-    qDebug()<<"xVal"<<yVal;
-
-   QWidget::mouseMoveEvent(event);
-}
-
 
 
 void chartswidgt::clickpoint(const QPointF &point,bool status){
@@ -505,11 +535,86 @@ void chartswidgt::clickpoint(const QPointF &point,bool status){
        emit AddPointData(time,color,name,value);
        qDebug()<<"AddPointData send";
 }
+}
 
+void chartswidgt::setMaxRange()
+{
+     float range =lineEditMaxRange->text().toFloat();
+     if(range-m_min>0.009f) m_max = range;
+     lineEditMaxRange->setText(QString::number(m_max,'f',3));
+
+     h_slider->setMaxRange(m_max);
+}
+void chartswidgt::setMinRange()
+{
+
+    float range =lineEditMinRange->text().toFloat();
+    if(m_max-range>0.009f) m_min = range;
+    lineEditMinRange->setText(QString::number(m_min,'f',3));
+     h_slider->setMinRange(m_min);
+}
+
+void chartswidgt::setMinValue(float val)
+{
+    if(!m_chart->series().isEmpty())
+    m_chart->axisX()->setMin(val);
+
+  //  qDebug()<<"setMinValue"<<val;
+
+}
+
+void chartswidgt::setMaxValue(float val)
+{
+     if(!m_chart->series().isEmpty())
+         m_chart->axisX()->setMax(val);
+        // qDebug()<<"setMinValue"<<val;
 }
 
 void chartswidgt::show_position(const QPoint &point)
 {
-
    label_position->setText(QString("X: %1  Y: %2 ").arg(m_chart->mapToValue(point).x()).arg(m_chart->mapToValue(point).y()));
 }
+void chartswidgt::showDataDialog()
+{
+  QValueAxis *axisX = dynamic_cast<QValueAxis*>(m_chart->axisX());
+  QValueAxis *axisY = dynamic_cast<QValueAxis*>(m_chart->axisY());
+  QDialog *dialog = new QDialog(this);
+  dialog->setAttribute(Qt::WA_DeleteOnClose);
+  QTableWidget *tablewidget = new QTableWidget();
+  tablewidget->insertColumn(1);
+
+  if(NULL != axisX && NULL != axisY)
+  {
+      double x_min = axisX->min();
+      double x_max = axisX->max();
+      double y_min = axisY->min();
+      double y_max = axisY->max();
+      qDebug()<<x_min<<x_max<<y_min<<y_max;
+      DataDialog *dialog = new DataDialog(this);
+      dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+      for(int i=0;i<5;i++)
+      {
+          for(int j=0;j<6;j++)
+          {
+              SignalData *signaldata = device_system->device_vector.at(i)->signal_vector.at(j)->signal_data;
+
+              if(signaldata->show_enable)
+                {
+                  QVector<QPointF> data;
+                  for(auto itor= signaldata->all_unit_data.begin();itor<signaldata->all_unit_data.end();itor++)
+                  {
+                      if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
+                  }
+                  if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+              }
+          }
+
+      }
+      dialog->show();
+
+  }
+
+      }
+
+

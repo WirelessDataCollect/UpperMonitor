@@ -465,6 +465,7 @@
    <addaction name="action_3"/>
    <addaction name="action_8"/>
    <addaction name="action_6"/>
+   <addaction name="action_13"/>
    <addaction name="action_7"/>
    <addaction name="action_5"/>
    <addaction name="action_2"/>
@@ -593,6 +594,15 @@
    </property>
    <property name="text">
     <string>清屏</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/103.bmp</normaloff>:/ico/ico/icons/103.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>弹窗取点</string>
    </property>
   </action>
  </widget>

@@ -5,6 +5,8 @@
 #include<QObject>
 #include<QPainter>
 #include<QMouseEvent>
+#include<QLineEdit>
+#include<QLayout>
 class DoubleSlider : public QWidget
 {
     Q_OBJECT
@@ -12,6 +14,9 @@ public:
     DoubleSlider(QWidget* parent = 0);
     void setRange(float min, float max);
     void setSingleStep(float step);
+    void setMaxRange(float range);
+    void setMinRange(float range);
+
 
     enum State{ MinHandle,MaxHandle,None};
 
@@ -55,7 +60,6 @@ protected:
 
     void keyPressEvent(QKeyEvent *event);
     void leaveEvent(QEvent* event);
-
 };
 
 #endif // DOUBLESLIDER_H

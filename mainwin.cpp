@@ -426,7 +426,6 @@ void MainWin::on_action_10_triggered(bool checked)
 void MainWin::on_action_10_triggered()
 {
     //导入数据
-
     QString curPath = QCoreApplication::applicationDirPath();
    // curPath = QDir::currentPath();
     QString dlgTile = "选择一个目录";
@@ -443,4 +442,10 @@ void MainWin::on_action_2_triggered()
     //清除数据
     device_system->ClearData();
 
+}
+
+void MainWin::on_action_13_triggered()
+{
+    //弹窗取点
+    chart_widget->showDataDialog();
 }

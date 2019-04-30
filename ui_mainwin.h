@@ -51,6 +51,7 @@ public:
     QAction *action_11;
     QAction *action_12;
     QAction *action_2;
+    QAction *action_13;
     QWidget *centralwidget;
     QGridLayout *gridLayout_6;
     QSplitter *splitter_4;
@@ -176,6 +177,9 @@ public:
         QIcon icon8;
         icon8.addFile(QStringLiteral(":/ico/ico/icons/420.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_2->setIcon(icon8);
+        action_13 = new QAction(MainWin);
+        action_13->setObjectName(QStringLiteral("action_13"));
+        action_13->setIcon(icon4);
         centralwidget = new QWidget(MainWin);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_6 = new QGridLayout(centralwidget);
@@ -481,6 +485,7 @@ public:
         toolBar->addAction(action_3);
         toolBar->addAction(action_8);
         toolBar->addAction(action_6);
+        toolBar->addAction(action_13);
         toolBar->addAction(action_7);
         toolBar->addAction(action_5);
         toolBar->addAction(action_2);
@@ -511,6 +516,7 @@ public:
         action_11->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
         action_12->setText(QApplication::translate("MainWin", "\345\257\274\345\207\272\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
         action_2->setText(QApplication::translate("MainWin", "\346\270\205\345\261\217", Q_NULLPTR));
+        action_13->setText(QApplication::translate("MainWin", "\345\274\271\347\252\227\345\217\226\347\202\271", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", Q_NULLPTR));

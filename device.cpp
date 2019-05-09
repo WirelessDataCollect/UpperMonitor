@@ -59,11 +59,11 @@ void Device::AddData(const QByteArray &message)
     int frame_length = ByteToInt32(message.mid(8,4));
 
     int frame_time = ByteToInt32(message.mid(4,4))-test_headtime;//(100us)
-    qDebug()<<"frame_time*************"<<frame_time;
-     qDebug()<<"frame_length*************"<<frame_length;
+   // qDebug()<<"frame_time*************"<<frame_time;
+    // qDebug()<<"frame_length*************"<<frame_length;
 
     QByteArray meaasgebyte = message.mid(16+64,static_cast<int>(frame_length));
-    qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
+ //   qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
     if(frame_length+48<size)
@@ -80,16 +80,16 @@ void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)
 
     double time;
     int val;
-    qDebug()<<"AddAdcData============================";
+   // qDebug()<<"AddAdcData============================";
 
     for(int i=0;i<frame_length;)
     {
         time= (frame_time+i/8*10)*0.0001;
-        if(i==0)
-        {
-            qDebug()<<"time:"<<time<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-            qDebug()<<qint16(adcbyte.at(0)*256+adcbyte.at(1))<<qint16(adcbyte.at(2)*256+adcbyte.at(3))<<qint16(adcbyte.at(4)*256+adcbyte.at(5))<<qint16(adcbyte.at(6)*256+adcbyte.at(7));
-        }
+//        if(i==0)
+//        {
+//            qDebug()<<"time:"<<time<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+//            qDebug()<<qint16(adcbyte.at(0)*256+adcbyte.at(1))<<qint16(adcbyte.at(2)*256+adcbyte.at(3))<<qint16(adcbyte.at(4)*256+adcbyte.at(5))<<qint16(adcbyte.at(6)*256+adcbyte.at(7));
+//        }
 
         for(int j=0;j<4;j++)
         {
@@ -127,6 +127,7 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
             qDebug()<<"frame_time"<<frame_time;
             qDebug()<<"canbyte.mid(i*25+16,8))"<<canbyte.mid(i*25+16,8).toHex();
             can_vector.at(channel-1)->AddFrameData(can_id,time,canbyte.mid(i*25+16,8));
+            if(candata_status) emit addcanrow(time,device_id,channel,can_id,canbyte.mid(i*25+16,8));
         }
         else
         {
@@ -153,4 +154,7 @@ void Device::ClearReceiveData()
     for(int i=0;i<6;i++) signal_vector.at(i)->ClearReceiveData();
     for(int i=0;i<2;i++) can_vector.at(i)->ClearReceiveData();
 }
-
+void Device::ShowCanData(bool status)
+{
+    candata_status = status;
+}

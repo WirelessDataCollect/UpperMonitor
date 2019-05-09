@@ -23,31 +23,7 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="3" column="0">
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
       <item row="2" column="0">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>保存路径</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>加载设置</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>保存设置</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
        <widget class="QTreeWidget" name="treeWidget">
         <column>
          <property name="text">
@@ -72,7 +48,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -268,35 +244,12 @@ QPushButton:pressed{
              <number>3</number>
             </property>
             <item>
-             <widget class="QPushButton" name="pushButton_add_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+             <widget class="QCheckBox" name="checkBox_enable">
               <property name="minimumSize">
                <size>
-                <width>20</width>
+                <width>24</width>
                 <height>20</height>
                </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>30</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">
-QPushButton{
-border-image: url(:/ico/ico/icons/316.bmp);
-
-}
-QPushButton:pressed{
-    
-    border-image: url(:/ico/ico/icons/317.bmp)
-}</string>
               </property>
               <property name="text">
                <string/>

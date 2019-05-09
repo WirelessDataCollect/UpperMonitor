@@ -11,59 +11,54 @@ Login::Login(QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint); //去边框
 
     //q=new MainWindow(this);
-    qq = new MainWin();
+    main_window = new MainWin();
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     setWindowModality(Qt::WindowModal);
-     m_IniFile = new QSettings("loginconfig.ini",QSettings::IniFormat);
+    m_IniFile = new QSettings("loginconfig.ini",QSettings::IniFormat);
     ui->setupUi(this);
     ui->lineEdit_2->setEchoMode(QLineEdit::Password);
     loadcfg();
     find_ipadress();
-
-    connect(qq->device_system,SIGNAL(TcpConnectStatus(bool,QString)),this,SLOT(on_TcpConnectStatus(bool, QString)));
-
+    connect(main_window->device_system,SIGNAL(TcpConnectStatus(bool,QString)),this,SLOT(on_TcpConnectStatus(bool, QString)));
 }
 
 Login::~Login()
 {
     delete ui;
-    delete qq;
+    delete main_window;
 }
 void Login:: on_TcpConnectStatus(bool status, QString str)
 {
     if(status)
     {
+        savecfg();
         this->close();
-        qq->showMaximized();
-      }
-    else QMessageBox::warning(this,QStringLiteral("连接错误"),str);
+        main_window->showMaximized();
+    }
+    else QMessageBox::warning(main_window,QStringLiteral("连接错误"),str);
 }
 
 void Login::on_pushButton_clicked()
 {
-
     //远程登陆
     username = ui->lineEdit->text();
     passwd = ui->lineEdit_2->text();
-    qq->device_system->RemoteTcpStart(username,passwd);
-    savecfg();
+    main_window->device_system->RemoteTcpStart(username,passwd);
+    main_window->device_system->SetLocalTest(false);
 }
-
 
 void Login::on_pushButton_2_clicked()
 {
-
-   // q->LocalLogin();
-  //  q->show();
     //本地
-    qq->showMaximized();
+    main_window->showMaximized();
+    main_window->device_system->LocalOrderUdpStart();
+    main_window->device_system->SetLocalTest(true);
 
-    qq->device_system->LocalOrderUdpStart();
-
+    username = ui->lineEdit->text();
+    passwd = ui->lineEdit_2->text();
+    main_window->device_system->RemoteTcpStart(username,passwd);
     this->close();
-
 }
-
 
 void Login::on_checkBox_clicked(bool checked)
 {
@@ -76,7 +71,6 @@ void Login::on_checkBox_clicked(bool checked)
     }
 }
 
-
 void Login::on_checkBox_2_clicked(bool checked)
 {
 
@@ -87,9 +81,9 @@ void Login::on_checkBox_2_clicked(bool checked)
         autologin = false;
     }
 }
+
 void Login::savecfg()
 {
-
     m_IniFile->setValue("autologin",autologin);
     m_IniFile->setValue("remeberPasswd",remeberPasswd);
     if(remeberPasswd){
@@ -97,8 +91,8 @@ void Login::savecfg()
         m_IniFile->setValue("passwd",passwd);
     }
     else{
-         m_IniFile->setValue("username","用户名");
-         m_IniFile->setValue("passwd","密码");
+        m_IniFile->setValue("username","用户名");
+        m_IniFile->setValue("passwd","密码");
     }
 }
 
@@ -128,6 +122,7 @@ void Login::loadcfg()
         ui->checkBox_2->setChecked(false);
     }
 }
+
 void Login::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
@@ -147,12 +142,9 @@ void Login::mouseMoveEvent(QMouseEvent *event)
 
 void Login::on_more_clicked()
 {
-    DialogConf *dlg_conf = new DialogConf();
-    int ret = dlg_conf->exec();
-    qDebug()<<ret;
-
-
-
+    DialogConf *dlg_conf = new DialogConf(main_window->device_system);
+    dlg_conf->exec();
+    delete dlg_conf;
 }
 
 void Login::on_minimum_clicked()
@@ -162,13 +154,13 @@ void Login::on_minimum_clicked()
 
 void Login::on_exit_clicked()
 {
-   this->close();
+    this->close();
 }
 void Login::find_ipadress()
 {
-   // ui->comboBox->clear();
-   interfaceList.clear();
-   interfaceList = QNetworkInterface::allInterfaces();
+    // ui->comboBox->clear();
+    interfaceList.clear();
+    interfaceList = QNetworkInterface::allInterfaces();
 
 
     if (interfaceList.isEmpty())
@@ -199,7 +191,7 @@ void Login::on_comboBox_highlighted(int index)
             {
                 ui->label_LocalIP->setText("IP: "+interfaceList.at(index).addressEntries().at(i).ip().toString());
                 localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-                qq->device_system->local_addr  = localAddr;
+                main_window->device_system->local_addr  = localAddr;
             }
         }
     }
@@ -212,7 +204,7 @@ void Login::on_comboBox_highlighted(int index)
             {
                 ui->label_LocalIP->setText("IP: "+ interfaceList.at(0).addressEntries().at(i).ip().toString());
                 localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-                 qq->device_system->local_addr  = localAddr;
+                main_window->device_system->local_addr  = localAddr;
             }
         }
     }

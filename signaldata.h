@@ -6,6 +6,7 @@
 #include<QColor>
 #include<QVector>
 #include<QDebug>
+#include<QPointF>
 class SignalData
 {
 public:

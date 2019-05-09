@@ -17,6 +17,8 @@ public:
     //Actually
     bool online_status;
     bool actual_status;
+
+    bool candata_status;
     // devicename
     QString device_name;
 
@@ -34,8 +36,11 @@ public:
     void ClearReceiveData();
     void AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length);
     void AddCanData( QByteArray &adcbyte, int frame_time,int frame_length);
+    void ShowCanData(bool status);
 
     static int test_headtime;
+signals:
+    void addcanrow(double time, int device, int channel,int id, QByteArray data);
 };
 
 

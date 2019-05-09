@@ -25,12 +25,15 @@ public:
     ~Setting();
 
     DeviceSystem *device_system;
-    bool WriteTableView(QString file = "");
-    bool ReadTableView(QString file = "");
 signals:
     void can_filter_update();
+public slots:
+    void on_addcanrow(double time, int device, int channel,int id, QByteArray data);
+    bool WriteTableView(QString file = "");
+    bool ReadTableView(QString file = "");
+
 private slots:
-    void on_pushButton_clicked();
+
 
 
     void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
@@ -41,8 +44,6 @@ private slots:
 
     void on_pushButton_remove_1_clicked();
 
-    void on_pushButton_add_2_clicked();
-
     void on_pushButton_remove_2_clicked();
 
     void on_tableView_clicked(const QModelIndex &index);
@@ -51,10 +52,16 @@ private slots:
 
 
     void on_itemChanged(QStandardItem *item);
-    void on_itemChanged_3(QStandardItem *item);
+    void model3_itemChanged(QStandardItem *item);
    // void on_sectionClicked(int);
 
     void on_pushButton_clear_1_clicked();
+
+    void on_checkBox_enable_clicked(bool checked);
+
+    void on_pushButton_clear_2_clicked();
+
+
 
 private:
     Ui::Setting *ui;

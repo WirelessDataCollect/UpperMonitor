@@ -49,7 +49,7 @@ private:
     QPoint dragVector;
     Ui::Login *ui;
     //MainWindow *q = nullptr;
-    MainWin *qq= nullptr;
+    MainWin *main_window= nullptr;
     QSettings *m_IniFile = nullptr;
     QString		username;
     QString		passwd;

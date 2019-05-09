@@ -21,7 +21,7 @@
 #include<QDialog>
 #include<QDockWidget>
 #include<QColor>
-#include"callout.h"
+
 #include<QPointF>
 #include<QTimer>
 
@@ -57,8 +57,7 @@ public slots:
 
     void clickpoint(const QPointF &point,bool status);
     void show_position(const QPoint &point);
-    void ReveiveFrameData(int device, int signal, QString name, QColor color,QList<QPointF> frame_uint_data,bool is_frame);
-    void UpdateChartView();
+
     void UpdateChart();
     void setMaxRange();
     void setMinRange();
@@ -94,7 +93,7 @@ private:
     QRectF m_rect;
     QRectF m_textRect;
     QFont m_font;
-    callout *m_callout = nullptr;
+
     QTimer *timer= nullptr;
     DeviceSystem *device_system = nullptr;
     DoubleSlider *h_slider;
@@ -113,7 +112,6 @@ signals:
 
 protected:
 
-    void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 
 };

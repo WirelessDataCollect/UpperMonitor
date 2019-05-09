@@ -48,5 +48,4 @@ void DeviceSignal::SetFilterLength(int length)
 void DeviceSignal::ClearReceiveData()
 {
     signal_data->ClearAllData();
-
 }

@@ -45,6 +45,7 @@ public:
 
     QDateTime test_time;
 
+    QString test_name_time;
 
     int device_num;
     QVector<Device*> device_vector;
@@ -77,8 +78,7 @@ public:
     bool UdpSendCheck();
     void SetDevStatus(bool status, int i= -1);
     void ClearData();
-    void SetTestName(QString str);
-    void SetTestTime(QDateTime time);
+    void SetTestNameTime(QString name, QDateTime time);
     void SetTestDeep(QString str);
     void NewLocalTest(QString name);
     void EndLocalTest();
@@ -93,7 +93,7 @@ public:
     bool checkreturn(char order,char channelnum);
 
     bool LocalTestStart();
-    bool LocalTestStop();
+
     bool LocalTestIVModel();
     bool SendRemoteAdress(QHostAddress ip, quint16 port);
     bool LocalTestSyncTime();
@@ -104,13 +104,16 @@ public:
     void ReciveDeviceData();
     void  SetFilterLength(int length);
     void ClearCanFilter();
-    bool SendConfigureFile();
-    void FindConfigureFile();
+    bool SendConfigureFile(QString test_name);
+    bool FindConfigureFile(QString test_name);
+    bool ReceiveConfigureFile(QByteArray configure_data);
     bool GetRTdata();
     bool StopGetRTdata();
     bool SaveDataFile(QString file_name);
     bool LoadDataFile(QString file_name);
     void AutoStop(int time);
+    void ShowCanData(bool status);
+    void SetLocalTest(bool status);
     QByteArray device_data;
     class DocName
     {
@@ -122,7 +125,7 @@ public:
         void cleardata();
     }doc_name;
 
-    bool is_local_status;
+    bool is_local_test;
 
 signals:
     void UpdataTestName(QString str);
@@ -132,26 +135,29 @@ signals:
     void ReceiveRadstr(QByteArray str);
     void TcpConnectStatus(bool status, QString str = "");
     void UpdataDocsnames(QList<QString> name,QList<QString> time);
-    void SaveConfigureFile();
-
-
+    void SaveConfigureFile(QString file = "");
+    void LoadConfigureFile(QString file = "");
 
 public slots:
 
     void onTcpClientAppendMessage(const QString &from, const QByteArray &message);
     void onTcpClientConnected(const QString &from, const quint16 port);
     void onTcpConnectFailed();
-
     void onUdpOrderMessage(const QString &from, const QByteArray &message);
     void onUdpDataMessage(const QString &from, const QByteArray &message);
     void UdpHeartBeat();
     void LocalThread();
+    bool LocalTestStop();
+    void ShowSpeed();
 
 private:
     QByteArray Tcp_Data;
     QByteArray Tcp_Data_list;
     QByteArray udp_order_return;
     int tcp_message_flag;
+    int tcp_data_number;
+    int tcp_package_number;
+    int tcp_time;
     QString username;
     QString passwd;
 
@@ -162,18 +168,13 @@ private:
     QByteArray Uint32ToByte(quint32 i);
 
     int  ByteToInt32(QByteArray abyte0);
-
-
     void sleep(int msec);
+
     QTimer *heart_beat_timer =nullptr;
+    QTimer *show_speed_timer = nullptr;
+
     QTimer *auto_stop = nullptr;
     int time_count;
-
-
-
-
-
-
 };
 
 #endif // DEVICESYSTEM_H

@@ -13,13 +13,13 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
@@ -36,10 +36,6 @@ public:
     QGridLayout *gridLayout_7;
     QFrame *frame;
     QGridLayout *gridLayout_2;
-    QLineEdit *lineEdit;
-    QPushButton *pushButton;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_2;
     QTreeWidget *treeWidget;
     QLabel *label;
     QSpinBox *spinBox;
@@ -63,7 +59,7 @@ public:
     QGridLayout *gridLayout_5;
     QTableView *tableView_2;
     QHBoxLayout *horizontalLayout_2;
-    QPushButton *pushButton_add_2;
+    QCheckBox *checkBox_enable;
     QPushButton *pushButton_remove_2;
     QPushButton *pushButton_clear_2;
     QSpacerItem *horizontalSpacer_2;
@@ -81,31 +77,11 @@ public:
         frame->setFrameShadow(QFrame::Raised);
         gridLayout_2 = new QGridLayout(frame);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        lineEdit = new QLineEdit(frame);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
-
-        gridLayout_2->addWidget(lineEdit, 3, 0, 1, 1);
-
-        pushButton = new QPushButton(frame);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        gridLayout_2->addWidget(pushButton, 2, 0, 1, 1);
-
-        pushButton_3 = new QPushButton(frame);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-
-        gridLayout_2->addWidget(pushButton_3, 6, 0, 1, 1);
-
-        pushButton_2 = new QPushButton(frame);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-
-        gridLayout_2->addWidget(pushButton_2, 5, 0, 1, 1);
-
         treeWidget = new QTreeWidget(frame);
         treeWidget->headerItem()->setText(0, QString());
         treeWidget->setObjectName(QStringLiteral("treeWidget"));
 
-        gridLayout_2->addWidget(treeWidget, 4, 0, 1, 1);
+        gridLayout_2->addWidget(treeWidget, 2, 0, 1, 1);
 
         label = new QLabel(frame);
         label->setObjectName(QStringLiteral("label"));
@@ -238,23 +214,11 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(3);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        pushButton_add_2 = new QPushButton(groupBox_2);
-        pushButton_add_2->setObjectName(QStringLiteral("pushButton_add_2"));
-        sizePolicy.setHeightForWidth(pushButton_add_2->sizePolicy().hasHeightForWidth());
-        pushButton_add_2->setSizePolicy(sizePolicy);
-        pushButton_add_2->setMinimumSize(QSize(20, 20));
-        pushButton_add_2->setMaximumSize(QSize(30, 16777215));
-        pushButton_add_2->setStyleSheet(QLatin1String("\n"
-"QPushButton{\n"
-"border-image: url(:/ico/ico/icons/316.bmp);\n"
-"\n"
-"}\n"
-"QPushButton:pressed{\n"
-"    \n"
-"    border-image: url(:/ico/ico/icons/317.bmp)\n"
-"}"));
+        checkBox_enable = new QCheckBox(groupBox_2);
+        checkBox_enable->setObjectName(QStringLiteral("checkBox_enable"));
+        checkBox_enable->setMinimumSize(QSize(24, 20));
 
-        horizontalLayout_2->addWidget(pushButton_add_2);
+        horizontalLayout_2->addWidget(checkBox_enable);
 
         pushButton_remove_2 = new QPushButton(groupBox_2);
         pushButton_remove_2->setObjectName(QStringLiteral("pushButton_remove_2"));
@@ -308,7 +272,7 @@ public:
 
         retranslateUi(Setting);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(Setting);
@@ -317,9 +281,6 @@ public:
     void retranslateUi(QWidget *Setting)
     {
         Setting->setWindowTitle(QApplication::translate("Setting", "\351\207\207\351\233\206\350\256\276\347\275\256", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("Setting", "\344\277\235\345\255\230\350\267\257\345\276\204", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("Setting", "\345\212\240\350\275\275\350\256\276\347\275\256", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("Setting", "\344\277\235\345\255\230\350\256\276\347\275\256", Q_NULLPTR));
         label->setText(QApplication::translate("Setting", "\347\252\227\345\217\243\345\271\263\346\273\221\351\225\277\345\272\246", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("Setting", "IO", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("Setting", "\350\277\207\346\273\244\345\231\250\347\273\204", Q_NULLPTR));
@@ -327,7 +288,7 @@ public:
         pushButton_remove_1->setText(QString());
         pushButton_clear_1->setText(QString());
         groupBox_2->setTitle(QApplication::translate("Setting", "\346\225\260\346\215\256\346\230\276\347\244\272", Q_NULLPTR));
-        pushButton_add_2->setText(QString());
+        checkBox_enable->setText(QString());
         pushButton_remove_2->setText(QString());
         pushButton_clear_2->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("Setting", "CAN", Q_NULLPTR));

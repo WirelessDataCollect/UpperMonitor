@@ -36,5 +36,6 @@
         <file>ico/icons/322.bmp</file>
         <file>ico/icons/323.bmp</file>
         <file>ico/icons/420.bmp</file>
+        <file>ico/icons/328.bmp</file>
     </qresource>
 </RCC>

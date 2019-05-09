@@ -31,7 +31,6 @@ SOURCES += main.cpp\
     chartswidgt.cpp \
     mytcpclient.cpp \
     chartview.cpp \
-    callout.cpp \
     login.cpp \
     md5.cpp \
     setting.cpp \
@@ -43,7 +42,6 @@ SOURCES += main.cpp\
     doubleslider.cpp \
     qwcomboboxdelegate.cpp \
     devicecan.cpp \
-    exprtk.cpp \
     signaldata.cpp \
     datadialog.cpp
 
@@ -53,7 +51,6 @@ HEADERS  += \
     mytcpclient.h \
     chartview.h \
     myeventfilter.h \
-    callout.h \
     login.h \
     md5.h \
     setting.h \
@@ -67,7 +64,6 @@ HEADERS  += \
     qwcomboboxdelegate.h \
     devicecan.h \
     exprtk.hpp \
-    exprtk.h \
     signaldata.h \
     datadialog.h
 
@@ -82,5 +78,12 @@ RESOURCES += \
 
 DISTFILES += \
     readme.md
+
+## exprtk.hpp 段过多
 win32:QMAKE_CXXFLAGS +=/bigobj
-win32:QMAKE_CXXFLAGS += /MP
+
+## MinGW64
+#QMAKE_CXXFLAGS +=-Wa,-mbig-obj
+
+##禁止打印信息
+#DEFINES += QT_NO_DEBUG_OUTPUT

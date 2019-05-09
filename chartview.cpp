@@ -51,7 +51,6 @@ void ChartView::mouseReleaseEvent(QMouseEvent *event)
    QChartView::mouseReleaseEvent(event);
 }
 
-
 void ChartView::keyPressEvent(QKeyEvent *event)
 {
 //    switch (event->key()) {

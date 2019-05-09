@@ -17,25 +17,18 @@ MainWin::MainWin(QWidget *parent) :
 {
     ui->setupUi(this);
     device_system = new DeviceSystem();
-   // QThread *thread_system = new QThread();
-   // device_system->moveToThread(thread_system);
-    //thread_system->start();
 
     settingui = new Setting(device_system,this);
     settingui->setWindowFlags(settingui->windowFlags() | Qt::Window);
 
     //chart_widgt
     chart_widget = new chartswidgt(device_system);
-
     QGridLayout *layout= new QGridLayout();
     layout->setSpacing(0);
     layout->setMargin(0);
     layout->setContentsMargins(0,0,0,0);
-
     layout->addWidget(chart_widget);
-
     ui->widget_chart->setLayout(layout);
-
 
     //tabelview
     standard_model = new QStandardItemModel;
@@ -50,21 +43,16 @@ MainWin::MainWin(QWidget *parent) :
     headerList<<QStringLiteral("时间")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("测量值");
     standard_model->setHorizontalHeaderLabels(headerList);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
-    ui->tableView->resizeColumnsToContents();
-
-    // ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-     ui->tableView->setMaximumWidth(250);
-
-
+   // ui->tableView->resizeColumnsToContents();
+    ui->tableView->setMaximumWidth(250);
+    ui->tableView->setVisible(false);
 
 
     //widget_chart
 connect(device_system,SIGNAL(UpdataTestName(QString)),this,SLOT(UpdataTestName(QString)));
 connect(device_system,SIGNAL(UpdataTestTime(QString)),this,SLOT(UpdataTestTime(QString)));
 connect(device_system,SIGNAL(UpdataTestDeep(QString)),this,SLOT(UpdataTestDeep(QString)));
-
 connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),this,SLOT(on_UpdataDocsnames(QList<QString>,QList<QString>)));
-
 
     //历史测试数据初始化
     ui->dateEdit->setCalendarPopup(true);
@@ -73,8 +61,6 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     ui->dateEdit_2->setDate(QDate::currentDate());
     ui->frame_2->setMaximumWidth(600);
     ui->frame_2->setMinimumWidth(400);
-
-   // ui->groupBox->resize(200,500);
 
     //历史记录
     standard_model_2 = new QStandardItemModel;
@@ -92,20 +78,17 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     ui->tableView_2->resizeColumnsToContents();
     ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
 
-
     //widget_device
     ui->widget_device->setMaximumHeight(180);
     online_group = new QButtonGroup();
 
     online_group->addButton(ui->radioButton,0);
-   online_group->addButton(ui->radioButton_2,1);
-   online_group->addButton(ui->radioButton_3,2);
+    online_group->addButton(ui->radioButton_2,1);
+    online_group->addButton(ui->radioButton_3,2);
     online_group->addButton(ui->radioButton_4,3);
     online_group->addButton(ui->radioButton_5,4);
     online_group->setExclusive(false);
-
     enable_group =new QButtonGroup();
-
     enable_group->addButton(ui->radioButton_6,0);
     enable_group->addButton(ui->radioButton_7,1);
     enable_group->addButton(ui->radioButton_8,2);
@@ -114,20 +97,24 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     enable_group->setExclusive(false);
     enable_group->setId(ui->radioButton_6,0);
 
+    //定时器
+    timer =new QTimer();
+    timer->start(1000);
+    connect(timer,SIGNAL(timeout()),this,SLOT(on_DeviceStatus()));
+
     //action
     ui->action->setEnabled(true);
-
     ui->action_3->setDisabled(true);
-
-
-   // connect(device_system,SIGNAL(TcpConnectFailed()), this,SLOT(TcpConnectFailed()));
-
     connect(chart_widget,SIGNAL(AddPointData(QString,QColor,QString,QString)),this,SLOT(on_AddPointData(QString,QColor,QString,QString)));
-    connect(standard_selection_2,SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(on_currentRowChanged(QModelIndex,QModelIndex)));
 
-     timer =new QTimer();
-     timer->start(1000);
-     connect(timer,SIGNAL(timeout()),this,SLOT(on_DeviceStatus()));
+    connect(standard_selection_2,SIGNAL(selectionChanged(const QItemSelection, const QItemSelection )),this,SLOT(on_SelectionChanged(const QItemSelection, const QItemSelection)));
+
+     for(int i=0;i<device_system->device_num;i++)
+     {
+         connect(device_system->device_vector.at(i),SIGNAL(addcanrow(double, int , int,int, QByteArray)),settingui,SLOT(on_addcanrow(double, int , int,int, QByteArray)));
+     }
+     connect(device_system, SIGNAL(SaveConfigureFile(QString)),settingui, SLOT(WriteTableView(QString)));
+     connect(device_system, SIGNAL(LoadConfigureFile(QString)),settingui, SLOT(ReadTableView(QString)));
 }
 
 MainWin::~MainWin()
@@ -135,15 +122,7 @@ MainWin::~MainWin()
     delete settingui;
     delete ui;
     delete  device_system;
-
     delete chart_widget;
-
-}
-
-
-void MainWin::AddTableRaw(QColor color, QString name, QString number)
-{
-
 }
 
 void MainWin::UpdataTestName(QString str)
@@ -161,66 +140,43 @@ void MainWin::UpdataTestDeep(QString str)
 void MainWin::on_action_4_triggered()
 {
     settingui->show();
-
 }
-
 
 void MainWin::on_action_5_triggered(bool checked)
 {
-    //放大
+    //绘图窗口放大
     qDebug()<<checked;
     if(checked)
     {
-
         ui->frame_2->hide();
         ui->widget_device->hide();
     }
     else
     {
         ui->frame_2->show();
-
         ui->widget_device->show();
     }
 }
 
 void MainWin::on_action_triggered()
 {
-    //ui
-//    QString dlgTitle = "新建实验";
-//    QString txtLabel = "实验名称";
-//    QString default_input = "实验1";
-//    QLineEdit::EchoMode echo_mode = QLineEdit::Normal;
-//    bool ok = false;
-//    QString text = QInputDialog::getText(this,dlgTitle,txtLabel,echo_mode,default_input,&ok);
-//    if(ok && !text.isEmpty())
-//    {
-//    ui->action->setDisabled(true);
-
-//    ui->action_3->setEnabled(true);
-//    //新建实验
-//    device_system->NewLocalTest(text);
-//    ui->plainTextEdit->appendPlainText(device_system->test_name);
-
-//    }
     QDialog dialog(this);
+
+  //  dialog.setAttribute(Qt::WA_DeleteOnClose);
+
     QFormLayout form(&dialog);
     dialog.setWindowTitle("新建实验");
 
-
-
-    // Value1
     QString value1 = QString("实验名称: ");
     QString test_name("实验1");
     QLineEdit *line_edit = new QLineEdit("实验1");
     form.addRow(value1, line_edit);
-    // Value2
 
     QString value2 = QString("测试时长(s): ");
     QSpinBox *spinbox = new QSpinBox(&dialog);
     spinbox->setMaximum(1000000);
     form.addRow(value2, spinbox);
 
-    // Add Cancel and OK button
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
         Qt::Horizontal, &dialog);
     form.addRow(&buttonBox);
@@ -232,46 +188,39 @@ void MainWin::on_action_triggered()
         int time = spinbox->value()*1000;
         ui->action->setDisabled(true);
         ui->action_3->setEnabled(true);
-           //新建实验
-           device_system->NewLocalTest(test_name);
-           device_system->AutoStop(time);
-           ui->plainTextEdit->appendPlainText(device_system->test_name);
-    }
+        //新建实验
+        device_system->NewLocalTest(test_name);
+        device_system->AutoStop(time);
+        ui->plainTextEdit->appendPlainText(device_system->test_name);
+    } 
 }
 
 void MainWin::on_action_3_triggered()
 {
     //结束实验
     ui->action->setEnabled(true);
-
     ui->action_3->setDisabled(true);
     device_system->EndLocalTest();
 }
 
-
-
-
-
-void MainWin::on_action_6_triggered(bool checked)
+void MainWin::on_action_6_toggled(bool checked)
 
 {
-    //添加数据点
-    addtablerow = checked;
+    //取点
     qDebug()<<"添加数据点 on_action_6_triggered"<<checked;
     chart_widget->GetSeriesPoint(checked);
 }
 
-
 void MainWin::on_action_7_triggered(bool checked)
 {
-    //删除数据点
+    //删点
     deltablerow =checked;
      qDebug()<<"删除数据点 on_action_7_triggered"<<checked;
      on_MovePointdata();
-
 }
 void MainWin::on_action_8_triggered()
 {
+    //保存测量结果
     QString curPath = QCoreApplication::applicationDirPath();
    // curPath = QDir::currentPath();
     QString dlgTile = "选择一个目录";
@@ -288,48 +237,23 @@ void MainWin::on_action_8_triggered()
         device_system->SaveDataFile(data_file);
         settingui->WriteTableView(configure_file);
     }
-//    //保存测量结果
-
-//   //qDebug()<<enable_group->checkedId();
-//   QList<QString> name;
-//   QList<QString> time;
-//   name.append("1");
-//   name.append("2");
-//   name.append("3");
-
-//   time.append("a");
-//   time.append("b");
-//   time.append("c");
-//   on_UpdataDocsnames(name,time);
-//   device_system->SendConfigureFile();
-   //settingui->ReadTableView();
-
-  // device_system->LocalTestStop();
-
-   //device_system->SendCanFilter();
- //  QVector<quint8> test;
-  // for(quint8 i=0;i<8;i++) test.append(i);
- //  QByteArray a;
- //  for(int i=1;i<9;i++)
- //      a.append(a);
-   //qDebug()<<device_system->device_vector.at(0)->can_vector.at(0)->filter_list.at(0)->EvaluateExpress(a);
-
 }
 
 void MainWin::on_pushButton_clicked()
 {
     //查询历史
-
     QDate begin_date = ui->dateEdit->date();
-    QDate end_date = ui->dateEdit->date();
-      device_system->FindDocsNames(begin_date,end_date);
-      emit FindDocsNames(begin_date,end_date);
+    QDate end_date = ui->dateEdit_2->date();
+    device_system->FindDocsNames(begin_date,end_date);
+    emit FindDocsNames(begin_date,end_date);
     //device_system->FindDocs();
 }
 
 void MainWin::on_AddPointData(QString time,QColor color, QString name, QString value)
 {
 
+   ui->action_6->setChecked(false);
+   if(standard_model->rowCount() ==0) ui->tableView->setVisible(true);
     qDebug()<<"AddPointData receive";
     QList<QStandardItem*> row;
     QStandardItem *item_time= new QStandardItem(time);
@@ -343,6 +267,7 @@ void MainWin::on_AddPointData(QString time,QColor color, QString name, QString v
     row.append(item_name);
     row.append(item_value);
     standard_model->appendRow(row);
+    ui->tableView->resizeColumnsToContents();
 }
 
 void MainWin::on_MovePointdata()
@@ -357,8 +282,9 @@ void MainWin::on_MovePointdata()
         standard_model->removeRow(cur_index.row());
         standard_selection->setCurrentIndex(cur_index,QItemSelectionModel::Select);
     }
-   // connect(standard_selection,SIGNAL())
+    if(standard_model->rowCount() ==0) ui->tableView->setVisible(false);
 }
+
 void MainWin::on_DeviceStatus()
 {
     for(int i=0;i<device_system->device_num;i++)
@@ -391,19 +317,21 @@ void MainWin::on_UpdataDocsnames(QList<QString> name,QList<QString> time)
     }
     standard_model_2->appendColumn(item_column_name);
     standard_model_2->appendColumn(item_column_time);
-
 }
-void MainWin::on_currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
+
+void MainWin::on_SelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    qDebug()<<current.row();
-    int index= current.row();
+    if(selected.indexes().isEmpty())return;
+    int index = selected.indexes().at(0).row();
     device_system->FindDocs(index);
+    standard_selection_2->clearSelection();
+    qDebug()<<"current select"<< index;
 }
 
 void MainWin::on_action_9_triggered()
 {
     //帮助文档
-    device_system->FindConfigureFile();
+   // device_system->FindConfigureFile();
     qDebug()<<"HELP";
     if(help_process == nullptr) help_process = new QProcess();
     QString exe("./release/assistant.exe");
@@ -417,12 +345,6 @@ void MainWin::on_action_9_triggered()
     }
 }
 
-void MainWin::on_action_10_triggered(bool checked)
-{
-    if(checked) device_system->GetRTdata();
-    else device_system->StopGetRTdata();
-}
-
 void MainWin::on_action_10_triggered()
 {
     //导入数据
@@ -434,18 +356,18 @@ void MainWin::on_action_10_triggered()
     QString configure_file = selectedDir+"/"+"configure.txt";
     settingui->ReadTableView(configure_file);
     device_system->LoadDataFile(data_file);
-
 }
 
 void MainWin::on_action_2_triggered()
 {
-    //清除数据
+    //清屏清除数据
     device_system->ClearData();
-
 }
 
 void MainWin::on_action_13_triggered()
 {
     //弹窗取点
-    chart_widget->showDataDialog();
+   chart_widget->showDataDialog();
 }
+
+

@@ -52,6 +52,7 @@ public:
     QAction *action_12;
     QAction *action_2;
     QAction *action_13;
+    QAction *action_14;
     QWidget *centralwidget;
     QGridLayout *gridLayout_6;
     QSplitter *splitter_4;
@@ -60,9 +61,9 @@ public:
     QSplitter *splitter_3;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_4;
-    QLabel *label_2;
     QLabel *label_3;
     QDateEdit *dateEdit;
+    QLabel *label_2;
     QDateEdit *dateEdit_2;
     QPushButton *pushButton;
     QTableView *tableView_2;
@@ -162,7 +163,7 @@ public:
         action_9 = new QAction(MainWin);
         action_9->setObjectName(QStringLiteral("action_9"));
         QIcon icon7;
-        icon7.addFile(QStringLiteral(":/ico/ico/icons/330.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QStringLiteral(":/ico/ico/icons/328.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_9->setIcon(icon7);
         action_10 = new QAction(MainWin);
         action_10->setObjectName(QStringLiteral("action_10"));
@@ -172,6 +173,7 @@ public:
         action_11->setIcon(icon2);
         action_12 = new QAction(MainWin);
         action_12->setObjectName(QStringLiteral("action_12"));
+        action_12->setIcon(icon6);
         action_2 = new QAction(MainWin);
         action_2->setObjectName(QStringLiteral("action_2"));
         QIcon icon8;
@@ -180,6 +182,9 @@ public:
         action_13 = new QAction(MainWin);
         action_13->setObjectName(QStringLiteral("action_13"));
         action_13->setIcon(icon4);
+        action_14 = new QAction(MainWin);
+        action_14->setObjectName(QStringLiteral("action_14"));
+        action_14->setIcon(icon2);
         centralwidget = new QWidget(MainWin);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_6 = new QGridLayout(centralwidget);
@@ -203,11 +208,6 @@ public:
         groupBox->setStyleSheet(QStringLiteral(""));
         gridLayout_4 = new QGridLayout(groupBox);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QStringLiteral("label_2"));
-
-        gridLayout_4->addWidget(label_2, 0, 0, 1, 1);
-
         label_3 = new QLabel(groupBox);
         label_3->setObjectName(QStringLiteral("label_3"));
 
@@ -217,6 +217,11 @@ public:
         dateEdit->setObjectName(QStringLiteral("dateEdit"));
 
         gridLayout_4->addWidget(dateEdit, 1, 0, 1, 1);
+
+        label_2 = new QLabel(groupBox);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout_4->addWidget(label_2, 0, 0, 1, 1);
 
         dateEdit_2 = new QDateEdit(groupBox);
         dateEdit_2->setObjectName(QStringLiteral("dateEdit_2"));
@@ -471,6 +476,8 @@ public:
         menu->addSeparator();
         menu->addAction(action_11);
         menu->addAction(action_12);
+        menu->addSeparator();
+        menu->addAction(action_14);
         menu_2->addAction(action);
         menu_2->addAction(action_3);
         menu_2->addSeparator();
@@ -503,7 +510,7 @@ public:
         action->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+N", Q_NULLPTR));
         action_3->setText(QApplication::translate("MainWin", "\347\273\223\346\235\237\345\256\236\351\252\214", Q_NULLPTR));
         action_3->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+C", Q_NULLPTR));
-        action_4->setText(QApplication::translate("MainWin", "\350\256\276\347\275\256", Q_NULLPTR));
+        action_4->setText(QApplication::translate("MainWin", "\351\207\207\351\233\206\350\256\276\347\275\256", Q_NULLPTR));
         action_5->setText(QApplication::translate("MainWin", "\346\224\276\345\244\247", Q_NULLPTR));
         action_6->setText(QApplication::translate("MainWin", "\345\217\226\347\202\271", Q_NULLPTR));
         action_7->setText(QApplication::translate("MainWin", "\345\210\240\347\202\271", Q_NULLPTR));
@@ -517,9 +524,10 @@ public:
         action_12->setText(QApplication::translate("MainWin", "\345\257\274\345\207\272\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
         action_2->setText(QApplication::translate("MainWin", "\346\270\205\345\261\217", Q_NULLPTR));
         action_13->setText(QApplication::translate("MainWin", "\345\274\271\347\252\227\345\217\226\347\202\271", Q_NULLPTR));
+        action_14->setText(QApplication::translate("MainWin", "\347\263\273\347\273\237\350\256\276\347\275\256", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWin", "\346\237\245\350\257\242", Q_NULLPTR));
         groupBox_2->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\344\277\241\346\201\257", Q_NULLPTR));
         label->setText(QApplication::translate("MainWin", "\347\273\210\347\253\257\345\234\250\347\272\277\347\212\266\346\200\201", Q_NULLPTR));

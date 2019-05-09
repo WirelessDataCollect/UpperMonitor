@@ -33,7 +33,7 @@ public:
     QStandardItemModel *standard_model_2 = nullptr;
     QItemSelectionModel *standard_selection_2 = nullptr;
 
-    bool addtablerow = false;
+
     bool deltablerow = false;
     void on_MovePointdata();
     QButtonGroup *online_group;
@@ -44,18 +44,15 @@ private slots:
     void UpdataTestTime(QString);
     void UpdataTestDeep(QString);
 
-
     void on_action_4_triggered();
 
     void on_action_5_triggered(bool checked);
 
     void on_action_triggered();
-    void AddTableRaw(QColor color, QString name, QString number);
     void on_action_3_triggered();
 
+    void on_action_6_toggled(bool checked);
 
-
-    void on_action_6_triggered(bool checked);
 
     void on_action_8_triggered();
 
@@ -64,11 +61,12 @@ private slots:
     void on_pushButton_clicked();
     void on_AddPointData(QString time, QColor color, QString name, QString point);
     void on_DeviceStatus();
-    void on_UpdataDocsnames(QList<QString> name,QList<QString> time);
-    void on_currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
-    void on_action_9_triggered();
 
-    void on_action_10_triggered(bool checked);
+    void on_UpdataDocsnames(QList<QString> name,QList<QString> time);
+
+    void on_SelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+    void on_action_9_triggered();
 
     void on_action_10_triggered();
 
@@ -78,7 +76,6 @@ private slots:
 
 private:
     Ui::MainWin *ui;
-
      QTimer *timer = nullptr;
      QProcess *help_process = nullptr;
 

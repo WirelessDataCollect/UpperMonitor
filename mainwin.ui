@@ -50,13 +50,6 @@
             <string>测试记录</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>起始日期：</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QLabel" name="label_3">
               <property name="text">
@@ -66,6 +59,13 @@
             </item>
             <item row="1" column="0">
              <widget class="QDateEdit" name="dateEdit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>起始日期：</string>
+              </property>
+             </widget>
             </item>
             <item row="1" column="1">
              <widget class="QDateEdit" name="dateEdit_2"/>
@@ -416,6 +416,8 @@
     <addaction name="separator"/>
     <addaction name="action_11"/>
     <addaction name="action_12"/>
+    <addaction name="separator"/>
+    <addaction name="action_14"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -504,7 +506,7 @@
      <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
    </property>
    <property name="text">
-    <string>设置</string>
+    <string>采集设置</string>
    </property>
   </action>
   <action name="action_5">
@@ -558,7 +560,7 @@
   <action name="action_9">
    <property name="icon">
     <iconset resource="src.qrc">
-     <normaloff>:/ico/ico/icons/330.bmp</normaloff>:/ico/ico/icons/330.bmp</iconset>
+     <normaloff>:/ico/ico/icons/328.bmp</normaloff>:/ico/ico/icons/328.bmp</iconset>
    </property>
    <property name="text">
     <string>帮助文档</string>
@@ -583,6 +585,10 @@
    </property>
   </action>
   <action name="action_12">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/save1.bmp</normaloff>:/ico/ico/icons/save1.bmp</iconset>
+   </property>
    <property name="text">
     <string>导出配置文件</string>
    </property>
@@ -603,6 +609,15 @@
    </property>
    <property name="text">
     <string>弹窗取点</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>系统设置</string>
    </property>
   </action>
  </widget>

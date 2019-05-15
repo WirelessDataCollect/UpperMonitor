@@ -102,7 +102,7 @@ public:
     void ReceiveDocsName(const QByteArray &message);
     void RemoteTcpLogin(QByteArray salt);
     void ReciveDeviceData();
-    void  SetFilterLength(int length);
+    void  SetFilterLengthMax(int length,double max);
     void ClearCanFilter();
     bool SendConfigureFile(QString test_name);
     bool FindConfigureFile(QString test_name);

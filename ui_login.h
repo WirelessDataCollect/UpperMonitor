@@ -66,9 +66,6 @@ public:
         Login->setMinimumSize(QSize(420, 320));
         Login->setMaximumSize(QSize(420, 320));
         Login->setWindowTitle(QStringLiteral("Login"));
-        QIcon icon;
-        icon.addFile(QStringLiteral(":/ico/ico/osc.jpg"), QSize(), QIcon::Normal, QIcon::Off);
-        Login->setWindowIcon(icon);
         Login->setStyleSheet(QStringLiteral("background-color: rgb(205, 209, 213);"));
         frame_2 = new QFrame(Login);
         frame_2->setObjectName(QStringLiteral("frame_2"));

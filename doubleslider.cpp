@@ -68,7 +68,6 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
         maxPos = width() - 8;
     }else{}
 
-
     //----- paint groove
     paintColoredRect(QRect(4,37,width() - 8,2),Qt::gray,painter);
     paintColoredRect(QRect(minPos + 4,37,maxPos - minPos,2),QColor(51,153,155),painter);
@@ -120,6 +119,7 @@ void DoubleSlider::setMinValue(float val)
         m_minValue = val;
         emit minValueChanged(val);
     }
+    update();
 }
 
 float DoubleSlider::maxValue() const
@@ -132,6 +132,7 @@ void DoubleSlider::setMaxValue(float val)
         m_maxValue = val;
         emit maxValueChanged(val);
     }
+    update();
 }
 
 void DoubleSlider::setMaxRange(float range)
@@ -158,7 +159,6 @@ void DoubleSlider::setMinRange(float range)
      {
          m_maxValue=m_min+1;
          emit maxValueChanged(m_maxValue);
-
      }
     if(m_minValue<m_min)
     {

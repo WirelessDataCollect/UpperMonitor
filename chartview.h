@@ -15,6 +15,7 @@ class ChartView : public QChartView
     Q_OBJECT
 signals:
     void sendposition(const QPoint &point);
+    void updateslider();
 public:
     ChartView(QChart *chart, QWidget *parent = 0);
 

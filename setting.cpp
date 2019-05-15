@@ -28,6 +28,8 @@ Setting::Setting(DeviceSystem *system,QWidget *parent) :
     TabelViewInit();
     TreeInit();
     ReadTableView();
+    ui->spinBox->setMinimum(1);
+    ui->doubleSpinBox->setValue(100);
 }
 
 Setting::~Setting()
@@ -248,13 +250,6 @@ void Setting::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
             }
         }
     }
-}
-
-
-void Setting::on_spinBox_valueChanged(int arg1)
-{
-    device_system->SetFilterLength(arg1);
-    qDebug()<<"on_spinBox_valueChanged"<<arg1;
 }
 
 void Setting::on_itemChanged(QStandardItem *item)
@@ -686,4 +681,12 @@ void Setting::on_addcanrow(double time, int device, int channel,int id, QByteArr
     aItemList.append(aItem);
     theModel_2->appendRow(aItemList);
     ui->tableView_2->resizeColumnsToContents();
+}
+
+
+void Setting::on_pushButton_clicked()
+{
+    int length = ui->spinBox->value();
+    double max = ui->doubleSpinBox->value();
+    device_system->SetFilterLengthMax(length,max);
 }

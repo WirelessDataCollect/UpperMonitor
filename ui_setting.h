@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -23,9 +24,11 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QSplitter>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -34,11 +37,17 @@ class Ui_Setting
 {
 public:
     QGridLayout *gridLayout_7;
+    QSplitter *splitter;
     QFrame *frame;
+    QVBoxLayout *verticalLayout;
+    QGroupBox *groupBox_3;
     QGridLayout *gridLayout_2;
-    QTreeWidget *treeWidget;
     QLabel *label;
+    QLabel *label_2;
     QSpinBox *spinBox;
+    QDoubleSpinBox *doubleSpinBox;
+    QPushButton *pushButton;
+    QTreeWidget *treeWidget;
     QTabWidget *tabWidget;
     QWidget *tab_3;
     QGridLayout *gridLayout;
@@ -71,32 +80,55 @@ public:
         Setting->resize(1105, 738);
         gridLayout_7 = new QGridLayout(Setting);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        frame = new QFrame(Setting);
+        splitter = new QSplitter(Setting);
+        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setOrientation(Qt::Horizontal);
+        frame = new QFrame(splitter);
         frame->setObjectName(QStringLiteral("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
-        gridLayout_2 = new QGridLayout(frame);
+        verticalLayout = new QVBoxLayout(frame);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        groupBox_3 = new QGroupBox(frame);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        gridLayout_2 = new QGridLayout(groupBox_3);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        treeWidget = new QTreeWidget(frame);
-        treeWidget->headerItem()->setText(0, QString());
-        treeWidget->setObjectName(QStringLiteral("treeWidget"));
-
-        gridLayout_2->addWidget(treeWidget, 2, 0, 1, 1);
-
-        label = new QLabel(frame);
+        label = new QLabel(groupBox_3);
         label->setObjectName(QStringLiteral("label"));
 
         gridLayout_2->addWidget(label, 0, 0, 1, 1);
 
-        spinBox = new QSpinBox(frame);
+        label_2 = new QLabel(groupBox_3);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout_2->addWidget(label_2, 0, 1, 1, 1);
+
+        spinBox = new QSpinBox(groupBox_3);
         spinBox->setObjectName(QStringLiteral("spinBox"));
 
         gridLayout_2->addWidget(spinBox, 1, 0, 1, 1);
 
+        doubleSpinBox = new QDoubleSpinBox(groupBox_3);
+        doubleSpinBox->setObjectName(QStringLiteral("doubleSpinBox"));
 
-        gridLayout_7->addWidget(frame, 0, 0, 1, 1);
+        gridLayout_2->addWidget(doubleSpinBox, 1, 1, 1, 1);
 
-        tabWidget = new QTabWidget(Setting);
+        pushButton = new QPushButton(groupBox_3);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        gridLayout_2->addWidget(pushButton, 2, 0, 1, 2);
+
+
+        verticalLayout->addWidget(groupBox_3);
+
+        treeWidget = new QTreeWidget(frame);
+        treeWidget->headerItem()->setText(0, QString());
+        treeWidget->setObjectName(QStringLiteral("treeWidget"));
+
+        verticalLayout->addWidget(treeWidget);
+
+        splitter->addWidget(frame);
+        tabWidget = new QTabWidget(splitter);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
@@ -266,8 +298,9 @@ public:
         gridLayout_6->addWidget(groupBox_2, 1, 0, 1, 1);
 
         tabWidget->addTab(tab_4, QString());
+        splitter->addWidget(tabWidget);
 
-        gridLayout_7->addWidget(tabWidget, 0, 1, 1, 1);
+        gridLayout_7->addWidget(splitter, 0, 0, 1, 1);
 
 
         retranslateUi(Setting);
@@ -281,7 +314,10 @@ public:
     void retranslateUi(QWidget *Setting)
     {
         Setting->setWindowTitle(QApplication::translate("Setting", "\351\207\207\351\233\206\350\256\276\347\275\256", Q_NULLPTR));
+        groupBox_3->setTitle(QApplication::translate("Setting", "GroupBox", Q_NULLPTR));
         label->setText(QApplication::translate("Setting", "\347\252\227\345\217\243\345\271\263\346\273\221\351\225\277\345\272\246", Q_NULLPTR));
+        label_2->setText(QApplication::translate("Setting", "\351\231\220\345\271\205", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("Setting", "\346\233\264\346\226\260", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("Setting", "IO", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("Setting", "\350\277\207\346\273\244\345\231\250\347\273\204", Q_NULLPTR));
         pushButton_add_1->setText(QString());

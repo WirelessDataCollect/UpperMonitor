@@ -38,8 +38,6 @@ private slots:
 
     void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 
-    void on_spinBox_valueChanged(int arg1);
-
     void on_pushButton_add_1_clicked();
 
     void on_pushButton_remove_1_clicked();
@@ -62,6 +60,9 @@ private slots:
     void on_pushButton_clear_2_clicked();
 
 
+
+
+    void on_pushButton_clicked();
 
 private:
     Ui::Setting *ui;

@@ -324,7 +324,7 @@ void DeviceSystem::onUdpDataMessage(const QString &from, const QByteArray &messa
     }
 
     qDebug()<<"node_id"<<node_id;
-    qDebug()<<"message type"<<int(message.at(13));
+    qDebug()<<"message type"<<int(message.at(14));
     if(node_id>0 &&node_id<5) device_vector.at(node_id-1)->AddData(message);
 
     //    qDebug()<<"ALL date size"<<device_vector.at(1)->signal_vector.at(1)->all_raw_data.size();
@@ -720,6 +720,7 @@ void DeviceSystem::EndLocalTest()
 bool DeviceSystem::FindDocsNames(QDate begin, QDate end)
 {
 
+    end.addDays(1);
     Tcp_Data.clear();
     QString order = MongoFindDocsNames;
     order.append("+isodate:");
@@ -989,13 +990,15 @@ int DeviceSystem:: ByteToInt32(QByteArray abyte0)
     }
     return data;
 }
-void  DeviceSystem:: SetFilterLength(int length)
+void DeviceSystem:: SetFilterLengthMax(int length,double max)
 {
     for(int i=0;i<device_num;i++)
     {
         for(int j=0;j<device_vector.at(i)->signal_number;j++)
         {
-            device_vector.at(i)->signal_vector.at(j)->SetFilterLength(length);
+          device_vector.at(i)->signal_vector.at(j)->signal_data->SetFilterLengthMax(length, max);
+
+
         }
     }
 }

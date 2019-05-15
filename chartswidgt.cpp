@@ -83,51 +83,11 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     connect(lineEditMinRange,SIGNAL(editingFinished()),this,SLOT(setMinRange()));
     connect(lineEditMaxRange,SIGNAL(editingFinished()),this,SLOT(setMaxRange()));
     connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
+    connect(m_chartView,SIGNAL(updateslider()), this, SLOT(on_updateslider()));
     connectMarkers();
 
     m_chart->createDefaultAxes();
 }
-
-//void chartswidgt::on_ReveiveSignalData(int device, int signal, QString name, QColor color,QList<QPointF> frame_data, int type)
-//{
-//    QLineSeries * series;
-//    int index = IndexofSeries(series, device, signal, name, color);
-//    if(type ==0)
-//    {
-//        series->append(frame_data);
-//    }
-//    if(type == -1)
-//    {
-//        m_chart->removeSeries(series);
-//        series_vector[device][signal].remove(index);
-//        delete series;
-//        point_vector[device][signal].remove(index);
-//    }
-//     status_list[device][signal] = true;
-
-//}
-
-//int chartswidgt::IndexofSeries(QLineSeries *series, int device, int signal,QString name, QColor color)
-//{
-//    QVector<QLineSeries *>  series_list = series_vector.at(device).at(signal);
-//    for(int i=0;i<series_list.size();i++)
-//    {
-//        if(series_list.at(i)->color() == color && series_list.at(i)->name() == name)
-//        {
-//            series = series_list[i];
-//            return i;
-//        }
-//    }
-//        series = new QLineSeries();
-//        series->setName(name);
-//        series->setColor(color);
-//        series_list.append(series);
-//        m_chart->addSeries(series);
-//        point_vector[device][signal].resize(series_list.size());
-//        return  series_list.size()-1;
-
-//}
-
 
 void chartswidgt::UpdateChart()
 {
@@ -145,24 +105,29 @@ void chartswidgt::UpdateChart()
                 bool update =  device_signal->update_status;
                 if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                 if(series->name()!=device_signal->name) series->setName(device_signal->name);
-                // && !device_signal->all_unit_data.isEmpty()
+                // && !device_signal->show_data.isEmpty()
                 if(update)
                 {
-
                     device_signal->update_status = false;
-
-                    series->replace(device_signal->all_unit_data);
+                    series->replace(device_signal->show_data);
                     qDebug()<<"Signal plot------------------------------------";
-                    qDebug()<<device_signal->all_unit_data.size();
+                    qDebug()<<device_signal->show_data.size();
                     if(!m_chart->series().contains(series))
                     {
-                        series->setUseOpenGL(true);
+
                         m_chart->addSeries(series);
                         m_chart->createDefaultAxes();
                         QPen pen = series->pen();
                         pen.setWidth(2);
                         series->setPen(pen);
                     }
+                }
+            }
+            else
+            {
+                if(m_chart->series().contains(series))
+                {
+                     m_chart->removeSeries(series);
                 }
             }
         }
@@ -188,6 +153,7 @@ void chartswidgt::UpdateChart()
                 for(int i=0;i<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
                 {
                     series = new QLineSeries();
+                    series->setUseOpenGL(true);
                     series_list.append(series);
                     // m_chart->addSeries(series);
                 }
@@ -210,11 +176,11 @@ void chartswidgt::UpdateChart()
                         if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                         if(series->name()!=device_signal->name) series->setName(device_signal->name);
                         device_signal->update_status = false;
-                        series->replace(device_signal->all_unit_data);
+                        series->replace(device_signal->show_data);
                         qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
                         if(!m_chart->series().contains(series))
                         {
-                            series->setUseOpenGL(true);
+
                             m_chart->addSeries(series);
                             m_chart->createDefaultAxes();
                             QPen pen = series->pen();
@@ -272,6 +238,7 @@ void chartswidgt::InitSeries()
         for(int i=0;i<6;i++)
         {
             QLineSeries *series = new QLineSeries();
+            series->setUseOpenGL(true);
             itor->append(series);
         }
     }
@@ -379,20 +346,39 @@ void chartswidgt::handleMarkerClicked()
     }
     }
 }
+void chartswidgt::on_updateslider()
+{
+    QValueAxis *axisX = dynamic_cast<QValueAxis*>(m_chart->axisX());
+    if(NULL != axisX)
+    {
+        h_slider->setMaxValue(axisX->max());
+        h_slider->setMinValue(axisX->min());
+    }
+}
 
 void chartswidgt::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() > 0) {
-        m_chart->zoom(1.2);
-        m_chart->axisX()->setMin(h_slider->minValue());
-        m_chart->axisX()->setMax(h_slider->maxValue());
+    QValueAxis *axisX = dynamic_cast<QValueAxis*>(m_chart->axisX());
+    QValueAxis *axisY = dynamic_cast<QValueAxis*>(m_chart->axisY());
+    double y_min = axisY->min();
+    double y_max = axisY->max();
 
-    } else {
-        m_chart->zoom(0.8);
-        m_chart->axisX()->setMin(h_slider->minValue());
-        m_chart->axisX()->setMax(h_slider->maxValue());
+    if(NULL != axisX && NULL != axisY)
+    {
+        if (event->delta() < 0) {
+            axisY->setMax((y_max+y_min)/2 + (y_max-y_min)*0.75);
+            axisY->setMin((y_max+y_min)/2 - (y_max-y_min)*0.75);
+
+        }
+        else
+        {
+            axisY->setMax((y_max+y_min)/2 + (y_max-y_min)*0.25);
+            axisY->setMin((y_max+y_min)/2 - (y_max-y_min)*0.25);
+        }
+        h_slider->setMaxValue(axisX->max());
+        h_slider->setMinValue(axisX->min());
+
     }
-
     QWidget::wheelEvent(event);
 }
 
@@ -444,7 +430,6 @@ void chartswidgt::setMaxValue(float val)
 {
     if(!m_chart->series().isEmpty())
         m_chart->axisX()->setMax(val);
-    // qDebug()<<"setMinValue"<<val;
 }
 
 void chartswidgt::show_position(const QPoint &point)
@@ -480,7 +465,7 @@ void chartswidgt::showDataDialog()
                 if(signaldata->show_enable)
                 {
                     QVector<QPointF> data;
-                    for(auto itor= signaldata->all_unit_data.begin();itor<signaldata->all_unit_data.end();itor++)
+                    for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
                     {
                         if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
                     }

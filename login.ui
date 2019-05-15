@@ -31,10 +31,6 @@
   <property name="windowTitle">
    <string notr="true">Login</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="src.qrc">
-    <normaloff>:/ico/ico/osc.jpg</normaloff>:/ico/ico/osc.jpg</iconset>
-  </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(205, 209, 213);</string>
   </property>
@@ -411,8 +407,6 @@ background-color: rgb(24, 56, 132);</string>
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="src.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

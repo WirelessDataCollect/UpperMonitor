@@ -63,6 +63,7 @@ public slots:
     void setMinRange();
     void setMaxValue(float val);
     void setMinValue(float val);
+    void on_updateslider();
 
 private:
     bool isClicking;

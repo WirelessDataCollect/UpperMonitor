@@ -20,11 +20,6 @@ public:
     int device_id;
     bool vol_enable;
 
-    QList<double> filter_list;
-    int filter_length;
-
-    double Filter(double value);
-    void SetFilterLength(int length);
     void SetIVStatus(bool status);
     void ClearReceiveData();
 };

@@ -78,7 +78,7 @@ RESOURCES += \
 
 DISTFILES += \
     readme.md
-
+RC_ICONS = ./ico/logo.ico
 ## exprtk.hpp 段过多
 win32:QMAKE_CXXFLAGS +=/bigobj
 
@@ -86,4 +86,4 @@ win32:QMAKE_CXXFLAGS +=/bigobj
 #QMAKE_CXXFLAGS +=-Wa,-mbig-obj
 
 ##禁止打印信息
-#DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_NO_DEBUG_OUTPUT

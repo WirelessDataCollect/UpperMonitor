@@ -63,7 +63,7 @@ void Device::AddData(const QByteArray &message)
     // qDebug()<<"frame_length*************"<<frame_length;
 
     QByteArray meaasgebyte = message.mid(16+64,static_cast<int>(frame_length));
- //   qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
+    qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
     if(frame_length+48<size)
@@ -85,12 +85,6 @@ void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)
     for(int i=0;i<frame_length;)
     {
         time= (frame_time+i/8*10)*0.0001;
-//        if(i==0)
-//        {
-//            qDebug()<<"time:"<<time<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-//            qDebug()<<qint16(adcbyte.at(0)*256+adcbyte.at(1))<<qint16(adcbyte.at(2)*256+adcbyte.at(3))<<qint16(adcbyte.at(4)*256+adcbyte.at(5))<<qint16(adcbyte.at(6)*256+adcbyte.at(7));
-//        }
-
         for(int j=0;j<4;j++)
         {
             val = uchar(adcbyte.at(i++))*256;
@@ -99,9 +93,6 @@ void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)
             signal_vector.at(j)->signal_data->AddData(time,val);
         } 
     }
-//   if(count%100==0)
-//    for(int i = 0;i<signal_vector.at(0)->signal_data->all_unit_data.size();i++)
-//    qDebug()<<signal_vector.at(0)->signal_data->all_unit_data.at(i);
 }
 
 void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)

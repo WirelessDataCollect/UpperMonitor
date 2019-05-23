@@ -229,7 +229,7 @@ void MainWin::on_action_8_triggered()
     if(!selectedDir.isEmpty())
     {
         selectedDir+="/";
-        selectedDir+=device_system->test_name;
+        selectedDir+=device_system-> test_name.split('/').at(0);
         QDir dir;
         if(!dir.exists(selectedDir)) dir.mkpath(selectedDir);
         QString data_file = selectedDir+"/"+"data.txt";

@@ -144,7 +144,8 @@ void Setting::TabelViewInit()
 
     QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
     QStandardItem   *aItem;
-    QStringList device = {"一","二","三","四","五","六"};
+    QStringList device;
+    device<<QStringLiteral("一")<<QStringLiteral("二")<<QStringLiteral("三")<<QStringLiteral("四")<<QStringLiteral("五")<<QStringLiteral("六");
 
     for(int i=0;i<5;i++)
     {

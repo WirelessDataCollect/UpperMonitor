@@ -171,9 +171,13 @@ void DialogConf::on_buttonBox_accepted()
         ui->lineEdit->setEnabled(false);
         ui->lineEdit_2->setEnabled(false);
         ui->comboBox->setEnabled(false);
-
     }
     //SetCmdValue("SET_PWD")
     qDebug()<<"ssid_name"<<ssid_name<<"ssid_pwd"<<ssid_pwd<<"device_id"<<device_id;
 }
 
+
+void DialogConf::on_pushButton_2_clicked()
+{
+    //主机
+}

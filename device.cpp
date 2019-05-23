@@ -102,8 +102,7 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
     double time;
     int channel;
     int can_id;
-    qDebug()<<canbyte.length()<<canbyte.toHex();
-
+    qDebug()<<"AddCanData";
     for(int i=0;i<frame_count;i++)// 1+4+20
     {
         channel = canbyte.at(i*25);
@@ -113,11 +112,13 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
             time = frame_time * 0.0001;
 
             can_id = ByteToInt32(canbyte.mid(i*25+9,4));
-            qDebug()<<"can_id"<<canbyte.mid(i*25+9,4).toHex()<<can_id;
-            qDebug()<<"channel"<<channel;
-            qDebug()<<"frame_time"<<frame_time;
-            qDebug()<<"canbyte.mid(i*25+16,8))"<<canbyte.mid(i*25+16,8).toHex();
+//            qDebug()<<"can_id"<<canbyte.mid(i*25+9,4).toHex()<<can_id;
+//            qDebug()<<"device_id"<<device_id;
+//            qDebug()<<"channel"<<channel;
+//            qDebug()<<"frame_time"<<frame_time;
+//            qDebug()<<"canbyte.mid(i*25+16,8))"<<canbyte.mid(i*25+16,8).toHex();
             can_vector.at(channel-1)->AddFrameData(can_id,time,canbyte.mid(i*25+16,8));
+
             if(candata_status) emit addcanrow(time,device_id,channel,can_id,canbyte.mid(i*25+16,8));
         }
         else

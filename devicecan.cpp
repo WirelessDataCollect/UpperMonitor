@@ -79,6 +79,5 @@ void DeviceCan::ClearReceiveData()
          filter_list.at(i)->ClearAllData();
 
      }
-
-
+      update_status =true;
 }

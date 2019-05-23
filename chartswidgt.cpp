@@ -143,33 +143,33 @@ void chartswidgt::UpdateChart()
             {
                 device_system->device_vector.at(device)->can_vector.at(channel)->update_status = false;
 
-                for(int i =0;i<series_list.size();i++)
+                for(int i=0;i<series_can[device][channel].size();i++)
                 {
-                    m_chart->removeSeries(series_list[1]);
-                    delete series_list[i];
+                    m_chart->removeSeries(series_can[device][channel][i]);
+
+//                    delete series_can[device][channel][0];
+
                 }
-                series_list.clear();
+                series_can[device][channel].clear();
 
                 for(int i=0;i<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
                 {
                     series = new QLineSeries();
                     series->setUseOpenGL(true);
-                    series_list.append(series);
-                    // m_chart->addSeries(series);
+                    series_can[device][channel].append(series);
+                   // m_chart->addSeries(series);
                 }
                 qDebug()<<"-------------------------------------------";
-                qDebug()<<"series_list.size()"<<series_list.size();
-
+                qDebug()<<"series_can[device][channel].size()"<<series_can[device][channel].size();
             }
 
+            series_list = series_can[device][channel];
             for(int i =0;i<series_list.size();i++)
             {
-
                 device_signal = device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i);
-
-                if(device_signal->show_enable)
-                {
                     bool update =  device_signal->update_status;
+                    //qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX CANNNNNNNNNNNNNNNNNN"<<device<<channel<<i<<update<<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->show_data.size();
+
                     if(update)
                     {
                         series = series_list.at(i);
@@ -177,10 +177,9 @@ void chartswidgt::UpdateChart()
                         if(series->name()!=device_signal->name) series->setName(device_signal->name);
                         device_signal->update_status = false;
                         series->replace(device_signal->show_data);
-                        qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                      //  qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXX  CAN replace";
                         if(!m_chart->series().contains(series))
                         {
-
                             m_chart->addSeries(series);
                             m_chart->createDefaultAxes();
                             QPen pen = series->pen();
@@ -189,10 +188,9 @@ void chartswidgt::UpdateChart()
                         }
                     }
                 }
-            }
+
         }
     }
-
     connectMarkers();
     m_chartView->setUpdatesEnabled(true);
     // m_chartView->update();
@@ -217,7 +215,6 @@ void chartswidgt::GetSeriesPoint(bool status)
             {
                for(int k =0;k<series_can.at(device).at(channel).size();k++)
                {
-
                    series =  series_can.at(device).at(channel).at(k);
                    series->setUseOpenGL(!status);
                    if(status) connect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
@@ -471,7 +468,15 @@ void chartswidgt::showDataDialog()
                     }
                     if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
                 }
+
             }
+//            for(int j=0;j<2;j++)
+//            {
+//                for(int k=0;k<series_can.at(i).at(j).size();k++)
+//                {
+
+//                }
+//            }
 
         }
         dialog->show();

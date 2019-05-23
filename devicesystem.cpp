@@ -113,6 +113,10 @@ void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
     status = tcp_client->connectTo(tcp_target_addr, tcp_target_port);
     qDebug()<<"STATUS"<<status;
     if(!status) emit TcpConnectStatus(false, "无法连接远程服务器");
+    else{
+
+        FindDocsNames(QDate::currentDate(),QDate::currentDate());
+    }
 }
 
 void DeviceSystem::onTcpClientConnected(const QString &from, const quint16 port)
@@ -569,6 +573,7 @@ bool DeviceSystem::SendCanFilter()
                     id = device_can->filter_list.at(k)->id;
 
                     value.append(Uint32ToByte(id));
+                    qDebug()<<"SendCanFilter";
                     qDebug()<<"decive:"<<int(i)<<"Channel"<<int(j)<<"id"<<id<<filter_size<<value.toHex();
                 }
 
@@ -690,6 +695,11 @@ void DeviceSystem::NewLocalTest(QString name)
     qDebug()<<"send meaasge---------------";
     if(LocalDataUdpStart())
         qDebug()<<"LocalDataUdpStart OK";
+
+    if(SendCanFilter())
+        qDebug()<<"SendCanFilter OK";
+    else qDebug()<<"SendCanFilter wrongxxxxxxxxxxxx";
+
     if(LocalTestSyncTime())
         qDebug()<<"LocalTestSyncTime OK";
     else qDebug()<<"LocalTestSyncTime wrongxxxxxxxxxxxx";
@@ -699,9 +709,7 @@ void DeviceSystem::NewLocalTest(QString name)
     if(LocalTestName())
         qDebug()<<"LocalTestName OK";
     else qDebug()<<"LocalTestName wrongxxxxxxxxxxxx";
-    if(SendCanFilter())
-        qDebug()<<"SendCanFilter OK";
-    else qDebug()<<"SendCanFilter wrongxxxxxxxxxxxx";
+
     if(SendConfigureFile(test_name))
         qDebug()<<"SendConfigureFile OK";
     else qDebug()<<"SendConfigureFile wrongxxxxxxxxxxxx";
@@ -720,7 +728,7 @@ void DeviceSystem::EndLocalTest()
 bool DeviceSystem::FindDocsNames(QDate begin, QDate end)
 {
 
-    end.addDays(1);
+    end = end.addDays(1);
     Tcp_Data.clear();
     QString order = MongoFindDocsNames;
     order.append("+isodate:");

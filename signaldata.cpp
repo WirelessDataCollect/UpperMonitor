@@ -16,7 +16,6 @@ SignalData::~SignalData()
 {
 
     symbol_table.clear();
-
     expression.release();
 
    // qDebug()<<"delete parese begin";
@@ -26,7 +25,7 @@ bool SignalData::isExpreesionValue(QString express_str)
 
    parser.compile(express_str.toStdString(), expression);
    vector_x.clear();
-   for(int i=1;i<9;i++) vector_x.push_back(i*5);
+   for(int i=1;i<9;i++) vector_x.push_back(i);
     qDebug()<<"isExpreesionValue"<<expression.value();
     if(isnan(expression.value())) return false;
      else return true;
@@ -35,24 +34,21 @@ bool SignalData::isExpreesionValue(QString express_str)
 void SignalData::AddData(double time,QByteArray data)
 {
     double val = EvaluateExpress(data);
-    Filter(time,val);
-
+    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+    //Filter(time,val);
     time_list.append(time);
     message_list.append(data);
     data_list.append(val);
-
     update_status = true;
 }
 void SignalData::AddData(double time,int data)
 {
-
-//    qDebug()<<"signal data add";
-//    qDebug()<<data;
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
-
-    Filter(time,val);
-
+    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+    //Filter(time,val);
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);
@@ -60,18 +56,18 @@ void SignalData::AddData(double time,int data)
 }
 double SignalData::EvaluateExpress(QByteArray data)
 {
-    std::vector<double> new_vec;
+
     vector_x.clear();
     for(int i=0;i<data.size();i++)
     {
-        vector_x.push_back(double(data.at(i)));
+        vector_x.push_back(double(uchar(data.at(i))));
+       // qDebug()<<"EvaluateExpress"<<i<<<<double(data.at(i));
     }
     return expression.value();
 }
 
 double SignalData::EvaluateExpress(double data)
 {
-    std::vector<double> new_vec;
     vector_x.clear();
     vector_x.push_back(double(data));
     return expression.value();
@@ -79,7 +75,6 @@ double SignalData::EvaluateExpress(double data)
 void SignalData::ClearPlotData()
 {
     show_data.clear();
-
     update_status = true;
 }
 
@@ -122,7 +117,6 @@ void SignalData::SetFilterLengthMax(int length, double max)
     {
         filter_sum += filter_list.at(i);
     }
-
     UpdateAllData();
 }
 

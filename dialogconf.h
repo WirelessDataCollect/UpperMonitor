@@ -32,7 +32,6 @@ private slots:
 
     void on_buttonBox_accepted();
 
-    void on_pushButton_2_clicked();
 
 private:
     Ui::DialogConf *ui;

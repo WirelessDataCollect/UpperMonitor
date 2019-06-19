@@ -43,7 +43,7 @@ MainWin::MainWin(QWidget *parent) :
     headerList<<QStringLiteral("时间")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("测量值");
     standard_model->setHorizontalHeaderLabels(headerList);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
-   // ui->tableView->resizeColumnsToContents();
+    // ui->tableView->resizeColumnsToContents();
     ui->tableView->setMaximumWidth(250);
     ui->tableView->setVisible(false);
 
@@ -87,7 +87,10 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     online_group->addButton(ui->radioButton_3,2);
     online_group->addButton(ui->radioButton_4,3);
     online_group->addButton(ui->radioButton_5,4);
+    online_group->addButton(ui->radioButton_11,5);
+
     online_group->setExclusive(false);
+
     enable_group =new QButtonGroup();
     enable_group->addButton(ui->radioButton_6,0);
     enable_group->addButton(ui->radioButton_7,1);
@@ -95,7 +98,6 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     enable_group->addButton(ui->radioButton_9,3);
     enable_group->addButton(ui->radioButton_10,4);
     enable_group->setExclusive(false);
-    enable_group->setId(ui->radioButton_6,0);
 
     //定时器
     timer =new QTimer();
@@ -294,6 +296,10 @@ void MainWin::on_DeviceStatus()
         status = device_system->device_vector.at(i)->actual_status;
         enable_group->button(i)->setChecked(status);
     }
+    bool status = device_system->clock_device_status;
+    online_group->buttons().at(5)->setChecked(status);
+
+
 }
 
 void MainWin::on_UpdataDocsnames(QList<QString> name,QList<QString> time)

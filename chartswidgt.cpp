@@ -127,7 +127,7 @@ void chartswidgt::UpdateChart()
             {
                 if(m_chart->series().contains(series))
                 {
-                     m_chart->removeSeries(series);
+                    m_chart->removeSeries(series);
                 }
             }
         }
@@ -147,17 +147,15 @@ void chartswidgt::UpdateChart()
                 {
                     m_chart->removeSeries(series_can[device][channel][i]);
 
-//                    delete series_can[device][channel][0];
-
+                   // delete series_can[device][channel][0];
                 }
                 series_can[device][channel].clear();
-
                 for(int i=0;i<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
                 {
                     series = new QLineSeries();
                     series->setUseOpenGL(true);
                     series_can[device][channel].append(series);
-                   // m_chart->addSeries(series);
+                    // m_chart->addSeries(series);
                 }
                 qDebug()<<"-------------------------------------------";
                 qDebug()<<"series_can[device][channel].size()"<<series_can[device][channel].size();
@@ -167,27 +165,27 @@ void chartswidgt::UpdateChart()
             for(int i =0;i<series_list.size();i++)
             {
                 device_signal = device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i);
-                    bool update =  device_signal->update_status;
-                    //qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX CANNNNNNNNNNNNNNNNNN"<<device<<channel<<i<<update<<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->show_data.size();
+                bool update =  device_signal->update_status;
+                //qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX CANNNNNNNNNNNNNNNNNN"<<device<<channel<<i<<update<<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->show_data.size();
 
-                    if(update)
+                if(update)
+                {
+                    series = series_list.at(i);
+                    if(series->color()!=device_signal->color) series->setColor(device_signal->color);
+                    if(series->name()!=device_signal->name) series->setName(device_signal->name);
+                    device_signal->update_status = false;
+                    series->replace(device_signal->show_data);
+                    //  qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXX  CAN replace";
+                    if(!m_chart->series().contains(series))
                     {
-                        series = series_list.at(i);
-                        if(series->color()!=device_signal->color) series->setColor(device_signal->color);
-                        if(series->name()!=device_signal->name) series->setName(device_signal->name);
-                        device_signal->update_status = false;
-                        series->replace(device_signal->show_data);
-                      //  qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXX  CAN replace";
-                        if(!m_chart->series().contains(series))
-                        {
-                            m_chart->addSeries(series);
-                            m_chart->createDefaultAxes();
-                            QPen pen = series->pen();
-                            pen.setWidth(2);
-                            series->setPen(pen);
-                        }
+                        m_chart->addSeries(series);
+                        m_chart->createDefaultAxes();
+                        QPen pen = series->pen();
+                        pen.setWidth(2);
+                        series->setPen(pen);
                     }
                 }
+            }
 
         }
     }
@@ -202,26 +200,26 @@ void chartswidgt::GetSeriesPoint(bool status)
     get_point_status = status;
     qDebug()<<"get_point_status"<<get_point_status;
 
-        for(int device=0;device<5;device++)
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
         {
-            for(int signal =0;signal<6;signal++)
+            series = series_list[device][signal];
+            series->setUseOpenGL(!status);
+            if(status) connect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
+            else disconnect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
+        }
+        for(int channel =0; channel<2;channel++)
+        {
+            for(int k =0;k<series_can.at(device).at(channel).size();k++)
             {
-                series = series_list[device][signal];
+                series =  series_can.at(device).at(channel).at(k);
                 series->setUseOpenGL(!status);
                 if(status) connect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
                 else disconnect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
             }
-            for(int channel =0; channel<2;channel++)
-            {
-               for(int k =0;k<series_can.at(device).at(channel).size();k++)
-               {
-                   series =  series_can.at(device).at(channel).at(k);
-                   series->setUseOpenGL(!status);
-                   if(status) connect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
-                   else disconnect(series,SIGNAL(hovered(QPointF,bool)),this,SLOT(clickpoint(QPointF,bool)));
-               }
-            }
         }
+    }
 }
 
 
@@ -420,7 +418,6 @@ void chartswidgt::setMinValue(float val)
 {
     if(!m_chart->series().isEmpty())
         m_chart->axisX()->setMin(val);
-
 }
 
 void chartswidgt::setMaxValue(float val)
@@ -428,7 +425,20 @@ void chartswidgt::setMaxValue(float val)
     if(!m_chart->series().isEmpty())
         m_chart->axisX()->setMax(val);
 }
+//void chartswidgt::update_axis()
+//{
+//    double min,max;
 
+//    for(int device=0;device<5;device++)
+//    {
+//        for(int signal =0;signal<6;signal++)
+//        {
+//            series_list[device][signal]->
+//        }
+//    h_slider->setMaxValue();
+//    h_slider->setMinValue();
+
+//}
 void chartswidgt::show_position(const QPoint &point)
 {
     label_position->setText(QString("X: %1  Y: %2 ").arg(m_chart->mapToValue(point).x()).arg(m_chart->mapToValue(point).y()));
@@ -458,7 +468,6 @@ void chartswidgt::showDataDialog()
             for(int j=0;j<6;j++)
             {
                 SignalData *signaldata = device_system->device_vector.at(i)->signal_vector.at(j)->signal_data;
-
                 if(signaldata->show_enable)
                 {
                     QVector<QPointF> data;
@@ -468,21 +477,28 @@ void chartswidgt::showDataDialog()
                     }
                     if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
                 }
+            }
+            for(int j=0;j<2;j++)
+            {
+                for(int k=0;k<series_can.at(i).at(j).size();k++)
+                {
+                    SignalData *signaldata = device_system->device_vector.at(i)->can_vector.at(j)->filter_list.at(k);
+                    if(signaldata->show_enable)
+                    {
+                        QVector<QPointF> data;
+                        for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
+                        {
+                            if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
+                        }
+                        if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+                    }
+
+                }
 
             }
-//            for(int j=0;j<2;j++)
-//            {
-//                for(int k=0;k<series_can.at(i).at(j).size();k++)
-//                {
-
-//                }
-//            }
-
         }
-        dialog->show();
-
     }
-
+    dialog->show();
 }
 
 

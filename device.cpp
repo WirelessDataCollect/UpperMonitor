@@ -63,7 +63,7 @@ void Device::AddData(const QByteArray &message)
     // qDebug()<<"frame_length*************"<<frame_length;
 
     QByteArray meaasgebyte = message.mid(16+64,static_cast<int>(frame_length));
-    qDebug()<<"MESSAGE TYPE"<<int(message.at(14));
+    qDebug()<<"MESSAGE TYPE CAN:1; ADC:2"<<int(message.at(14));
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
     if(frame_length+48<size)

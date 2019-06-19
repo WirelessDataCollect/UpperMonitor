@@ -31,6 +31,7 @@ public slots:
     void on_addcanrow(double time, int device, int channel,int id, QByteArray data);
     bool WriteTableView(QString file = "");
     bool ReadTableView(QString file = "");
+    void setTreeEnabled(bool status);
 
 private slots:
 

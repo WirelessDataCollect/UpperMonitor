@@ -53,7 +53,6 @@ void DialogConf::onTcpClientAppendMessage(const QString &from, const QByteArray 
     return_message = message;
 }
 
-
 bool  DialogConf::SetCmdValue(QString cmd, QString value)
 {
     QString text;
@@ -66,7 +65,7 @@ bool  DialogConf::SetCmdValue(QString cmd, QString value)
     qDebug()<<"data"<<data.data();
     qDebug()<<"start------------------"<<QTime::currentTime();
     mytcpclient->waitForReadyRead(2000);
-    sleep(2500);
+    sleep(2000);
     if(return_message == data) return  true;
 
     else return false;
@@ -91,17 +90,14 @@ void DialogConf::onTcpClientConnected(const QString &from, const quint16 port)
 {
     ui->lineEdit->setEnabled(true);
     ui->lineEdit_2->setEnabled(true);
-    ui->comboBox->setEnabled(true);
+    if(ui->comboBox_2->currentIndex() == 0) ui->comboBox->setEnabled(true);
     ui->pushButton_3->setEnabled(false);
-
     qDebug()<<"onTcpClientConnected";
 }
 
 
 void DialogConf::on_buttonBox_2_accepted()
 {
-
-
     int port;
     bool ok;
     port = ui->lineEdit_5->text().toInt(&ok,10);
@@ -143,9 +139,11 @@ void DialogConf::on_buttonBox_accepted()
 {
     QString ssid_name = ui->lineEdit->text();
     QString ssid_pwd = ui->lineEdit_2->text();
+    QString device_id;
 
+   if(ui->comboBox_2->currentIndex() == 0) device_id = ui->comboBox->currentText();
+   else device_id="0";
 
-    QString device_id = ui->comboBox->currentText();
     if(ssid_name.isEmpty() || ssid_pwd.isEmpty() || device_id.isEmpty()){
         QMessageBox::warning(this,"警告","输入密码和名称");
         return;
@@ -177,7 +175,4 @@ void DialogConf::on_buttonBox_accepted()
 }
 
 
-void DialogConf::on_pushButton_2_clicked()
-{
-    //主机
-}
+

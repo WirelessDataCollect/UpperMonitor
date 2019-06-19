@@ -35,18 +35,17 @@ public:
     QTabWidget *tabWidget;
     QWidget *Tab1;
     QGridLayout *gridLayout;
-    QLabel *label;
-    QLineEdit *lineEdit_2;
-    QDialogButtonBox *buttonBox;
-    QLabel *label_2;
-    QLabel *label_3;
-    QLineEdit *lineEdit;
     QLabel *label_9;
-    QPushButton *pushButton;
+    QLabel *label;
     QLabel *label_10;
-    QPushButton *pushButton_2;
     QPushButton *pushButton_3;
+    QDialogButtonBox *buttonBox;
+    QLabel *label_3;
+    QLineEdit *lineEdit_2;
+    QLineEdit *lineEdit;
     QComboBox *comboBox;
+    QLabel *label_2;
+    QComboBox *comboBox_2;
     QWidget *Tab2;
     QVBoxLayout *verticalLayout_2;
     QGroupBox *groupBox;
@@ -78,80 +77,75 @@ public:
         Tab1->setObjectName(QStringLiteral("Tab1"));
         gridLayout = new QGridLayout(Tab1);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        label = new QLabel(Tab1);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout->addWidget(label, 2, 0, 1, 1);
-
-        lineEdit_2 = new QLineEdit(Tab1);
-        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
-        lineEdit_2->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(lineEdit_2, 4, 1, 1, 2);
-
-        buttonBox = new QDialogButtonBox(Tab1);
-        buttonBox->setObjectName(QStringLiteral("buttonBox"));
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-
-        gridLayout->addWidget(buttonBox, 5, 2, 1, 1);
-
-        label_2 = new QLabel(Tab1);
-        label_2->setObjectName(QStringLiteral("label_2"));
-
-        gridLayout->addWidget(label_2, 3, 0, 1, 1);
-
-        label_3 = new QLabel(Tab1);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout->addWidget(label_3, 4, 0, 1, 1);
-
-        lineEdit = new QLineEdit(Tab1);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(lineEdit->sizePolicy().hasHeightForWidth());
-        lineEdit->setSizePolicy(sizePolicy);
-        lineEdit->setMinimumSize(QSize(0, 25));
-
-        gridLayout->addWidget(lineEdit, 3, 1, 1, 2);
-
         label_9 = new QLabel(Tab1);
         label_9->setObjectName(QStringLiteral("label_9"));
 
-        gridLayout->addWidget(label_9, 1, 0, 1, 1);
+        gridLayout->addWidget(label_9, 2, 0, 1, 1);
 
-        pushButton = new QPushButton(Tab1);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        label = new QLabel(Tab1);
+        label->setObjectName(QStringLiteral("label"));
 
-        gridLayout->addWidget(pushButton, 0, 2, 1, 1);
+        gridLayout->addWidget(label, 3, 0, 1, 1);
 
         label_10 = new QLabel(Tab1);
         label_10->setObjectName(QStringLiteral("label_10"));
 
         gridLayout->addWidget(label_10, 0, 0, 1, 1);
 
-        pushButton_2 = new QPushButton(Tab1);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-
-        gridLayout->addWidget(pushButton_2, 0, 1, 1, 1);
-
         pushButton_3 = new QPushButton(Tab1);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(pushButton_3->sizePolicy().hasHeightForWidth());
-        pushButton_3->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(pushButton_3->sizePolicy().hasHeightForWidth());
+        pushButton_3->setSizePolicy(sizePolicy);
         pushButton_3->setMinimumSize(QSize(0, 25));
 
-        gridLayout->addWidget(pushButton_3, 1, 1, 1, 2);
+        gridLayout->addWidget(pushButton_3, 2, 1, 1, 2);
+
+        buttonBox = new QDialogButtonBox(Tab1);
+        buttonBox->setObjectName(QStringLiteral("buttonBox"));
+        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+
+        gridLayout->addWidget(buttonBox, 6, 2, 1, 1);
+
+        label_3 = new QLabel(Tab1);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout->addWidget(label_3, 5, 0, 1, 1);
+
+        lineEdit_2 = new QLineEdit(Tab1);
+        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
+        lineEdit_2->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(lineEdit_2, 5, 1, 1, 2);
+
+        lineEdit = new QLineEdit(Tab1);
+        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lineEdit->sizePolicy().hasHeightForWidth());
+        lineEdit->setSizePolicy(sizePolicy1);
+        lineEdit->setMinimumSize(QSize(0, 25));
+
+        gridLayout->addWidget(lineEdit, 4, 1, 1, 2);
 
         comboBox = new QComboBox(Tab1);
         comboBox->setObjectName(QStringLiteral("comboBox"));
         comboBox->setMinimumSize(QSize(0, 25));
 
-        gridLayout->addWidget(comboBox, 2, 1, 1, 2);
+        gridLayout->addWidget(comboBox, 3, 1, 1, 2);
+
+        label_2 = new QLabel(Tab1);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout->addWidget(label_2, 4, 0, 1, 1);
+
+        comboBox_2 = new QComboBox(Tab1);
+        comboBox_2->setObjectName(QStringLiteral("comboBox_2"));
+
+        gridLayout->addWidget(comboBox_2, 0, 1, 1, 2);
 
         tabWidget->addTab(Tab1, QString());
         Tab2 = new QWidget();
@@ -255,22 +249,24 @@ public:
     void retranslateUi(QDialog *DialogConf)
     {
         DialogConf->setWindowTitle(QApplication::translate("DialogConf", "\347\273\210\347\253\257\350\256\276\347\275\256", Q_NULLPTR));
-        label->setText(QApplication::translate("DialogConf", "\350\256\276\345\244\207ID", Q_NULLPTR));
-        label_2->setText(QApplication::translate("DialogConf", "\347\203\255\347\202\271\345\220\215\347\247\260", Q_NULLPTR));
-        label_3->setText(QApplication::translate("DialogConf", "\347\203\255\347\202\271\345\257\206\347\240\201", Q_NULLPTR));
         label_9->setText(QApplication::translate("DialogConf", "\350\256\276\345\244\207\350\277\236\346\216\245", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("DialogConf", "\344\273\216\346\234\272", Q_NULLPTR));
-        label_10->setText(QApplication::translate("DialogConf", "TextLabel", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("DialogConf", "\344\270\273\346\234\272", Q_NULLPTR));
+        label->setText(QApplication::translate("DialogConf", "\350\256\276\345\244\207ID", Q_NULLPTR));
+        label_10->setText(QApplication::translate("DialogConf", "\346\250\241\345\274\217\350\256\276\347\275\256", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("DialogConf", "\350\277\236\346\216\245\351\207\207\351\233\206\347\273\210\347\253\257", Q_NULLPTR));
+        label_3->setText(QApplication::translate("DialogConf", "\347\203\255\347\202\271\345\257\206\347\240\201", Q_NULLPTR));
         comboBox->clear();
         comboBox->insertItems(0, QStringList()
-         << QApplication::translate("DialogConf", "0", Q_NULLPTR)
          << QApplication::translate("DialogConf", "1", Q_NULLPTR)
          << QApplication::translate("DialogConf", "2", Q_NULLPTR)
          << QApplication::translate("DialogConf", "3", Q_NULLPTR)
          << QApplication::translate("DialogConf", "4", Q_NULLPTR)
          << QApplication::translate("DialogConf", "5", Q_NULLPTR)
+        );
+        label_2->setText(QApplication::translate("DialogConf", "\347\203\255\347\202\271\345\220\215\347\247\260", Q_NULLPTR));
+        comboBox_2->clear();
+        comboBox_2->insertItems(0, QStringList()
+         << QApplication::translate("DialogConf", "\351\207\207\351\233\206\347\273\210\347\253\257", Q_NULLPTR)
+         << QApplication::translate("DialogConf", "\345\220\214\346\255\245\346\227\266\351\222\237", Q_NULLPTR)
         );
         tabWidget->setTabText(tabWidget->indexOf(Tab1), QApplication::translate("DialogConf", "\351\207\207\351\233\206\347\273\210\347\253\257", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("DialogConf", "\346\234\254\345\234\260\344\277\241\346\201\257", Q_NULLPTR));

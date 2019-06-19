@@ -90,7 +90,6 @@ inline float getValidValue(float val, float min, float max)
     return std::min(tmp, max);
 }
 
-
 void DoubleSlider::setRange(float min, float max)
 {
     m_min = min;
@@ -113,6 +112,7 @@ float DoubleSlider::minValue() const
 {
     return m_minValue;
 }
+
 void DoubleSlider::setMinValue(float val)
 {
     if(fabs( m_minValue - val ) > 0.0001 ){
@@ -126,10 +126,13 @@ float DoubleSlider::maxValue() const
 {
     return m_maxValue;
 }
+
 void DoubleSlider::setMaxValue(float val)
 {
+
     if(fabs(m_maxValue - val) > 0.0001){
         m_maxValue = val;
+        if(m_max-m_maxValue<10) ;
         emit maxValueChanged(val);
     }
     update();

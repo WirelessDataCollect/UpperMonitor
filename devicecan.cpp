@@ -24,9 +24,7 @@ bool DeviceCan::AddFilter(uint id, QColor color, QString name, QString express_s
     if(message->isExpreesionValue(express_str))
     {
         message->id = id;
-        message->color = color;
-        message->name = name;
-        message->express_str = express_str;
+        message->SettingAttra( color,  name, express_str);
         filter_list.append(message);
         qDebug()<<color<<name<<express_str;
         update_status = true;

@@ -36,15 +36,13 @@ Setting::~Setting()
 {
     WriteTableView();
     delete ui;
-
 }
 
 void Setting::TreeInit()
 {
     QStringList headers;
-    headers << QStringLiteral("终端使能");
+    headers << QString("终端使能");
     ui->treeWidget->setHeaderLabels(headers);
-
     QTreeWidgetItem *item = new QTreeWidgetItem(1000);
     item->setText(0,"采集终端");
 
@@ -90,7 +88,7 @@ void Setting::TabelViewInit()
     theModel = new QStandardItemModel(0,8,this);
     theSelection = new QItemSelectionModel(theModel);//Item选择模型
     QStringList headers;
-    headers << QStringLiteral("使能")<<QStringLiteral("终端")<<QStringLiteral("通道")<<QStringLiteral("ID")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("表达式")<<QStringLiteral("数量");
+    headers << QString("使能")<<QString("终端")<<QString("通道")<<QString("ID")<<QString("颜色")<<QString("名称")<<QString("表达式")<<QString("数量");
     theModel->setHorizontalHeaderLabels(headers);
     ui->tableView->setModel(theModel); //设置数据模型
     ui->tableView->setSelectionModel(theSelection);//设置选择模型
@@ -112,7 +110,7 @@ void Setting::TabelViewInit()
     theModel_2 = new QStandardItemModel(0,5,this);
     theSelection_2 = new QItemSelectionModel(theModel_2);//Item选择模型
     headers.clear();
-    headers << QStringLiteral(" 时间 ")<<QStringLiteral(" 终端 ")<<QStringLiteral(" 通道 ")<<QStringLiteral("  标识符  ")<<QStringLiteral("    数据帧    ");
+    headers << QString(" 时间 ")<<QString(" 终端 ")<<QString(" 通道 ")<<QString("  标识符  ")<<QString("    数据帧    ");
     theModel_2->setHorizontalHeaderLabels(headers);
     ui->tableView_2->setModel(theModel_2); //设置数据模型
     ui->tableView_2->setSelectionModel(theSelection_2);//设置选择模型
@@ -125,7 +123,7 @@ void Setting::TabelViewInit()
     theModel_3 = new QStandardItemModel(0,7,this);
     theSelection_3 = new QItemSelectionModel(theModel_3);//Item选择模型
     headers.clear();
-    headers << QStringLiteral("终端")<<QStringLiteral("")<<QStringLiteral("使能")<<QStringLiteral("颜色")<<QStringLiteral("模式")<<QStringLiteral("名称")<<QStringLiteral("表达式")<<QStringLiteral("数量");
+    headers << QString("终端")<<QString("")<<QString("使能")<<QString("颜色")<<QString("模式")<<QString("名称")<<QString("表达式")<<QString("数量");
     theModel_3->setHorizontalHeaderLabels(headers);
     ui->tableView_3->setModel(theModel_3);              //设置数据模型
     ui->tableView_3->setSelectionModel(theSelection_3);//设置选择模型
@@ -145,7 +143,7 @@ void Setting::TabelViewInit()
     QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
     QStandardItem   *aItem;
     QStringList device;
-    device<<QStringLiteral("一")<<QStringLiteral("二")<<QStringLiteral("三")<<QStringLiteral("四")<<QStringLiteral("五")<<QStringLiteral("六");
+    device<<QString("一")<<QString("二")<<QString("三")<<QString("四")<<QString("五")<<QString("六");
 
     for(int i=0;i<5;i++)
     {
@@ -314,10 +312,8 @@ void Setting::model3_itemChanged(QStandardItem *item)
         qDebug()<<"model"<<model<<vol_enable;
         if(item->checkState() == Qt::Checked)
         {
-            if(device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->isExpreesionValue(express_str))
+            if(device_system->device_vector.at(device)->signal_vector.at(channel)->AddFilter(color,name,express_str))
             {
-                device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->color = color;
-                device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->name = name;
                 device_system->device_vector.at(device)->signal_vector.at(channel)->SetIVStatus(vol_enable);
                 device_system->device_vector.at(device)->signal_vector.at(channel)->signal_data->show_enable = true;
                 for(int j=4;j<7;j++) theModel_3->item(row,j)->setEditable(false);
@@ -437,7 +433,6 @@ bool Setting::ReadTableView(QString file_name)
 
                 for(int k = 4;k<theModel_3->columnCount();k++)
                 {
-                    qDebug()<<k;
                     theModel_3->item(j,k)->setText(linetextlist.at(k));
                 }
 
@@ -690,4 +685,13 @@ void Setting::on_pushButton_clicked()
     int length = ui->spinBox->value();
     double max = ui->doubleSpinBox->value();
     device_system->SetFilterLengthMax(length,max);
+}
+void Setting::setTreeEnabled(bool status)
+{
+//    ui->tableView->setEnabled(status);
+//    ui->tableView_2->setEnabled(status);
+//    ui->tableView_3->setEnabled(status);
+    ui->treeWidget->setEnabled(status);
+
+
 }

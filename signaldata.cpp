@@ -17,8 +17,6 @@ SignalData::~SignalData()
 
     symbol_table.clear();
     expression.release();
-
-   // qDebug()<<"delete parese begin";
 }
 bool SignalData::isExpreesionValue(QString express_str)
 {
@@ -29,14 +27,18 @@ bool SignalData::isExpreesionValue(QString express_str)
     qDebug()<<"isExpreesionValue"<<expression.value();
     if(isnan(expression.value())) return false;
      else return true;
+
+    return true;
 }
 
 void SignalData::AddData(double time,QByteArray data)
 {
+    if(!show_data.isEmpty() && time< show_data.last().rx()) return;
     double val = EvaluateExpress(data);
+
     if(show_data.isEmpty() )show_data.append(QPointF(time,val));
     else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
-    //Filter(time,val);
+ //   Filter(time,val);
     time_list.append(time);
     message_list.append(data);
     data_list.append(val);
@@ -44,8 +46,10 @@ void SignalData::AddData(double time,QByteArray data)
 }
 void SignalData::AddData(double time,int data)
 {
+    if(!show_data.isEmpty() && time< show_data.last().rx()) return;
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
+
     if(show_data.isEmpty() )show_data.append(QPointF(time,val));
     else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
     //Filter(time,val);
@@ -147,4 +151,13 @@ void  SignalData::UpdateAllData()
         Filter(time_list.at(i),data_list.at(i));
     }
     if(!show_data.isEmpty()) update_status = true;
+}
+void SignalData::SettingAttra(QColor color, QString name, QString express_str)
+{
+    this->color = color;
+    this->name = name;
+    this->express_str = express_str;
+    UpdateAllData();
+    this->update_status = true;
+    this->show_enable = true;
 }

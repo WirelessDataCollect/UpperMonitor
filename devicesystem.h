@@ -64,6 +64,7 @@ public:
     quint16 order_target_port;
 
     QVector<bool> device_all_status;
+    bool clock_device_status;
 
 
 
@@ -79,7 +80,7 @@ public:
     void SetDevStatus(bool status, int i= -1);
     void ClearData();
     void SetTestNameTime(QString name, QDateTime time);
-    void SetTestDeep(QString str);
+    void SetTestDeep(double time);
     void NewLocalTest(QString name);
     void EndLocalTest();
     void RemoteTcpStart(QString username,QString passwd);

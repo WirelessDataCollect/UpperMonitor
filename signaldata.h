@@ -48,6 +48,7 @@ public:
      double MaxFilter(double old_data, double new_data);
      void Filter(double time, double new_data);
      void UpdateAllData();
+     void SettingAttra(QColor color, QString name, QString express_str);
 };
 
 #endif // SIGNALDATA_H

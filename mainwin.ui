@@ -125,7 +125,7 @@
         <property name="bottomMargin">
          <number>11</number>
         </property>
-        <item row="0" column="0">
+        <item row="0" column="1">
          <widget class="QSplitter" name="splitter_2">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
@@ -146,127 +146,85 @@
 }</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_9">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>终端在线状态</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>终端使能状态</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0" colspan="6">
-             <widget class="Line" name="line_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
+            <item row="3" column="0" colspan="5">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QRadioButton" name="radioButton_6">
                 <property name="text">
-                 <string>实验名称</string>
+                 <string>终端1</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <spacer name="horizontalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+              <item>
+               <widget class="QRadioButton" name="radioButton_7">
+                <property name="text">
+                 <string>终端2</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>62</width>
-                  <height>15</height>
-                 </size>
-                </property>
-               </spacer>
+               </widget>
               </item>
-              <item row="1" column="0" colspan="2">
-               <widget class="QLineEdit" name="lineEdit">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>21</height>
-                 </size>
+              <item>
+               <widget class="QRadioButton" name="radioButton_8">
+                <property name="text">
+                 <string>终端3</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_9">
+                <property name="text">
+                 <string>终端4</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_10">
+                <property name="text">
+                 <string>终端5</string>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
-            <item row="5" column="2">
-             <spacer name="horizontalSpacer">
+            <item row="6" column="1">
+             <spacer name="horizontalSpacer_7">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>90</width>
+                <width>40</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-            <item row="5" column="3">
-             <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>测试时间</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>43</width>
-                  <height>15</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="0" colspan="2">
-               <widget class="QLineEdit" name="lineEdit_2"/>
-              </item>
-             </layout>
+            <item row="1" column="5">
+             <widget class="QRadioButton" name="radioButton_11">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>同步节点</string>
+              </property>
+             </widget>
             </item>
-            <item row="5" column="4">
-             <spacer name="horizontalSpacer_2">
+            <item row="6" column="3">
+             <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>90</width>
+                <width>40</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-            <item row="5" column="5">
+            <item row="5" column="5" rowspan="2">
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="0">
                <widget class="QLabel" name="label_6">
@@ -293,14 +251,7 @@
               </item>
              </layout>
             </item>
-            <item row="6" column="0" colspan="6">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="6">
+            <item row="1" column="0" colspan="5">
              <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
                <widget class="QRadioButton" name="radioButton">
@@ -339,44 +290,94 @@
               </item>
              </layout>
             </item>
-            <item row="3" column="0" colspan="6">
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QRadioButton" name="radioButton_6">
+            <item row="4" column="0" colspan="6">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2" rowspan="2">
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>终端1</string>
+                 <string>测试时间</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton_7">
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>43</width>
+                  <height>15</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="lineEdit_2"/>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>终端使能状态</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>终端在线状态</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" rowspan="2">
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_4">
                 <property name="text">
-                 <string>终端2</string>
+                 <string>实验名称</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton_8">
-                <property name="text">
-                 <string>终端3</string>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton_9">
-                <property name="text">
-                 <string>终端4</string>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>62</width>
+                  <height>15</height>
+                 </size>
                 </property>
-               </widget>
+               </spacer>
               </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton_10">
-                <property name="text">
-                 <string>终端5</string>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>21</height>
+                 </size>
                 </property>
                </widget>
               </item>
              </layout>
+            </item>
+            <item row="7" column="0" colspan="6">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

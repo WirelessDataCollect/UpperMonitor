@@ -161,30 +161,37 @@ void Login::find_ipadress()
     // ui->comboBox->clear();
     interfaceList.clear();
     interfaceList = QNetworkInterface::allInterfaces();
-
-
+    int size = interfaceList.size();
     if (interfaceList.isEmpty())
     {
         // TODO wifilist is empty
+        return;
     }
-    else
+    while(ui->comboBox->count()>size)
     {
-        for (int j = 0; j < interfaceList.size(); ++j)
-        {
+        ui->comboBox->removeItem(ui->comboBox->count()-1);
+    }
+    while(ui->comboBox->count()<size)
+    {
+        ui->comboBox->addItem("");
+    }
 
-            ui->comboBox->addItem(interfaceList.at(j).humanReadableName());
+    for (int j = 0; j < size; ++j)
+    {
+        if( ui->comboBox->itemText(j)!=interfaceList.at(j).humanReadableName()){
+            ui->comboBox->setItemText(j,interfaceList.at(j).humanReadableName());
         }
     }
-
 }
+
 
 void Login::on_comboBox_highlighted(int index)
 {
+    find_ipadress();
     qDebug()<<index;
     if (ui->comboBox->count() >= index)
     {
         ui->comboBox->setCurrentIndex(index);
-
         for (int i = 0; i < interfaceList.at(index).addressEntries().size(); ++i)
         {
             if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
@@ -208,15 +215,11 @@ void Login::on_comboBox_highlighted(int index)
             }
         }
     }
-
 }
-
-
 
 void Login::on_pushButton_3_clicked()
 {
-    QString dlgTitle="about消息框";
+    QString dlgTitle="关于";
     QString strInfo="无线数据采集系统";
-
     QMessageBox::about(this, dlgTitle, strInfo);
 }

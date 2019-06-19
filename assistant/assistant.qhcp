@@ -1,16 +1,19 @@
-<?xml version="1.0" encoding="GB2312"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
 <assistant>
-<title>我的帮助系统</title>
+<title>閲囬泦绯荤粺甯姪鏂囨。</title>
 <applicationIcon></applicationIcon>
-<cacheDirectory>cache/myHelp</cacheDirectory>
-<homePage>qthelp://myhelp/doc/html/index.html</homePage>
-<startPage>qthelp://myhelp/doc/html/index.html</startPage>
+<cacheDirectory>cache/helpdoc</cacheDirectory>
+<homePage>qthelp://DataCollecting.helpdoc/doc/html/index.html</homePage>
+<startPage>qthelp://DataCollecting.helpdoc/doc/html/index.html</startPage>
 <aboutMenuText>
-   <text>关于该帮助</text>
+   <text>鍏充簬璇ュ府鍔�</text>
 </aboutMenuText>
+
 <aboutDialog>
+<!-- <file>./about.txt</file> -->
 </aboutDialog>
+
 <enableDocumentationManager>false</enableDocumentationManager>
 <enableAddressBar>false</enableAddressBar>
 <enableFilterFunctionality>false</enableFilterFunctionality>

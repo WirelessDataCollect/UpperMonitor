@@ -1,25 +1,26 @@
-<?xml version="1.0" encoding="GB2312"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-<namespace>Help</namespace>
+<namespace>DataCollecting.helpdoc</namespace>
 <virtualFolder>doc</virtualFolder>
 <filterSection>
    <toc>
-     <section title="我的帮助" ref="html/index.html">
-       <section title="文档" ref="html/help.html"></section>
-	   <section title="合同" ref="html/book.html"></section>
+     <section title="鐩綍" ref="html/index.html">
+       <section title="浣跨敤鏂囨。" ref="html/help.htm"></section>
+	   <section title="鍏紡缂栬緫" ref="html/exprtk.html"></section>
      </section>
    </toc>
+
    <keywords>
-     <keyword name="帮助" ref="html/help.html"/>
-	 <keyword name="合同" ref="html/book.html"/>
-	 
+     <keyword name="甯姪" ref="html/help.htm"/>
+	 <keyword name="鍏紡" ref="html/book.html"/>
    </keywords>
+
    <files>
      <file>html/index.html</file>
-	 <file>html/help.html</file>
-	 <file>html/book.html</file>
+	 <file>html/help.htm</file>
+	 <file>html/exprtk.html</file>
      <file>html/img/*.jpg</file>
-	 <file>html/help.files/*.gif</file>
+	 <file>html/help.files/*</file>
 	 
 	 
    </files>

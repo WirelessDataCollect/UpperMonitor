@@ -22,6 +22,7 @@ public:
 
     void SetIVStatus(bool status);
     void ClearReceiveData();
+    bool AddFilter(QColor color, QString name, QString express_str);
 };
 
 #endif // DEVICESIGNAL_H

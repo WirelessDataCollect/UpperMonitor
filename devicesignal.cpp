@@ -22,3 +22,16 @@ void DeviceSignal::ClearReceiveData()
 {
     signal_data->ClearAllData();
 }
+bool DeviceSignal::AddFilter(QColor color, QString name, QString express_str)
+{
+    if(signal_data->isExpreesionValue(express_str))
+    {
+        signal_data->SettingAttra( color,  name, express_str);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}

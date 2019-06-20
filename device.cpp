@@ -62,7 +62,11 @@ void Device::AddData(const QByteArray &message)
    // qDebug()<<"frame_time*************"<<frame_time;
     // qDebug()<<"frame_length*************"<<frame_length;
 
+   int digital_io = int(message.at(13));
+   signal_vector.at(4)->signal_data->AddIOData(frame_time*0.0001,digital_io%2);
+   signal_vector.at(5)->signal_data->AddIOData(frame_time*0.0001,digital_io/2);
     QByteArray meaasgebyte = message.mid(16+64,static_cast<int>(frame_length));
+    qDebug()<<"digital_io "<<int(message.at(13));
     qDebug()<<"MESSAGE TYPE CAN:1; ADC:2"<<int(message.at(14));
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
@@ -71,6 +75,7 @@ void Device::AddData(const QByteArray &message)
         QByteArray extern_message = message.right(size-frame_length-48);
         qDebug()<<"数据包有剩余数据";
     }
+
 }
 
 void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)

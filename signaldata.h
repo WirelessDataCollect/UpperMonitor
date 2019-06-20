@@ -37,6 +37,7 @@ public:
     double EvaluateExpress(double data);
     void AddData(double time,QByteArray data);
     void AddData(double time,int data);
+    void AddIOData(double time,int data);
     void ClearPlotData();
     void ClearAllData();
     bool update_status;

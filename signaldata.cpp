@@ -64,14 +64,19 @@ void SignalData::AddIOData(double time,int data)
 
     double voltage = data;
     double val = EvaluateExpress(voltage);
+    update_status = true;
+    qDebug()<<"AddIOData"<<data<<show_data.size()<< update_status;
 
     if(show_data.isEmpty() )show_data.append(QPointF(time,val));
     else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
     //Filter(time,val);
+
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);
-    update_status = true;
+
+
+
 }
 
 double SignalData::EvaluateExpress(QByteArray data)

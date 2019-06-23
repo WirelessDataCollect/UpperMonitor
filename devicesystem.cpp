@@ -55,9 +55,9 @@ DeviceSystem::DeviceSystem()
 
 void DeviceSystem::LocalThread()
 {
-    QThread *udp_order_thread = new QThread();
-    udp_order->moveToThread(udp_order_thread);
-    udp_order_thread->start();
+//    QThread *udp_order_thread = new QThread();
+//    udp_order->moveToThread(udp_order_thread);
+//    udp_order_thread->start();
 
     //    QThread *udp_data_thread = new QThread();
     //    udp_data->moveToThread(udp_data_thread);
@@ -76,7 +76,7 @@ DeviceSystem::~DeviceSystem()
     qDebug()<<"TcpSendCheck Disconnect Status"<<status;
     tcp_client->disconnectCurrentConnection();
     tcp_client->closeClient();
-
+    LocalTestStop();
     heart_beat_timer->stop();
     delete  heart_beat_timer;
     udp_data->unbindPort();
@@ -413,15 +413,16 @@ bool DeviceSystem::UdpSendCheck(QByteArray order, QByteArray value)
     for(int i = 0;i<2;i++)
     {
        // qDebug()<<i<<"______"<<send_data.toHex();
-        udp_order->waitForReadyRead(50);
+        udp_order->waitForReadyRead(100);
         if(value.isEmpty()) //广播
         {
-            sleep(50);
+            sleep(100);
             if(checkreturn(order.at(0)).mid(1,5) == device_all_status.mid(1,5))
                 return true;
         }
         else
         {
+            sleep(100);
             if(checkreturn(order.at(0),value.at(0)))
                return true;
         }
@@ -497,6 +498,7 @@ bool DeviceSystem::LocalTestStop()
             is_success=UdpSendCheck(order,value);
             if(is_success) break;
         }
+        qDebug()<<"LocalTestStop"<<"device"<<i+1<<is_success;
     }
     return true;
 }
@@ -561,21 +563,29 @@ bool DeviceSystem::SendCanFilter()
                 for(char k=0;k<filter_size;k++)
                 {
                     id = device_can->filter_list.at(k)->id;
-
                     value.append(Uint32ToByte(id));
                     qDebug()<<"SendCanFilter";
-                    qDebug()<<"decive:"<<int(i)<<"Channel"<<int(j)<<"id"<<id<<filter_size<<value.toHex();
                 }
 
                 for(int k=0;k<3;k++)
                 {
+                    sleep(100);
                     is_success=UdpSendCheck(order,value);
+
                     if(is_success) break;
+                }
+                 qDebug()<<"decive:"<<int(i+1)<<"Channel"<<int(j+1)<<"id"<<id<<filter_size<<value.toHex()<< is_success;
+                if(!is_success)
+                {
+
+                    return false;
                 }
             }
         }
+
     }
     return true;
+
 }
 
 bool DeviceSystem::LocalTestSyncTime()

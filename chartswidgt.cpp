@@ -75,7 +75,7 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     InitSeries();
 
     timer = new QTimer();
-    timer->start(500);
+    timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
     connect(h_slider,SIGNAL(minValueChanged(float)),this,SLOT(setMinValue(float)));
@@ -106,12 +106,14 @@ void chartswidgt::UpdateChart()
                 if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                 if(series->name()!=device_signal->name) series->setName(device_signal->name);
                 // && !device_signal->show_data.isEmpty()
+              //  qDebug()<<device<<signal<<"show_enable"<<device_signal->show_enable<<"update"<<update<<"Signal plot------------------------------------";
                 if(update)
                 {
                     device_signal->update_status = false;
                     series->replace(device_signal->show_data);
-                    qDebug()<<"Signal plot------------------------------------";
-                    qDebug()<<device_signal->show_data.size();
+                  //  qDebug()<<device<<signal<<"Signal plot------------------------------------";
+
+                 //   qDebug()<<device_signal->show_data.size();
                     if(!m_chart->series().contains(series))
                     {
 

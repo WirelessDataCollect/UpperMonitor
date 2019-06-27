@@ -18,9 +18,10 @@ MainWin::MainWin(QWidget *parent) :
     ui->setupUi(this);
     device_system = new DeviceSystem();
 
+
     settingui = new Setting(device_system,this);
     settingui->setWindowFlags(settingui->windowFlags() | Qt::Window);
-
+    calibration_dialog = new Calibration(device_system);
     //chart_widgt
     chart_widget = new chartswidgt(device_system);
     QGridLayout *layout= new QGridLayout();
@@ -376,4 +377,8 @@ void MainWin::on_action_13_triggered()
    chart_widget->showDataDialog();
 }
 
-
+void MainWin::on_action_15_triggered()
+{
+    //dialog->setAttribute(Qt::WA_DeleteOnClose);
+    calibration_dialog->show();
+}

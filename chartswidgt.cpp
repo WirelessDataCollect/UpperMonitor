@@ -102,27 +102,27 @@ void chartswidgt::UpdateChart()
 
             if(device_signal->show_enable)
             {
+                if(!m_chart->series().contains(series))
+                {
+                    m_chart->addSeries(series);
+                    m_chart->createDefaultAxes();
+                    QPen pen = series->pen();
+                    pen.setWidth(2);
+                    series->setPen(pen);
+                }
                 bool update =  device_signal->update_status;
                 if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                 if(series->name()!=device_signal->name) series->setName(device_signal->name);
-                // && !device_signal->show_data.isEmpty()
-              //  qDebug()<<device<<signal<<"show_enable"<<device_signal->show_enable<<"update"<<update<<"Signal plot------------------------------------";
                 if(update)
                 {
-                    device_signal->update_status = false;
-                    series->replace(device_signal->show_data);
-                  //  qDebug()<<device<<signal<<"Signal plot------------------------------------";
 
-                 //   qDebug()<<device_signal->show_data.size();
-                    if(!m_chart->series().contains(series))
-                    {
+                   device_signal->update_status = false;
+                  //if(device_signal->show_data.isEmpty())
+                   series->replace(device_signal->show_data);
 
-                        m_chart->addSeries(series);
-                        m_chart->createDefaultAxes();
-                        QPen pen = series->pen();
-                        pen.setWidth(2);
-                        series->setPen(pen);
-                    }
+                   qDebug()<<device<<signal<<"Signal plot------------------------------------";
+                   qDebug()<<device_signal->show_data.size();
+
                 }
             }
             else
@@ -148,7 +148,6 @@ void chartswidgt::UpdateChart()
                 for(int i=0;i<series_can[device][channel].size();i++)
                 {
                     m_chart->removeSeries(series_can[device][channel][i]);
-
                    // delete series_can[device][channel][0];
                 }
                 series_can[device][channel].clear();
@@ -188,12 +187,11 @@ void chartswidgt::UpdateChart()
                     }
                 }
             }
-
         }
     }
     connectMarkers();
     m_chartView->setUpdatesEnabled(true);
-    // m_chartView->update();
+    m_chartView->update();
 }
 
 void chartswidgt::GetSeriesPoint(bool status)
@@ -427,20 +425,7 @@ void chartswidgt::setMaxValue(float val)
     if(!m_chart->series().isEmpty())
         m_chart->axisX()->setMax(val);
 }
-//void chartswidgt::update_axis()
-//{
-//    double min,max;
 
-//    for(int device=0;device<5;device++)
-//    {
-//        for(int signal =0;signal<6;signal++)
-//        {
-//            series_list[device][signal]->
-//        }
-//    h_slider->setMaxValue();
-//    h_slider->setMinValue();
-
-//}
 void chartswidgt::show_position(const QPoint &point)
 {
     label_position->setText(QString("X: %1  Y: %2 ").arg(m_chart->mapToValue(point).x()).arg(m_chart->mapToValue(point).y()));
@@ -450,20 +435,18 @@ void chartswidgt::showDataDialog()
 {
     QValueAxis *axisX = dynamic_cast<QValueAxis*>(m_chart->axisX());
     QValueAxis *axisY = dynamic_cast<QValueAxis*>(m_chart->axisY());
-    QDialog *dialog = new QDialog(this);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+
     QTableWidget *tablewidget = new QTableWidget();
     tablewidget->insertColumn(1);
-
     if(NULL != axisX && NULL != axisY)
     {
+        DataDialog *dialog = new DataDialog(this);
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
         double x_min = axisX->min();
         double x_max = axisX->max();
         double y_min = axisY->min();
         double y_max = axisY->max();
         qDebug()<<x_min<<x_max<<y_min<<y_max;
-        DataDialog *dialog = new DataDialog(this);
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
 
         for(int i=0;i<5;i++)
         {
@@ -494,13 +477,11 @@ void chartswidgt::showDataDialog()
                         }
                         if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
                     }
-
                 }
-
             }
         }
+         dialog->show();
     }
-    dialog->show();
 }
 
 

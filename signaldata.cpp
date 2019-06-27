@@ -50,9 +50,9 @@ void SignalData::AddData(double time,int data)
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
 
-    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
-    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
-    //Filter(time,val);
+//    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+//    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+    Filter(time,val);
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);
@@ -65,7 +65,7 @@ void SignalData::AddIOData(double time,int data)
     double voltage = data;
     double val = EvaluateExpress(voltage);
     update_status = true;
-    qDebug()<<"AddIOData"<<data<<show_data.size()<< update_status;
+    //qDebug()<<"AddIOData"<<data<<show_data.size()<< update_status;
 
     if(show_data.isEmpty() )show_data.append(QPointF(time,val));
     else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
@@ -74,9 +74,6 @@ void SignalData::AddIOData(double time,int data)
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);
-
-
-
 }
 
 double SignalData::EvaluateExpress(QByteArray data)
@@ -100,6 +97,7 @@ double SignalData::EvaluateExpress(double data)
 void SignalData::ClearPlotData()
 {
     show_data.clear();
+    show_data.resize(0);
     update_status = true;
 }
 

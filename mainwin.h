@@ -12,7 +12,7 @@
 #include"devicesystem.h"
 #include"chartswidgt.h"
 #include<QProcess>
-
+#include"calibration.h"
 namespace Ui {
 class MainWin;
 }
@@ -74,10 +74,13 @@ private slots:
 
     void on_action_13_triggered();
 
+    void on_action_15_triggered();
+
 private:
     Ui::MainWin *ui;
      QTimer *timer = nullptr;
      QProcess *help_process = nullptr;
+     Calibration *calibration_dialog = nullptr;
 
 signals:
     void DeviceSystemThread();

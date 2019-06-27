@@ -27,6 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
+    calibration.cpp \
+    fit.cpp \
         myudp.cpp \
     chartswidgt.cpp \
     mytcpclient.cpp \
@@ -46,6 +48,8 @@ SOURCES += main.cpp\
     datadialog.cpp
 
 HEADERS  += \
+    calibration.h \
+    fit.h \
     myudp.h \
     chartswidgt.h \
     mytcpclient.h \
@@ -68,6 +72,7 @@ HEADERS  += \
     datadialog.h
 
 FORMS    += login.ui \
+    calibration.ui \
     setting.ui \
     mainwin.ui \
     dialogconf.ui \

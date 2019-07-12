@@ -8,17 +8,16 @@ Login::Login(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Login)
 {
-    setWindowFlags(Qt::FramelessWindowHint); //去边框
-
-    //q=new MainWindow(this);
     main_window = new MainWin();
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     setWindowModality(Qt::WindowModal);
     m_IniFile = new QSettings("loginconfig.ini",QSettings::IniFormat);
     ui->setupUi(this);
+    ui->comboBox->setEditable(false);
     ui->lineEdit_2->setEchoMode(QLineEdit::Password);
     loadcfg();
     find_ipadress();
+
     connect(main_window->device_system,SIGNAL(TcpConnectStatus(bool,QString)),this,SLOT(on_TcpConnectStatus(bool, QString)));
 }
 
@@ -27,6 +26,7 @@ Login::~Login()
     delete ui;
     delete main_window;
 }
+
 void Login:: on_TcpConnectStatus(bool status, QString str)
 {
     if(status)
@@ -125,19 +125,21 @@ void Login::loadcfg()
 
 void Login::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
+    if(event->button() == Qt::RightButton)
     {
         dragVector = event->globalPos() - frameGeometry().topLeft();
         event->accept();
     }
+    QWidget::mousePressEvent(event);
 }
 void Login::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons() && Qt::LeftButton)
+    if(event->buttons() == Qt::RightButton)
     {
         move(event->globalPos() - dragVector);
         event->accept();
     }
+    QWidget::mouseMoveEvent(event);
 }
 
 void Login::on_more_clicked()
@@ -158,7 +160,7 @@ void Login::on_exit_clicked()
 }
 void Login::find_ipadress()
 {
-    // ui->comboBox->clear();
+
     interfaceList.clear();
     interfaceList = QNetworkInterface::allInterfaces();
     int size = interfaceList.size();
@@ -197,25 +199,25 @@ void Login::on_comboBox_highlighted(int index)
             if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
                 ui->label_LocalIP->setText("IP: "+interfaceList.at(index).addressEntries().at(i).ip().toString());
-                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-                main_window->device_system->local_addr  = localAddr;
+                    localAddr = interfaceList.at(index).addressEntries().at(i).ip();
+                    main_window->device_system->local_addr  = localAddr;
+                }
             }
         }
-    }
-    else if (ui->comboBox->count() > 0 && ui->comboBox->count() < index)
-    {
-        ui->comboBox->setCurrentIndex(0);
-        for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
+        else if (ui->comboBox->count() > 0 && ui->comboBox->count() < index)
         {
-            if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            ui->comboBox->setCurrentIndex(0);
+            for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
             {
-                ui->label_LocalIP->setText("IP: "+ interfaceList.at(0).addressEntries().at(i).ip().toString());
-                localAddr = interfaceList.at(index).addressEntries().at(i).ip();
-                main_window->device_system->local_addr  = localAddr;
+                if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+                {
+                    ui->label_LocalIP->setText("IP: "+ interfaceList.at(0).addressEntries().at(i).ip().toString());
+                    localAddr = interfaceList.at(index).addressEntries().at(i).ip();
+                    main_window->device_system->local_addr  = localAddr;
+                }
             }
         }
     }
-}
 
 void Login::on_pushButton_3_clicked()
 {

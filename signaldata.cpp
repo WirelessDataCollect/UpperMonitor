@@ -14,7 +14,6 @@ SignalData::SignalData()
 }
 SignalData::~SignalData()
 {
-
     symbol_table.clear();
     expression.release();
 }
@@ -24,7 +23,7 @@ bool SignalData::isExpreesionValue(QString express_str)
    parser.compile(express_str.toStdString(), expression);
    vector_x.clear();
    for(int i=1;i<9;i++) vector_x.push_back(i);
-    qDebug()<<"isExpreesionValue"<<expression.value();
+   qDebug()<< express_str;
     if(isnan(expression.value())) return false;
      else return true;
 
@@ -50,8 +49,8 @@ void SignalData::AddData(double time,int data)
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
 
-//    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
-//    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+   // if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+   // else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
     Filter(time,val);
     time_list.append(time);
     val_list.append(data);
@@ -127,6 +126,7 @@ double SignalData::MoveAverageFilter(double value)
 
 void SignalData::SetFilterLengthMax(int length, double max)
 {
+
     max_change_data = max;
     if(length==0) length = 1;
     filter_length = length;

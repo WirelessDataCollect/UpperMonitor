@@ -14,12 +14,12 @@
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
 class Ui_Login
 {
 public:
-    QFrame *frame_2;
+    QGridLayout *gridLayout_3;
     QFrame *frame_3;
     QFrame *frame_4;
     QHBoxLayout *horizontalLayout_3;
@@ -35,19 +35,18 @@ public:
     QPushButton *more;
     QPushButton *minimum;
     QPushButton *exit;
+    QLabel *label;
+    QFrame *frame;
+    QGridLayout *gridLayout_2;
     QLabel *label_LocalIP;
-    QWidget *layoutWidget;
-    QVBoxLayout *verticalLayout_2;
-    QVBoxLayout *verticalLayout;
     QComboBox *comboBox;
+    QCheckBox *checkBox_2;
+    QSpacerItem *horizontalSpacer_3;
+    QCheckBox *checkBox;
+    QPushButton *pushButton;
+    QFrame *frame_2;
     QLineEdit *lineEdit;
     QLineEdit *lineEdit_2;
-    QHBoxLayout *horizontalLayout;
-    QCheckBox *checkBox;
-    QSpacerItem *horizontalSpacer;
-    QCheckBox *checkBox_2;
-    QHBoxLayout *horizontalLayout_2;
-    QPushButton *pushButton;
     QPushButton *pushButton_2;
 
     void setupUi(QWidget *Login)
@@ -64,24 +63,19 @@ public:
         Login->setMaximumSize(QSize(420, 320));
         Login->setWindowTitle(QString::fromUtf8("Login"));
         Login->setStyleSheet(QString::fromUtf8("background-color: rgb(205, 209, 213);"));
-        frame_2 = new QFrame(Login);
-        frame_2->setObjectName(QString::fromUtf8("frame_2"));
-        frame_2->setGeometry(QRect(0, 160, 120, 120));
-        sizePolicy.setHeightForWidth(frame_2->sizePolicy().hasHeightForWidth());
-        frame_2->setSizePolicy(sizePolicy);
-        frame_2->setMinimumSize(QSize(120, 120));
-        frame_2->setStyleSheet(QString::fromUtf8("border-image: url(:/ico/ico/user.png);"));
-        frame_2->setFrameShape(QFrame::StyledPanel);
-        frame_2->setFrameShadow(QFrame::Raised);
+        gridLayout_3 = new QGridLayout(Login);
+        gridLayout_3->setSpacing(0);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        gridLayout_3->setContentsMargins(0, 0, 0, 0);
         frame_3 = new QFrame(Login);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
-        frame_3->setGeometry(QRect(0, 0, 421, 141));
-        frame_3->setStyleSheet(QString::fromUtf8("border-image: url(:/ico/ico/ruililogin.png);"));
+        frame_3->setStyleSheet(QString::fromUtf8("#frame_3{border-image: url(:/ico/ico/ruililogin.png)}\n"
+"#frame_3 *{border-image: url()}"));
         frame_3->setFrameShape(QFrame::StyledPanel);
         frame_3->setFrameShadow(QFrame::Raised);
         frame_4 = new QFrame(frame_3);
         frame_4->setObjectName(QString::fromUtf8("frame_4"));
-        frame_4->setGeometry(QRect(320, 0, 91, 21));
+        frame_4->setGeometry(QRect(318, 0, 102, 21));
         frame_4->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 230, 231);\n"
 "border-image: url(:/ico/ico/toolground.png);"));
         frame_4->setFrameShape(QFrame::StyledPanel);
@@ -92,6 +86,11 @@ public:
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
         pushButton_3 = new QPushButton(frame_4);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(pushButton_3->sizePolicy().hasHeightForWidth());
+        pushButton_3->setSizePolicy(sizePolicy1);
         pushButton_3->setMinimumSize(QSize(21, 21));
 #ifndef QT_NO_TOOLTIP
         pushButton_3->setToolTip(QString::fromUtf8("\345\205\263\344\272\216"));
@@ -103,9 +102,6 @@ public:
 
         more = new QPushButton(frame_4);
         more->setObjectName(QString::fromUtf8("more"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(more->sizePolicy().hasHeightForWidth());
         more->setSizePolicy(sizePolicy1);
         more->setMinimumSize(QSize(21, 21));
@@ -129,6 +125,7 @@ public:
         exit->setObjectName(QString::fromUtf8("exit"));
         sizePolicy1.setHeightForWidth(exit->sizePolicy().hasHeightForWidth());
         exit->setSizePolicy(sizePolicy1);
+        exit->setMinimumSize(QSize(21, 21));
         exit->setStyleSheet(QString::fromUtf8("QPushButton{border-image: url(:/ico/ico/close.png)}\n"
 ""));
 
@@ -138,99 +135,129 @@ public:
         more->raise();
         minimum->raise();
         pushButton_3->raise();
-        label_LocalIP = new QLabel(Login);
-        label_LocalIP->setObjectName(QString::fromUtf8("label_LocalIP"));
-        label_LocalIP->setGeometry(QRect(310, 300, 111, 20));
-        layoutWidget = new QWidget(Login);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(130, 150, 175, 162));
-        verticalLayout_2 = new QVBoxLayout(layoutWidget);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        comboBox = new QComboBox(layoutWidget);
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        comboBox->setMinimumSize(QSize(0, 25));
-
-        verticalLayout->addWidget(comboBox);
-
-        lineEdit = new QLineEdit(layoutWidget);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
-        lineEdit->setEnabled(true);
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(50);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(lineEdit->sizePolicy().hasHeightForWidth());
-        lineEdit->setSizePolicy(sizePolicy2);
-        lineEdit->setMinimumSize(QSize(0, 25));
-        lineEdit->setBaseSize(QSize(0, 27));
+        label = new QLabel(frame_3);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(0, 0, 112, 21));
         QFont font;
-        font.setPointSize(11);
-        font.setBold(false);
-        font.setItalic(false);
-        font.setWeight(50);
-        lineEdit->setFont(font);
-        lineEdit->setCursorPosition(3);
+        font.setFamily(QString::fromUtf8("Agency FB"));
+        font.setPointSize(10);
+        font.setBold(true);
+        font.setWeight(75);
+        font.setKerning(true);
+        label->setFont(font);
+        label->setStyleSheet(QString::fromUtf8("background-color: rgb(235, 240, 241);\n"
+"color: rgb(23, 55, 131);"));
 
-        verticalLayout->addWidget(lineEdit);
+        gridLayout_3->addWidget(frame_3, 0, 0, 1, 1);
 
-        lineEdit_2 = new QLineEdit(layoutWidget);
-        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
-        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        frame = new QFrame(Login);
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        gridLayout_2 = new QGridLayout(frame);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        label_LocalIP = new QLabel(frame);
+        label_LocalIP->setObjectName(QString::fromUtf8("label_LocalIP"));
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(label_LocalIP->sizePolicy().hasHeightForWidth());
+        label_LocalIP->setSizePolicy(sizePolicy2);
+        label_LocalIP->setMinimumSize(QSize(100, 0));
+
+        gridLayout_2->addWidget(label_LocalIP, 4, 3, 1, 1);
+
+        comboBox = new QComboBox(frame);
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Minimum);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(lineEdit_2->sizePolicy().hasHeightForWidth());
-        lineEdit_2->setSizePolicy(sizePolicy3);
-        lineEdit_2->setMinimumSize(QSize(0, 25));
-        QFont font1;
-        font1.setPointSize(11);
-        lineEdit_2->setFont(font1);
+        sizePolicy3.setHeightForWidth(comboBox->sizePolicy().hasHeightForWidth());
+        comboBox->setSizePolicy(sizePolicy3);
+        comboBox->setMinimumSize(QSize(25, 0));
 
-        verticalLayout->addWidget(lineEdit_2);
+        gridLayout_2->addWidget(comboBox, 0, 1, 1, 2);
 
-
-        verticalLayout_2->addLayout(verticalLayout);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        checkBox = new QCheckBox(layoutWidget);
-        checkBox->setObjectName(QString::fromUtf8("checkBox"));
-
-        horizontalLayout->addWidget(checkBox);
-
-        horizontalSpacer = new QSpacerItem(17, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
-        checkBox_2 = new QCheckBox(layoutWidget);
+        checkBox_2 = new QCheckBox(frame);
         checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
 
-        horizontalLayout->addWidget(checkBox_2);
+        gridLayout_2->addWidget(checkBox_2, 3, 2, 1, 1);
 
+        horizontalSpacer_3 = new QSpacerItem(120, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        verticalLayout_2->addLayout(horizontalLayout);
+        gridLayout_2->addItem(horizontalSpacer_3, 2, 3, 1, 1);
 
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        pushButton = new QPushButton(layoutWidget);
+        checkBox = new QCheckBox(frame);
+        checkBox->setObjectName(QString::fromUtf8("checkBox"));
+
+        gridLayout_2->addWidget(checkBox, 3, 1, 1, 1);
+
+        pushButton = new QPushButton(frame);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setMinimumSize(QSize(0, 35));
         pushButton->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
 "background-color: rgb(24, 56, 132);"));
 
-        horizontalLayout_2->addWidget(pushButton);
+        gridLayout_2->addWidget(pushButton, 4, 1, 1, 1);
 
-        pushButton_2 = new QPushButton(layoutWidget);
+        frame_2 = new QFrame(frame);
+        frame_2->setObjectName(QString::fromUtf8("frame_2"));
+        sizePolicy.setHeightForWidth(frame_2->sizePolicy().hasHeightForWidth());
+        frame_2->setSizePolicy(sizePolicy);
+        frame_2->setMinimumSize(QSize(120, 120));
+        frame_2->setStyleSheet(QString::fromUtf8("border-image: url(:/ico/ico/user.png);"));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Raised);
+
+        gridLayout_2->addWidget(frame_2, 1, 0, 4, 1);
+
+        lineEdit = new QLineEdit(frame);
+        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+        lineEdit->setEnabled(true);
+        QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(50);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(lineEdit->sizePolicy().hasHeightForWidth());
+        lineEdit->setSizePolicy(sizePolicy4);
+        lineEdit->setMinimumSize(QSize(0, 25));
+        lineEdit->setBaseSize(QSize(0, 27));
+        QFont font1;
+        font1.setPointSize(11);
+        font1.setBold(false);
+        font1.setItalic(false);
+        font1.setWeight(50);
+        lineEdit->setFont(font1);
+        lineEdit->setCursorPosition(3);
+
+        gridLayout_2->addWidget(lineEdit, 1, 1, 1, 2);
+
+        lineEdit_2 = new QLineEdit(frame);
+        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
+        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(lineEdit_2->sizePolicy().hasHeightForWidth());
+        lineEdit_2->setSizePolicy(sizePolicy5);
+        lineEdit_2->setMinimumSize(QSize(0, 25));
+        QFont font2;
+        font2.setPointSize(11);
+        lineEdit_2->setFont(font2);
+
+        gridLayout_2->addWidget(lineEdit_2, 2, 1, 1, 2);
+
+        pushButton_2 = new QPushButton(frame);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
         pushButton_2->setMinimumSize(QSize(0, 35));
         pushButton_2->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
 "background-color: rgb(24, 56, 132);"));
 
-        horizontalLayout_2->addWidget(pushButton_2);
+        gridLayout_2->addWidget(pushButton_2, 4, 2, 1, 1);
 
 
-        verticalLayout_2->addLayout(horizontalLayout_2);
+        gridLayout_3->addWidget(frame, 1, 0, 1, 1);
 
 
         retranslateUi(Login);
@@ -253,7 +280,15 @@ public:
         exit->setToolTip(QApplication::translate("Login", "\345\205\263\351\227\255", nullptr));
 #endif // QT_NO_TOOLTIP
         exit->setText(QString());
+        label->setText(QApplication::translate("Login", "\345\210\266\345\212\250\346\265\213\350\257\225\347\263\273\347\273\237\347\273\210\347\253\257", nullptr));
         label_LocalIP->setText(QApplication::translate("Login", "IP: ", nullptr));
+        comboBox->setItemText(0, QApplication::translate("Login", "\346\226\260\345\273\272\351\241\271\347\233\256", nullptr));
+        comboBox->setItemText(1, QApplication::translate("Login", "\346\226\260\345\273\272\351\241\271\347\233\256", nullptr));
+        comboBox->setItemText(2, QApplication::translate("Login", "\346\226\260\345\273\272\351\241\271\347\233\256", nullptr));
+
+        checkBox_2->setText(QApplication::translate("Login", "\350\207\252\345\212\250\347\231\273\351\231\206", nullptr));
+        checkBox->setText(QApplication::translate("Login", "\350\256\260\344\275\217\345\257\206\347\240\201", nullptr));
+        pushButton->setText(QApplication::translate("Login", "\345\256\211\345\205\250\347\231\273\351\231\206", nullptr));
 #ifndef QT_NO_TOOLTIP
         lineEdit->setToolTip(QApplication::translate("Login", "<html><head/><body><p>\347\224\250\346\210\267\345\220\215</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
@@ -268,9 +303,6 @@ public:
         lineEdit_2->setWhatsThis(QApplication::translate("Login", "<html><head/><body><p>\345\257\206\347\240\201</p></body></html>", nullptr));
 #endif // QT_NO_WHATSTHIS
         lineEdit_2->setText(QApplication::translate("Login", "\347\231\273\351\231\206\345\257\206\347\240\201", nullptr));
-        checkBox->setText(QApplication::translate("Login", "\350\256\260\344\275\217\345\257\206\347\240\201", nullptr));
-        checkBox_2->setText(QApplication::translate("Login", "\350\207\252\345\212\250\347\231\273\351\231\206", nullptr));
-        pushButton->setText(QApplication::translate("Login", "\345\256\211\345\205\250\347\231\273\351\231\206", nullptr));
         pushButton_2->setText(QApplication::translate("Login", "\346\234\254\345\234\260\346\265\213\350\257\225", nullptr));
         Q_UNUSED(Login);
     } // retranslateUi

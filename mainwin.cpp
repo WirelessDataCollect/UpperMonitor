@@ -74,7 +74,7 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     standard_model_2->setRowCount(0);
     standard_model_2->setColumnCount(2);
     QStringList headerList_2;
-    headerList_2<<QStringLiteral("测试名称")<<QStringLiteral("时间");
+    headerList_2<<QString("测试名称")<<QString("时间");
     standard_model_2->setHorizontalHeaderLabels(headerList_2);
     ui->tableView_2->resizeColumnsToContents();
     ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
@@ -341,7 +341,7 @@ void MainWin::on_action_9_triggered()
    // device_system->FindConfigureFile();
     qDebug()<<"HELP";
     if(help_process == nullptr) help_process = new QProcess();
-    QString exe("./release/assistant.exe");
+    QString exe("./assistant/assistant.exe");
     QStringList params;
     params << "-collectionFile" << "./assistant/assistant.qhc";
     help_process->start(exe, params);

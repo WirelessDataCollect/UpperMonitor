@@ -29,7 +29,9 @@ Setting::Setting(DeviceSystem *system,QWidget *parent) :
     TreeInit();
     ReadTableView();
     ui->spinBox->setMinimum(1);
+    ui->spinBox->setValue(10);
     ui->doubleSpinBox->setValue(100);
+    on_pushButton_clicked();
 }
 
 Setting::~Setting()

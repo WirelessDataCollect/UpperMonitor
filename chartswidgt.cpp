@@ -367,8 +367,11 @@ void chartswidgt::wheelEvent(QWheelEvent *event)
         }
         else
         {
+            if(y_max-y_min>0.005)
+            {
             axisY->setMax((y_max+y_min)/2 + (y_max-y_min)*0.25);
             axisY->setMin((y_max+y_min)/2 - (y_max-y_min)*0.25);
+            }
         }
         h_slider->setMaxValue(axisX->max());
         h_slider->setMinValue(axisX->min());

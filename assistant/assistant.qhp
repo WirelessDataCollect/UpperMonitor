@@ -7,21 +7,24 @@
      <section title="目录" ref="html/index.html">
        <section title="使用文档" ref="html/help.htm"></section>
 	   <section title="公式编辑" ref="html/exprtk.html"></section>
+	   <section title="分线器接口" ref="html/hub.html"></section>
      </section>
    </toc>
 
    <keywords>
      <keyword name="帮助" ref="html/help.htm"/>
 	 <keyword name="公式" ref="html/book.html"/>
+	 <keyword name="分线器接口" ref="html/hub.html"/>
    </keywords>
 
    <files>
      <file>html/index.html</file>
 	 <file>html/help.htm</file>
 	 <file>html/exprtk.html</file>
+	 <file>html/hub.html</file>
+	 <file>html/hub.files/*</file>
      <file>html/img/*.jpg</file>
 	 <file>html/help.files/*</file>
-	 
 	 
    </files>
 </filterSection>

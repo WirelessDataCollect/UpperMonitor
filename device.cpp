@@ -59,8 +59,14 @@ void Device::AddData(const QByteArray &message)
     int frame_length = ByteToInt32(message.mid(8,4));
 
     int frame_time = ByteToInt32(message.mid(4,4))-test_headtime;//(100us)
-   // qDebug()<<"frame_time*************"<<frame_time;
-    // qDebug()<<"frame_length*************"<<frame_length;
+
+    qDebug()<<"\n\n";
+    qDebug()<<".left(16)*************"<<message.left(16).toHex();
+    qDebug()<<"node id*************"<<(int)message.at(12);
+    qDebug()<<"Head time*************"<<ByteToInt32(message.mid(4,4));
+    qDebug()<<"frame_time*************"<<frame_time/10000.0;
+
+   // qDebug()<<"frame_length*************"<<frame_length;
 
    int digital_io = int(message.at(13));
    signal_vector.at(4)->signal_data->AddIOData(frame_time*0.0001,digital_io%2);
@@ -68,14 +74,9 @@ void Device::AddData(const QByteArray &message)
     QByteArray meaasgebyte = message.mid(16+64,static_cast<int>(frame_length));
     qDebug()<<"digital_io "<<int(message.at(13));
     qDebug()<<"MESSAGE TYPE CAN:1; ADC:2"<<int(message.at(14));
+     if(frame_time<=0) return;
     if(message.at(14) ==2) AddAdcData(meaasgebyte,frame_time,frame_length);
     if(message.at(14) ==1)  AddCanData(meaasgebyte,frame_time,frame_length);
-    if(frame_length+48<size)
-    {
-        QByteArray extern_message = message.right(size-frame_length-48);
-        qDebug()<<"数据包有剩余数据";
-    }
-
 }
 
 void Device::AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length)
@@ -107,7 +108,7 @@ void Device::AddCanData(QByteArray &canbyte, int ,int frame_length)
     double time;
     int channel;
     int can_id;
-    qDebug()<<"AddCanData";
+
     for(int i=0;i<frame_count;i++)// 1+4+20
     {
         channel = canbyte.at(i*25);

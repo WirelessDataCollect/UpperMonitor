@@ -48,7 +48,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     QPoint dragVector;
     Ui::Login *ui;
-    //MainWindow *q = nullptr;
+   // MainWindow *q = nullptr;
     MainWin *main_window= nullptr;
     QSettings *m_IniFile = nullptr;
     QString		username;

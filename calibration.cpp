@@ -94,7 +94,6 @@ void Calibration::on_itemChanged(QStandardItem *item)
             double y = theModel->item(index.row(),1)->text().toDouble(&ok);
             if(ok)
             {
-
                  double actual_value = GetActualValue();
                  if(actual_value>0)
                  {
@@ -104,18 +103,15 @@ void Calibration::on_itemChanged(QStandardItem *item)
                      QVector<double> data = GetAllActualValue();
                      vx.append(data);
                      vy.append(QVector<double>(data.size(),y));
-
                  }
                  else item->setCheckState(Qt::Unchecked);
-
-
              }
-
             else{
                 theModel->item(index.row(),1)->setText("");
                 item->setCheckState(Qt::Unchecked);
             }
         }
+
         else theModel->item(index.row(),2)->setText("");
     }
 }

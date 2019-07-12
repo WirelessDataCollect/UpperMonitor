@@ -152,6 +152,7 @@ public slots:
     void ShowSpeed();
 
 private:
+    double test_deep_time;
     QByteArray Tcp_Data;
     QByteArray Tcp_Data_list;
     QByteArray udp_order_return;

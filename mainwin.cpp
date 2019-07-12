@@ -341,9 +341,11 @@ void MainWin::on_action_9_triggered()
    // device_system->FindConfigureFile();
     qDebug()<<"HELP";
     if(help_process == nullptr) help_process = new QProcess();
-    QString exe("./assistant/assistant.exe");
+   // QString exe("./assistant/assistant.exe");
+    QString exe("./assistant.exe");
     QStringList params;
-    params << "-collectionFile" << "./assistant/assistant.qhc";
+   // params << "-collectionFile" << "./assistant/assistant.qhc";
+    params << "-collectionFile" << "./assistant.qhc";
     help_process->start(exe, params);
     if (!help_process->waitForStarted()) {
         QMessageBox::critical(0, QObject::tr("Tips"),

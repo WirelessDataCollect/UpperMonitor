@@ -35,7 +35,7 @@ void Login:: on_TcpConnectStatus(bool status, QString str)
         this->close();
         main_window->showMaximized();
     }
-    else QMessageBox::warning(main_window,QStringLiteral("连接错误"),str);
+    else QMessageBox::warning(main_window,QString("连接错误"),str);
 }
 
 void Login::on_pushButton_clicked()

@@ -913,6 +913,7 @@ void DeviceSystem::DocName::cleardata()
     this->name_list.clear();
     this->time_list.clear();
     this->name_time_list.clear();
+    this->datetime_list.clear();
 }
 
 /*datetime to 8byte

@@ -122,10 +122,12 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
 
 MainWin::~MainWin()
 {
+    help_process->kill();
     delete settingui;
     delete ui;
     delete  device_system;
     delete chart_widget;
+    delete help_process;
 }
 
 void MainWin::UpdataTestName(QString str)

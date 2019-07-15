@@ -92,6 +92,10 @@ void MyTCPClient::onDisconnected()
 void MyTCPClient::closeClient()
 {
     tcpSocket->close();
+    disconnect(tcpSocket, SIGNAL(disconnected()));
+    disconnect(tcpSocket, SIGNAL(readyRead()));
+    disconnect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
+
 }
 
 void MyTCPClient::abortConnection()
@@ -141,5 +145,4 @@ bool MyTCPClient::waitForReadyRead(int milliseconds)
         timer.start(milliseconds);
         eventLoop.exec();
         return timer.isActive();
-
 }

@@ -37,5 +37,7 @@
         <file>ico/icons/420.bmp</file>
         <file>ico/icons/328.bmp</file>
         <file>ico/logo.ico</file>
+        <file>ico/icons/430.bmp</file>
+        <file>ico/icons/431.bmp</file>
     </qresource>
 </RCC>

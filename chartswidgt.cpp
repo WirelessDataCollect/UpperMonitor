@@ -75,7 +75,7 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     InitSeries();
 
     timer = new QTimer();
-    timer->start(50);
+    timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
     connect(h_slider,SIGNAL(minValueChanged(float)),this,SLOT(setMinValue(float)));
@@ -85,7 +85,6 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
     connect(m_chartView,SIGNAL(updateslider()), this, SLOT(on_updateslider()));
     connectMarkers();
-
     m_chart->createDefaultAxes();
 }
 
@@ -116,12 +115,12 @@ void chartswidgt::UpdateChart()
                 if(update)
                 {
 
-                   device_signal->update_status = false;
-                  //if(device_signal->show_data.isEmpty())
-                   series->replace(device_signal->show_data);
+                    device_signal->update_status = false;
+                    //if(device_signal->show_data.isEmpty())
+                    series->replace(device_signal->show_data);
 
-                   qDebug()<<device<<signal<<"Signal plot------------------------------------";
-                   qDebug()<<device_signal->show_data.size();
+                    // qDebug()<<device<<signal<<"Signal plot------------------------------------";
+                    // qDebug()<<device_signal->show_data.size();
 
                 }
             }
@@ -148,7 +147,7 @@ void chartswidgt::UpdateChart()
                 for(int i=0;i<series_can[device][channel].size();i++)
                 {
                     m_chart->removeSeries(series_can[device][channel][i]);
-                   // delete series_can[device][channel][0];
+                    // delete series_can[device][channel][0];
                 }
                 series_can[device][channel].clear();
                 for(int i=0;i<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
@@ -368,8 +367,8 @@ void chartswidgt::wheelEvent(QWheelEvent *event)
         {
             if(y_max-y_min>0.005)
             {
-            axisY->setMax((y_max+y_min)/2 + (y_max-y_min)*0.25);
-            axisY->setMin((y_max+y_min)/2 - (y_max-y_min)*0.25);
+                axisY->setMax((y_max+y_min)/2 + (y_max-y_min)*0.25);
+                axisY->setMin((y_max+y_min)/2 - (y_max-y_min)*0.25);
             }
         }
         h_slider->setMaxValue(axisX->max());
@@ -454,52 +453,74 @@ void chartswidgt::showDataDialog()
         {
             for(int j=0;j<6;j++)
             {
-                SignalData *signaldata = device_system->device_vector.at(i)->signal_vector.at(j)->signal_data;
-                if(signaldata->show_enable)
+                QLineSeries * series = series_list.at(i).at(j);
+                if(series->isVisible())
                 {
+                    QVector<QPointF> points = series->pointsVector();
                     QVector<QPointF> data;
-                    for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
+                    for(auto itor= points.begin();itor<points.end();itor++)
                     {
                         if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
                     }
-                    if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+                    if(!data.isEmpty()) dialog->AddColumn(series->name(),data);
                 }
+                //                SignalData *signaldata = device_system->device_vector.at(i)->signal_vector.at(j)->signal_data;
+                //                if(signaldata->show_enable)
+                //                {
+                //                    QVector<QPointF> data;
+                //                    for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
+                //                    {
+                //                        if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
+                //                    }
+                //                    if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+                //                }
             }
             for(int j=0;j<2;j++)
             {
                 for(int k=0;k<series_can.at(i).at(j).size();k++)
                 {
-                    SignalData *signaldata = device_system->device_vector.at(i)->can_vector.at(j)->filter_list.at(k);
-                    if(signaldata->show_enable)
+                    QLineSeries * series = series_can[i][j].at(k);
+                    if(series->isVisible())
                     {
+                        QVector<QPointF> points = series->pointsVector();
                         QVector<QPointF> data;
-                        data.clear();
-                        for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
+                        for(auto itor= points.begin();itor<points.end();itor++)
                         {
                             if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
                         }
-                        if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+                        if(!data.isEmpty()) dialog->AddColumn(series->name(),data);
                     }
+
+
+
+                    //                    SignalData *signaldata = device_system->device_vector.at(i)->can_vector.at(j)->filter_list.at(k);
+                    //                    if(signaldata->show_enable)
+                    //                    {
+                    //                        QVector<QPointF> data;
+                    //                        data.clear();
+                    //                        for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
+                    //                        {
+                    //                            if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
+                    //                        }
+                    //                        if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
+                    //                    }
                 }
             }
         }
-         dialog->show();
+        dialog->show();
     }
 }
 void chartswidgt::AxisAdapt()
 {
     QList<double> min_max = getMaxMinSeriesData();
-
-    lineEditMinRange->setText(QString::number(min_max.at(0)-10,'f',1));
+    if(min_max.at(0)>0 && min_max.at(0)<3) min_max[0]=0;
+    lineEditMinRange->setText(QString::number(min_max.at(0),'f',1));
     setMinRange();
 
-    lineEditMaxRange->setText(QString::number(min_max.at(1)+10,'f',1));
+    lineEditMaxRange->setText(QString::number(min_max.at(1)+5,'f',1));
     setMaxRange();
-
-
-    h_slider->setMinValue(min_max.at(0)-10);
-    h_slider->setMaxValue(min_max.at(1)+10);
-
+    h_slider->setMinValue(min_max.at(0));
+    h_slider->setMaxValue(min_max.at(1)+5);
     m_chart->axisY()->setMin(min_max.at(2)-10);
     m_chart->axisY()->setMax(min_max.at(3)+10);
 }
@@ -523,14 +544,14 @@ QList<double> chartswidgt::getMaxMinSeriesData()
                     if(y_max<points.at(i).y())y_max=points.at(i).y();
                 }
             }
-         }
+        }
         for(int channel=0;channel<2;channel++)
         {
 
-            QVector<QLineSeries *> series_list = series_can[device][channel];
-                for(int i=0;i<series_can[device][channel].size();i++)
-                {
-                     QLineSeries * series = series_can[device][channel].at(i);
+
+            for(int i=0;i<series_can[device][channel].size();i++)
+            {
+                QLineSeries * series = series_can[device][channel].at(i);
 
                 if(series->isVisible())
                 {
@@ -545,7 +566,7 @@ QList<double> chartswidgt::getMaxMinSeriesData()
                     }
                 }
 
-         }
+            }
 
         }
     }

@@ -418,7 +418,6 @@
     <addaction name="action_11"/>
     <addaction name="action_12"/>
     <addaction name="separator"/>
-    <addaction name="action_14"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -599,7 +598,8 @@
   <action name="action_2">
    <property name="icon">
     <iconset resource="src.qrc">
-     <normaloff>:/ico/ico/icons/420.bmp</normaloff>:/ico/ico/icons/420.bmp</iconset>
+     <normaloff>:/ico/ico/icons/431.bmp</normaloff>
+     <activeon>:/ico/ico/icons/430.bmp</activeon>:/ico/ico/icons/431.bmp</iconset>
    </property>
    <property name="text">
     <string>清屏</string>
@@ -614,15 +614,6 @@
     <string>弹窗取点</string>
    </property>
   </action>
-  <action name="action_14">
-   <property name="icon">
-    <iconset resource="src.qrc">
-     <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>系统设置</string>
-   </property>
-  </action>
   <action name="action_15">
    <property name="icon">
     <iconset resource="src.qrc">
@@ -633,6 +624,10 @@
    </property>
   </action>
   <action name="action_16">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/420.bmp</normaloff>:/ico/ico/icons/420.bmp</iconset>
+   </property>
    <property name="text">
     <string>适应窗口</string>
    </property>

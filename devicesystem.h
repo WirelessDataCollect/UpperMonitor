@@ -29,6 +29,7 @@
 #define SendConfigure "StartTest"
 #define ReceiveConfigure "GetTestConfig"
 #define ReceiveRtdata "GetRtdata"
+
 #define StopReceiveRtdata "StopGetRtdata"
 #define PACKAGE_HEAD_FRAME_LENGTH 48
 class DeviceSystem: public QObject
@@ -127,6 +128,8 @@ public:
     }doc_name;
 
     bool is_local_test;
+    void RemoteTcpReset();
+    void StopSendDocs();
 
 signals:
     void UpdataTestName(QString str);
@@ -138,6 +141,7 @@ signals:
     void UpdataDocsnames(QList<QString> name,QList<QString> time);
     void SaveConfigureFile(QString file = "");
     void LoadConfigureFile(QString file = "");
+
 
 public slots:
 

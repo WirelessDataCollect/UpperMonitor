@@ -41,11 +41,11 @@ MainWin::MainWin(QWidget *parent) :
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     standard_model->setRowCount(0);
     QStringList headerList;
-    headerList<<QStringLiteral("时间")<<QStringLiteral("颜色")<<QStringLiteral("名称")<<QStringLiteral("测量值");
+    headerList<<QString("时间")<<QString("颜色")<<QString("名称")<<QString("测量值");
     standard_model->setHorizontalHeaderLabels(headerList);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     // ui->tableView->resizeColumnsToContents();
-    ui->tableView->setMaximumWidth(250);
+    ui->tableView->setMaximumWidth(280);
     ui->tableView->setVisible(false);
 
 
@@ -385,7 +385,11 @@ void MainWin::on_action_13_triggered()
 void MainWin::on_action_15_triggered()
 {
     //dialog->setAttribute(Qt::WA_DeleteOnClose);
-    calibration_dialog->show();
+    //校准
+   // calibration_dialog->show();
+
+     device_system->RemoteTcpReset();
+   //device_system->StopSendDocs();
 }
 
 void MainWin::on_action_11_triggered()
@@ -415,5 +419,5 @@ void MainWin::on_action_16_triggered()
 {
     //适应窗口
    chart_widget->AxisAdapt();
-
 }
+

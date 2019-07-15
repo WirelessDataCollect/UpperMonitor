@@ -69,7 +69,6 @@ void DeviceSystem::LocalThread()
 
 DeviceSystem::~DeviceSystem()
 {
-
     QString order("Disconnect");
     QString value;
     bool status = TcpSendCheck(order,value);
@@ -81,7 +80,6 @@ DeviceSystem::~DeviceSystem()
     delete  heart_beat_timer;
     udp_data->unbindPort();
     delete  udp_data;
-
     udp_order->unbindPort();
     //  delete  udp_order;
     if(is_local_test)
@@ -102,20 +100,20 @@ void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
     qDebug()<<"RemoteTcpStart start";
     this->username = username;
     this->passwd = passwd;
+    tcp_client->disconnectCurrentConnection();
+    tcp_client->closeClient();
 
     disconnect(tcp_client, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
     disconnect(tcp_client,SIGNAL(myClientConnected(QString,quint16)), this,SLOT(onTcpClientConnected(QString,quint16)));
     disconnect(tcp_client,SIGNAL(connectionFailed()), this,SLOT(onTcpConnectFailed()));
-
-    tcp_client->disconnectCurrentConnection();
     connect(tcp_client, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
     connect(tcp_client,SIGNAL(myClientConnected(QString,quint16)), this,SLOT(onTcpClientConnected(QString,quint16)));
     Tcp_Data.clear();
     status = tcp_client->connectTo(tcp_target_addr, tcp_target_port);
-    qDebug()<<"STATUS"<<status;
+    qDebug()<<"tcp_client STATUS"<<status;
+
     if(!status) emit TcpConnectStatus(false, "无法连接远程服务器");
     else{
-
         FindDocsNames(QDate::currentDate(),QDate::currentDate());
     }
 }
@@ -124,7 +122,7 @@ void DeviceSystem::onTcpClientConnected(const QString &from, const quint16 port)
 {
     connect(tcp_client,SIGNAL(connectionFailed()), this,SLOT(onTcpConnectFailed()));
     qDebug()<< tcp_client->waitForReadyRead(1000);
-    sleep(100);
+    sleep(200);
     qDebug()<< "onTcpClientConnected"<<Tcp_Data;
 
     if(!Tcp_Data.isEmpty())
@@ -134,6 +132,7 @@ void DeviceSystem::onTcpClientConnected(const QString &from, const quint16 port)
         qDebug()<< "onTcpClientConnected radom_array"<<radom_array;
         RemoteTcpLogin(radom_array);
     }
+
     else
     {
         emit TcpConnectStatus(false, "无法接收随机数验证消息");
@@ -171,8 +170,10 @@ void DeviceSystem::onTcpConnectFailed()
 
 void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArray &message)
 {
+    if(message.isEmpty()) return;
     Tcp_Data= message;
     qDebug()<<"tcp_message_flag"<<tcp_message_flag;
+   // qDebug()<<"tcp_message_flag"<<message;
     if(tcp_message_flag ==0 && message.startsWith("MongoFindDocsNames:"))
     {
         Tcp_Data_list.clear();
@@ -196,7 +197,7 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
 
     if(tcp_message_flag == 1)
     {
-        Tcp_Data_list.append(Tcp_Data);
+        Tcp_Data_list.append(message);
         if(Tcp_Data_list.endsWith("OVER\n"))
         {
             ReceiveDocsName(Tcp_Data_list);
@@ -205,8 +206,8 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
     }
     if(tcp_message_flag == 2)
     {
-        device_data.append(Tcp_Data);
-        tcp_data_number += Tcp_Data.size();
+        device_data.append(message);
+        tcp_data_number += message.size();
         tcp_package_number++;
         if(device_data.endsWith("OVER\n"))
         {
@@ -219,7 +220,7 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
     }
     if(tcp_message_flag == 3)
     {
-        Tcp_Data_list.append(Tcp_Data);
+        Tcp_Data_list.append(message);
         if(Tcp_Data_list.endsWith("OVER\n"))
         {
            qDebug()<<"\n\ntcp_message_flag = = 3--------------------------";
@@ -882,12 +883,12 @@ void DeviceSystem::ReceiveDocsName(const QByteArray &message)
 
 bool DeviceSystem::FindDocs(int index)
 {
+    if(tcp_message_flag !=0) RemoteTcpReset();
     ClearData();
     if(doc_name.name_list.size()<index)
     {
         return false;
     }
-
         tcp_message_flag =0;
         device_data.clear();
         SetTestNameTime(doc_name.name_list.at(index),doc_name.datetime_list.at(index));
@@ -1185,4 +1186,25 @@ void DeviceSystem::ShowCanData(bool status)
 void DeviceSystem::SetLocalTest(bool status)
 {
     is_local_test = status;
+}
+void DeviceSystem::RemoteTcpReset()
+{
+    QString order("Disconnect");
+    QString value;
+    bool status = TcpSendCheck(order,value);
+    qDebug()<<"Disconnect--------------------";
+
+    RemoteTcpStart(username,passwd);
+}
+void DeviceSystem::StopSendDocs()
+{
+    QString order;
+    order.append("StopSendDocs");
+
+    order.append('\t');
+    qDebug()<<"FindDocs"<<order;
+
+    tcp_client->sendMessage(order);
+
+    qDebug()<<"StopSendDocs------------------------";
 }

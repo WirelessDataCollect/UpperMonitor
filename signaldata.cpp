@@ -49,9 +49,9 @@ void SignalData::AddData(double time,int data)
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
 
-   // if(show_data.isEmpty() )show_data.append(QPointF(time,val));
-   // else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
-    Filter(time,val);
+    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+   // Filter(time,val);
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);

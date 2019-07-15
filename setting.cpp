@@ -273,7 +273,11 @@ void Setting::on_itemChanged(QStandardItem *item)
             if( device!=0 && channel!=0 && filter_id!=0)
             {
                 if(device_system->device_vector.at(device-1)->can_vector.at(channel-1)->AddFilter(filter_id, color,name,express_str))
+                {
                     for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(false);
+                    device_system->device_vector.at(device-1)->can_vector.at(channel-1)->update_status = true;
+                }
+
                 else  theModel->item(row,0)->setCheckState(Qt::Unchecked);
                 qDebug()<<device<<channel<<device_system->device_vector.at(device-1)->can_vector.at(channel-1)->filter_list.size();
             }
@@ -659,6 +663,7 @@ void Setting::on_pushButton_clear_2_clicked()
 
 void Setting::on_addcanrow(double time, int device, int channel,int id, QByteArray data)
 {
+    if(theModel_2->rowCount()>100) theModel_2->removeRow(0);
     QList<QStandardItem*>    aItemList;  //QStandardItem的列表类
     QStandardItem   *aItem;
 
@@ -694,6 +699,4 @@ void Setting::setTreeEnabled(bool status)
 //    ui->tableView_2->setEnabled(status);
 //    ui->tableView_3->setEnabled(status);
     ui->treeWidget->setEnabled(status);
-
-
 }

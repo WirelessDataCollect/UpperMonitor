@@ -1,6 +1,6 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	DISCARDABLE	"F:\\MyData\\WirelessCollect\\WiFiGui-dev\\WiFiGui-dev\\ico\\logo.ico"
+IDI_ICON1	ICON	DISCARDABLE	"C:\\MyData\\WirelessDataCollect\\WiFiGui\\ico\\logo.ico"
 
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 0,0,0,0

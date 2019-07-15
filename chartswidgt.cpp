@@ -51,8 +51,8 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     m_vbox_layout->addWidget(m_chartView);
     m_vbox_layout->addWidget(h_slider);
 
-    lineEditMinRange = new QLineEdit("0.000");
-    lineEditMaxRange = new QLineEdit("99.000");
+    lineEditMinRange = new QLineEdit("0");
+    lineEditMaxRange = new QLineEdit("99");
     m_min =0;
     m_max = 99;
     lineEditMaxRange->setMaximumWidth(50);
@@ -75,7 +75,7 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     InitSeries();
 
     timer = new QTimer();
-    timer->start(100);
+    timer->start(50);
     connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
     connect(h_slider,SIGNAL(minValueChanged(float)),this,SLOT(setMinValue(float)));
@@ -156,10 +156,9 @@ void chartswidgt::UpdateChart()
                     series = new QLineSeries();
                     series->setUseOpenGL(true);
                     series_can[device][channel].append(series);
+                    device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->update_status = true;
                     // m_chart->addSeries(series);
                 }
-                qDebug()<<"-------------------------------------------";
-                qDebug()<<"series_can[device][channel].size()"<<series_can[device][channel].size();
             }
 
             series_list = series_can[device][channel];
@@ -404,7 +403,7 @@ void chartswidgt::setMaxRange()
 {
     float range =lineEditMaxRange->text().toFloat();
     if(range-m_min>0.009f) m_max = range;
-    lineEditMaxRange->setText(QString::number(m_max,'f',3));
+    lineEditMaxRange->setText(QString::number(m_max,'f',0));
 
     h_slider->setMaxRange(m_max);
 }
@@ -413,7 +412,7 @@ void chartswidgt::setMinRange()
 
     float range =lineEditMinRange->text().toFloat();
     if(m_max-range>0.009f) m_min = range;
-    lineEditMinRange->setText(QString::number(m_min,'f',3));
+    lineEditMinRange->setText(QString::number(m_min,'f',0));
     h_slider->setMinRange(m_min);
 }
 
@@ -474,6 +473,7 @@ void chartswidgt::showDataDialog()
                     if(signaldata->show_enable)
                     {
                         QVector<QPointF> data;
+                        data.clear();
                         for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
                         {
                             if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
@@ -486,5 +486,77 @@ void chartswidgt::showDataDialog()
          dialog->show();
     }
 }
+void chartswidgt::AxisAdapt()
+{
+    QList<double> min_max = getMaxMinSeriesData();
+
+    lineEditMinRange->setText(QString::number(min_max.at(0)-10,'f',1));
+    setMinRange();
+
+    lineEditMaxRange->setText(QString::number(min_max.at(1)+10,'f',1));
+    setMaxRange();
 
 
+    h_slider->setMinValue(min_max.at(0)-10);
+    h_slider->setMaxValue(min_max.at(1)+10);
+
+    m_chart->axisY()->setMin(min_max.at(2)-10);
+    m_chart->axisY()->setMax(min_max.at(3)+10);
+}
+QList<double> chartswidgt::getMaxMinSeriesData()
+{
+    double x_min=0,x_max=0,y_min=1000000,y_max=-100000;
+    for(int device=0;device<5;device++)
+    {
+        for(int signal =0;signal<6;signal++)
+        {
+            QLineSeries * series = series_list.at(device).at(signal);
+            if(series->isVisible())
+            {
+                QVector<QPointF> points = series->pointsVector();
+                int size = points.size();
+                if(x_min>points.first().x()) x_min= points.first().x();
+                if(x_max<points.last().x())  x_max = points.last().x();
+                for(int i=0;i<points.size();i++)
+                {
+                    if(y_min>points.at(i).y()) y_min=points.at(i).y();
+                    if(y_max<points.at(i).y())y_max=points.at(i).y();
+                }
+            }
+         }
+        for(int channel=0;channel<2;channel++)
+        {
+
+            QVector<QLineSeries *> series_list = series_can[device][channel];
+                for(int i=0;i<series_can[device][channel].size();i++)
+                {
+                     QLineSeries * series = series_can[device][channel].at(i);
+
+                if(series->isVisible())
+                {
+                    QVector<QPointF> points = series->pointsVector();
+                    int size = points.size();
+                    if(x_min>points.first().x()) x_min= points.first().x();
+                    if(x_max<points.last().x())  x_max = points.last().x();
+                    for(int i=0;i<points.size();i++)
+                    {
+                        if(y_min>points.at(i).y()) y_min=points.at(i).y();
+                        if(y_max<points.at(i).y())y_max=points.at(i).y();
+                    }
+                }
+
+         }
+
+        }
+    }
+    QList<double> result;
+    result.append(x_min);
+    result.append(x_max);
+    result.append(y_min);
+    result.append(y_max);
+    qDebug()<<"x_min"<<x_min;
+    qDebug()<<"x_max"<<x_max;
+    qDebug()<<"y_min"<<y_min;
+    qDebug()<<"y_max"<<y_max;
+    return  result;
+}

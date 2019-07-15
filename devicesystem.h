@@ -159,7 +159,7 @@ private:
     int tcp_message_flag;
     int tcp_data_number;
     int tcp_package_number;
-    int tcp_time;
+    double tcp_time;
     QString username;
     QString passwd;
 

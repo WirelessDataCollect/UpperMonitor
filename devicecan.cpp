@@ -15,7 +15,7 @@ void DeviceCan::SetBaudRate(bool status)
 
     if(status) baud_rate = 50;
     else baud_rate = 25;
-    qDebug()<<"baud_rate"<<device_id<<signal_id<<int(baud_rate);
+    //qDebug()<<"baud_rate"<<device_id<<signal_id<<int(baud_rate);
 }
 bool DeviceCan::AddFilter(uint id, QColor color, QString name, QString express_str)
 {

@@ -76,6 +76,12 @@ private slots:
 
     void on_action_15_triggered();
 
+    void on_action_11_triggered();
+
+    void on_action_12_triggered();
+
+    void on_action_16_triggered();
+
 private:
     Ui::MainWin *ui;
      QTimer *timer = nullptr;

@@ -30,8 +30,8 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
     painter->setPen(Qt::black);
     painter->setFont(QFont("Arial",12));
 
-    QString minValueString = QString::number(m_minValue,'f',3);
-    QString maxValueString = QString::number(m_maxValue,'f',3);
+    QString minValueString = QString::number(m_minValue,'f',1);
+    QString maxValueString = QString::number(m_maxValue,'f',1);
 
     QFontMetrics metrics = painter->fontMetrics();
     int mintextWidth = metrics.width(minValueString);
@@ -264,4 +264,3 @@ void DoubleSlider::keyPressEvent(QKeyEvent *event)
     update();
 
 }
-

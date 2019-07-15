@@ -172,11 +172,7 @@ void DeviceSystem::onTcpConnectFailed()
 void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArray &message)
 {
     Tcp_Data= message;
-//    qDebug()<<"\n\n"<< "NEW TCP MESSAGE -------------------------- \n Size"<<message.size();
-//     qDebug()<<message.left(20)<<message.right(20);
-      qDebug()<<"tcp_message_flag"<<tcp_message_flag;
-   //  qDebug()<<"message.contains(MongoFindDocsNames:)"<<message.contains("MongoFindDocsNames:");
-     static int overtime=0;
+    qDebug()<<"tcp_message_flag"<<tcp_message_flag;
     if(tcp_message_flag ==0 && message.startsWith("MongoFindDocsNames:"))
     {
         Tcp_Data_list.clear();
@@ -190,6 +186,7 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
         tcp_data_number = 0;
         tcp_package_number = 0;
         tcp_time =0;
+
     }
     if(tcp_message_flag ==0 && message.startsWith(ReceiveConfigure))
     {
@@ -239,10 +236,11 @@ void DeviceSystem::ShowSpeed()
     static int data_number = 0;
     static int package_number = 0;
     tcp_time++;
+    qDebug()<<"tcp_speed----------------------------";
     qDebug()<<"tcp_data_number/second"<<tcp_data_number-data_number;
     qDebug()<<"tcp_package_number/second"<<tcp_package_number-package_number;
     qDebug()<<"All Time"<< tcp_time;
-
+    qDebug()<<"tcp_data average speed(KB)"<<tcp_data_number/tcp_time/1024;
     data_number = tcp_data_number;
     package_number = tcp_package_number;
 }
@@ -297,24 +295,10 @@ void DeviceSystem::onUdpDataMessage(const QString &from, const QByteArray &messa
     qDebug()<<"________________________________________________________";
     int size =  message.size();
     if(size<48) return;
-
-   // QDateTime datatime = ByteToDatetime(message.left(8));
     int frame_time = ByteToInt32(message.mid(4,4))- Device::test_headtime;
     test_deep_time = frame_time/10000;
     SetTestDeep(test_deep_time);
     int node_id = int(message.at(12));
-
-  //  int count =  ByteToInt32(message.mid(8,4));
-//    QByteArray test_name = message.mid(16,32);
-//    QList<QByteArray> name_list = test_name.split('/');
-
-//    if(name_list.size()>1)
-//    {
-//        qDebug()<<"name_list"<<name_list.at(1);
-//        QDateTime datatime_2 = QDateTime::fromString(QString(name_list.at(1)),Qt::ISODate);
-//        qDebug()<<"datatime"<<datatime_2.toString(Qt::ISODate);
-//    }
-
     if(node_id>0 &&node_id<=5) device_vector.at(node_id-1)->AddData(message);
 }
 
@@ -404,6 +388,12 @@ QVector<bool> DeviceSystem::checkreturn(char order)
 
 bool DeviceSystem::UdpSendCheck(QByteArray order, QByteArray value)
 {
+
+    QVector<bool> channel;
+    channel.fill(0,6);
+    QVector<bool> channel_tmp;
+    channel_tmp.fill(0,6);
+
     QByteArray send_data;
     send_data.append(order);
     send_data.append(value);
@@ -413,16 +403,20 @@ bool DeviceSystem::UdpSendCheck(QByteArray order, QByteArray value)
     for(int i = 0;i<10;i++)
     {
         sleep(50);
-
         if(value.isEmpty()) //广播
         {
-            if(checkreturn(order.at(0)).mid(1,5) == device_all_status.mid(1,5))
+            channel_tmp = checkreturn(order.at(0));
+            for(int i=0;i<6;i++)
+            {
+                channel[i] =  channel[i] || channel_tmp[i];
+            }
+            if(channel.mid(1,5) == device_all_status.mid(1,5))
                 return true;
         }
         else
         {
             if(checkreturn(order.at(0),value.at(0)))
-               return true;
+            return true;
         }
     }
     return false;
@@ -454,21 +448,33 @@ void DeviceSystem::UdpHeartBeat()
     udp_order->sendMessage(order_target_addr,order_target_port,send_data);
     udp_data->sendMessage(order_target_addr,5000,send_data);
 }
+
 bool DeviceSystem::LocalTestStart()
 {
     QByteArray order;
     QByteArray value;
     order.append(GET_WIFI_SEND_EN);
     bool is_success = false;
+    char adc_status = 0;
+    char can_status = 0;
     for(char i=0;i<device_num;i++)
     {
         if(device_vector.at(i)->actual_status)
         {
             value.clear();
             value.append(i+1);
-
-            value.append((char)device_vector.at(i)->can_vector.at(0)->show_enable | (char)device_vector.at(i)->can_vector.at(1)->show_enable<<1 );
-            value.append(device_vector.at(i)->setting_status);
+            if(device_vector.at(i)->can_vector.at(0)->show_enable) can_status+=1;
+            if(device_vector.at(i)->can_vector.at(1)->show_enable) can_status+=2;
+            value.append(can_status);
+            for(int j=0;j<6;j++)
+            {
+                if(device_vector.at(i)->signal_vector.at(j)->signal_data->show_enable)
+                {
+                    adc_status = 1;
+                    break;
+                }
+            }
+            value.append(adc_status);
             for(int j=0;j<3;j++)
             {
                 is_success=UdpSendCheck(order,value);
@@ -523,10 +529,12 @@ bool  DeviceSystem::LocalTestIVModel()
                 iv_model.append(device_vector.at(i)->signal_vector.at(k)->vol_enable);
             }
             value.append(iv_model);
-            for(int j=0;j<3;j++)
+            for(int j=0;j<4;j++)
             {
                 is_success=UdpSendCheck(order,value);
+
                 if(is_success) break;
+                sleep(100);
             }
             if(!is_success) return false;
         }
@@ -564,14 +572,14 @@ bool DeviceSystem::SendCanFilter()
                     qDebug()<<"SendCanFilter";
                 }
 
-                for(int k=0;k<3;k++)
+                for(int k=0;k<4;k++)
                 {
-                    sleep(100);
-                    is_success=UdpSendCheck(order,value);
 
+                    is_success=UdpSendCheck(order,value);
                     if(is_success) break;
+                    sleep(100);
                 }
-                 qDebug()<<"decive:"<<int(i+1)<<"Channel"<<int(j+1)<<"id"<<id<<filter_size<<value.toHex()<< is_success;
+                 //qDebug()<<"decive:"<<int(i+1)<<"Channel"<<int(j+1)<<"id"<<id<<filter_size<<value.toHex()<< is_success;
                 if(!is_success)
                 {
 
@@ -784,7 +792,7 @@ bool DeviceSystem::SendConfigureFile(QString test_name)
     value +=";";
     value+=filetext;
 
-    for(int i=0;i<1;i++)
+    for(int i=0;i<2;i++)
     {
         if( TcpSendCheck(order,value))
             return true;

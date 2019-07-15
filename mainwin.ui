@@ -405,7 +405,7 @@
      <x>0</x>
      <y>0</y>
      <width>1207</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -474,6 +474,7 @@
    <addaction name="action_2"/>
    <addaction name="action_4"/>
    <addaction name="action_15"/>
+   <addaction name="action_16"/>
   </widget>
   <action name="action">
    <property name="enabled">
@@ -629,6 +630,11 @@
    </property>
    <property name="text">
     <string>校准</string>
+   </property>
+  </action>
+  <action name="action_16">
+   <property name="text">
+    <string>适应窗口</string>
    </property>
   </action>
  </widget>

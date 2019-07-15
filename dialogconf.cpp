@@ -20,7 +20,6 @@ DialogConf::DialogConf(DeviceSystem *system,QWidget *parent) :
 
     mytcpclient = new MyTCPClient();
     connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientConnectFailed()));
-    //
     connect(mytcpclient, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
     connect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientConnected(QString, quint16)));
     ui->lineEdit_4->setText(device_system->local_addr.toString());
@@ -64,11 +63,10 @@ bool  DialogConf::SetCmdValue(QString cmd, QString value)
     mytcpclient->sendMessage(data);
     qDebug()<<"data"<<data.data();
     qDebug()<<"start------------------"<<QTime::currentTime();
-    mytcpclient->waitForReadyRead(2000);
-    sleep(2000);
+    mytcpclient->waitForReadyRead(4000);
+    this->sleep(2000);
     if(return_message == data) return  true;
-
-    else return false;
+    return false;
 }
 
 void DialogConf::sleep(int msec)
@@ -81,6 +79,7 @@ void DialogConf::sleep(int msec)
 void DialogConf::on_pushButton_3_clicked()
 {
     //连接采集终端
+    mytcpclient->closeClient();
     QHostAddress tcpClientTargetAddr("192.168.100.1");
     quint16 tcpClientTargetPort = 5001;
     mytcpclient->connectTo(tcpClientTargetAddr, tcpClientTargetPort);
@@ -94,7 +93,6 @@ void DialogConf::onTcpClientConnected(const QString &from, const quint16 port)
     ui->pushButton_3->setEnabled(false);
     qDebug()<<"onTcpClientConnected";
 }
-
 
 void DialogConf::on_buttonBox_2_accepted()
 {
@@ -140,15 +138,23 @@ void DialogConf::on_buttonBox_accepted()
     QString ssid_name = ui->lineEdit->text();
     QString ssid_pwd = ui->lineEdit_2->text();
     QString device_id;
-
-   if(ui->comboBox_2->currentIndex() == 0) device_id = ui->comboBox->currentText();
-   else device_id="0";
+    QString SET_MASTER_CLK_STATUS;
+   if(ui->comboBox_2->currentIndex() == 0)
+   {
+       device_id = ui->comboBox->currentText();
+       SET_MASTER_CLK_STATUS.append('N');
+   }
+   else
+   {
+       device_id="0";
+       SET_MASTER_CLK_STATUS.append('Y');
+   }
 
     if(ssid_name.isEmpty() || ssid_pwd.isEmpty() || device_id.isEmpty()){
         QMessageBox::warning(this,"警告","输入密码和名称");
         return;
     }
-    if(SetCmdValue("SET_NODE_ID",device_id)==true && SetCmdValue("SET_RSI_JOIN_SSID",ssid_name)==true && SetCmdValue("SET_RSI_PSK",ssid_pwd)==true)
+    if(SetCmdValue("SET_NODE_ID",device_id)==true && SetCmdValue("SET_RSI_JOIN_SSID",ssid_name)==true && SetCmdValue("SET_RSI_PSK",ssid_pwd)==true && SetCmdValue("SET_MASTER_CLK",SET_MASTER_CLK_STATUS)==true)
     {
         if(SetCmdValue("SAVE_ALL_PARA",""))
         {
@@ -157,20 +163,21 @@ void DialogConf::on_buttonBox_accepted()
             {
                 QMessageBox::warning(this,"设置成功","系统即将重启");
                 accept();
+                return;
             }
+            else  QMessageBox::warning(this,"失败","重启失败");
         }
-    }
-    else
-    {
-        QMessageBox::warning(this,"失败","重新保存");
-        mytcpclient->closeClient();
-        ui->pushButton_3->setEnabled(true);
+        else  QMessageBox::warning(this,"失败","保存失败");
 
-        ui->lineEdit->setEnabled(false);
-        ui->lineEdit_2->setEnabled(false);
-        ui->comboBox->setEnabled(false);
     }
-    //SetCmdValue("SET_PWD")
+    else QMessageBox::warning(this,"失败","设置失败");
+
+    mytcpclient->closeClient();
+    ui->pushButton_3->setEnabled(true);
+
+    ui->lineEdit->setEnabled(false);
+    ui->lineEdit_2->setEnabled(false);
+    ui->comboBox->setEnabled(false);
     qDebug()<<"ssid_name"<<ssid_name<<"ssid_pwd"<<ssid_pwd<<"device_id"<<device_id;
 }
 

@@ -197,6 +197,7 @@ void MainWin::on_action_triggered()
         device_system->NewLocalTest(test_name);
         device_system->AutoStop(time);
         ui->plainTextEdit->appendPlainText(device_system->test_name);
+
     } 
 }
 
@@ -225,10 +226,10 @@ void MainWin::on_action_7_triggered(bool checked)
 }
 void MainWin::on_action_8_triggered()
 {
-    //保存测量结果
+    //导出数据
     QString curPath = QCoreApplication::applicationDirPath();
    // curPath = QDir::currentPath();
-    QString dlgTile = "选择一个目录";
+    QString dlgTile = "数据保存路径";
     QString selectedDir = QFileDialog::getExistingDirectory(this,dlgTile,curPath,QFileDialog::ShowDirsOnly);
 
     if(!selectedDir.isEmpty())
@@ -385,4 +386,34 @@ void MainWin::on_action_15_triggered()
 {
     //dialog->setAttribute(Qt::WA_DeleteOnClose);
     calibration_dialog->show();
+}
+
+void MainWin::on_action_11_triggered()
+{
+    //导入配置文件
+    QString curPath = QCoreApplication::applicationDirPath();
+    QString dlgTile = "选择配置文件";
+    QString configure_file =  QFileDialog::getOpenFileName(this,dlgTile,curPath,tr("txt (*.txt)"));
+
+    if(!configure_file.isEmpty())settingui->ReadTableView(configure_file);
+}
+
+void MainWin::on_action_12_triggered()
+{
+    //导出配置文件
+    QString curPath = QCoreApplication::applicationDirPath();
+    QString dlgTile = "配置文件保存路径";
+    QString selectedDir = QFileDialog::getExistingDirectory(this,dlgTile,curPath,QFileDialog::ShowDirsOnly);
+    if(!selectedDir.isEmpty())
+    {
+        QString configure_file = selectedDir+"/"+"configure.txt";
+        settingui->WriteTableView(configure_file);
+    }
+}
+
+void MainWin::on_action_16_triggered()
+{
+    //适应窗口
+   chart_widget->AxisAdapt();
+
 }

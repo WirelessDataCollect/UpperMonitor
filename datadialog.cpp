@@ -20,7 +20,7 @@ DataDialog::~DataDialog()
 void DataDialog::AddColumn(QString name,QVector<QPointF> data)
 {
 
-    qDebug()<<data.size();
+    qDebug()<<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"<<data.size();
     QList<QStandardItem*> aItemList;
 
     QList<QStandardItem*> aItemList_2;

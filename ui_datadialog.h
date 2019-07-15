@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'datadialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.2
+** Created by: Qt User Interface Compiler version 5.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,7 +10,9 @@
 #define UI_DATADIALOG_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
@@ -27,12 +29,12 @@ public:
     void setupUi(QDialog *DataDialog)
     {
         if (DataDialog->objectName().isEmpty())
-            DataDialog->setObjectName(QString::fromUtf8("DataDialog"));
+            DataDialog->setObjectName(QStringLiteral("DataDialog"));
         DataDialog->resize(558, 561);
         gridLayout = new QGridLayout(DataDialog);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
         tableView = new QTableView(DataDialog);
-        tableView->setObjectName(QString::fromUtf8("tableView"));
+        tableView->setObjectName(QStringLiteral("tableView"));
 
         gridLayout->addWidget(tableView, 0, 0, 1, 1);
 
@@ -44,7 +46,7 @@ public:
 
     void retranslateUi(QDialog *DataDialog)
     {
-        DataDialog->setWindowTitle(QApplication::translate("DataDialog", "Dialog", nullptr));
+        DataDialog->setWindowTitle(QApplication::translate("DataDialog", "Dialog", Q_NULLPTR));
     } // retranslateUi
 
 };

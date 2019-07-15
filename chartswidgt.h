@@ -45,6 +45,7 @@ public:
     ChartView *m_chartView;
     void GetSeriesPoint(bool status);
     void showDataDialog();
+    void AxisAdapt();
 
 
 
@@ -106,6 +107,7 @@ private:
     float m_max;
     QLineEdit *lineEditMaxRange;
     QLineEdit *lineEditMinRange;
+    QList<double> getMaxMinSeriesData();
 
 signals:
     void AddPointData(QString time, QColor color, QString name, QString point);

@@ -386,9 +386,9 @@ void MainWin::on_action_15_triggered()
 {
     //dialog->setAttribute(Qt::WA_DeleteOnClose);
     //校准
-   // calibration_dialog->show();
+    calibration_dialog->show();
 
-     device_system->RemoteTcpReset();
+     //device_system->RemoteTcpReset();
    //device_system->StopSendDocs();
 }
 

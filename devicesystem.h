@@ -128,6 +128,7 @@ public:
     }doc_name;
 
     bool is_local_test;
+    bool is_receive_data;
     void RemoteTcpReset();
     void StopSendDocs();
 
@@ -141,6 +142,7 @@ signals:
     void UpdataDocsnames(QList<QString> name,QList<QString> time);
     void SaveConfigureFile(QString file = "");
     void LoadConfigureFile(QString file = "");
+    void testconfigureshow(QString str);
 
 
 public slots:
@@ -175,6 +177,7 @@ private:
 
     int  ByteToInt32(QByteArray abyte0);
     void sleep(int msec);
+    void TestConfigureShow();
 
     QTimer *heart_beat_timer =nullptr;
     QTimer *show_speed_timer = nullptr;

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'calibration.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.12.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_CALIBRATION_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
@@ -57,19 +55,19 @@ public:
     void setupUi(QWidget *Calibration)
     {
         if (Calibration->objectName().isEmpty())
-            Calibration->setObjectName(QStringLiteral("Calibration"));
+            Calibration->setObjectName(QString::fromUtf8("Calibration"));
         Calibration->resize(417, 504);
         gridLayout_2 = new QGridLayout(Calibration);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         label = new QLabel(Calibration);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         horizontalLayout_2->addWidget(label);
 
         spinBox = new QSpinBox(Calibration);
-        spinBox->setObjectName(QStringLiteral("spinBox"));
+        spinBox->setObjectName(QString::fromUtf8("spinBox"));
         spinBox->setMinimum(1);
         spinBox->setMaximum(5);
 
@@ -80,12 +78,12 @@ public:
         horizontalLayout_2->addItem(horizontalSpacer);
 
         label_2 = new QLabel(Calibration);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
 
         horizontalLayout_2->addWidget(label_2);
 
         spinBox_2 = new QSpinBox(Calibration);
-        spinBox_2->setObjectName(QStringLiteral("spinBox_2"));
+        spinBox_2->setObjectName(QString::fromUtf8("spinBox_2"));
         spinBox_2->setMinimum(1);
         spinBox_2->setMaximum(4);
 
@@ -96,12 +94,12 @@ public:
         horizontalLayout_2->addItem(horizontalSpacer_4);
 
         label_4 = new QLabel(Calibration);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QString::fromUtf8("label_4"));
 
         horizontalLayout_2->addWidget(label_4);
 
         spinBox_3 = new QSpinBox(Calibration);
-        spinBox_3->setObjectName(QStringLiteral("spinBox_3"));
+        spinBox_3->setObjectName(QString::fromUtf8("spinBox_3"));
         spinBox_3->setMinimum(0);
         spinBox_3->setMaximum(10000);
         spinBox_3->setSingleStep(100);
@@ -112,20 +110,20 @@ public:
         gridLayout_2->addLayout(horizontalLayout_2, 0, 0, 1, 1);
 
         frame = new QFrame(Calibration);
-        frame->setObjectName(QStringLiteral("frame"));
+        frame->setObjectName(QString::fromUtf8("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         gridLayout = new QGridLayout(frame);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         tableView = new QTableView(frame);
-        tableView->setObjectName(QStringLiteral("tableView"));
+        tableView->setObjectName(QString::fromUtf8("tableView"));
 
         gridLayout->addWidget(tableView, 0, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         pushButton_add_1 = new QPushButton(frame);
-        pushButton_add_1->setObjectName(QStringLiteral("pushButton_add_1"));
+        pushButton_add_1->setObjectName(QString::fromUtf8("pushButton_add_1"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -133,7 +131,7 @@ public:
         pushButton_add_1->setSizePolicy(sizePolicy);
         pushButton_add_1->setMinimumSize(QSize(20, 20));
         pushButton_add_1->setMaximumSize(QSize(30, 16777215));
-        pushButton_add_1->setStyleSheet(QLatin1String("\n"
+        pushButton_add_1->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton{\n"
 "border-image: url(:/ico/ico/icons/316.bmp);\n"
 "\n"
@@ -146,11 +144,11 @@ public:
         horizontalLayout_3->addWidget(pushButton_add_1);
 
         pushButton_remove_1 = new QPushButton(frame);
-        pushButton_remove_1->setObjectName(QStringLiteral("pushButton_remove_1"));
+        pushButton_remove_1->setObjectName(QString::fromUtf8("pushButton_remove_1"));
         sizePolicy.setHeightForWidth(pushButton_remove_1->sizePolicy().hasHeightForWidth());
         pushButton_remove_1->setSizePolicy(sizePolicy);
         pushButton_remove_1->setMinimumSize(QSize(20, 20));
-        pushButton_remove_1->setStyleSheet(QLatin1String("\n"
+        pushButton_remove_1->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton{\n"
 "border-image: url(:/ico/ico/icons/318.bmp);\n"
 "\n"
@@ -163,12 +161,12 @@ public:
         horizontalLayout_3->addWidget(pushButton_remove_1);
 
         pushButton_clear_1 = new QPushButton(frame);
-        pushButton_clear_1->setObjectName(QStringLiteral("pushButton_clear_1"));
+        pushButton_clear_1->setObjectName(QString::fromUtf8("pushButton_clear_1"));
         sizePolicy.setHeightForWidth(pushButton_clear_1->sizePolicy().hasHeightForWidth());
         pushButton_clear_1->setSizePolicy(sizePolicy);
         pushButton_clear_1->setMinimumSize(QSize(20, 20));
         pushButton_clear_1->setMaximumSize(QSize(20, 20));
-        pushButton_clear_1->setStyleSheet(QLatin1String("\n"
+        pushButton_clear_1->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton{\n"
 "border-image: url(:/ico/ico/icons/324.bmp);\n"
 "\n"
@@ -191,9 +189,9 @@ public:
         gridLayout_2->addWidget(frame, 1, 0, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         pushButton = new QPushButton(Calibration);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
         horizontalLayout->addWidget(pushButton);
 
@@ -202,12 +200,12 @@ public:
         horizontalLayout->addItem(horizontalSpacer_2);
 
         label_3 = new QLabel(Calibration);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
 
         horizontalLayout->addWidget(label_3);
 
         lineEdit = new QLineEdit(Calibration);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
 
         horizontalLayout->addWidget(lineEdit);
 
@@ -222,15 +220,15 @@ public:
 
     void retranslateUi(QWidget *Calibration)
     {
-        Calibration->setWindowTitle(QApplication::translate("Calibration", "\346\240\241\345\207\206", Q_NULLPTR));
-        label->setText(QApplication::translate("Calibration", "\347\273\210\347\253\257", Q_NULLPTR));
-        label_2->setText(QApplication::translate("Calibration", "\351\200\232\351\201\223", Q_NULLPTR));
-        label_4->setText(QApplication::translate("Calibration", "\346\267\261\345\272\246", Q_NULLPTR));
+        Calibration->setWindowTitle(QApplication::translate("Calibration", "\346\240\241\345\207\206", nullptr));
+        label->setText(QApplication::translate("Calibration", "\347\273\210\347\253\257", nullptr));
+        label_2->setText(QApplication::translate("Calibration", "\351\200\232\351\201\223", nullptr));
+        label_4->setText(QApplication::translate("Calibration", "\346\267\261\345\272\246", nullptr));
         pushButton_add_1->setText(QString());
         pushButton_remove_1->setText(QString());
         pushButton_clear_1->setText(QString());
-        pushButton->setText(QApplication::translate("Calibration", "\346\240\241\345\207\206", Q_NULLPTR));
-        label_3->setText(QApplication::translate("Calibration", "\346\213\237\345\220\210\345\244\232\351\241\271\345\274\217", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("Calibration", "\346\240\241\345\207\206", nullptr));
+        label_3->setText(QApplication::translate("Calibration", "\346\213\237\345\220\210\345\244\232\351\241\271\345\274\217", nullptr));
     } // retranslateUi
 
 };

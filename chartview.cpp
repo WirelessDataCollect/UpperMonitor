@@ -30,7 +30,7 @@ void ChartView::mouseMoveEvent(QMouseEvent *event)
             x = event->x() - xOld;
             y = event->y() - yOld;
             chart()->scroll(-x, y);
-            emit updateslider();
+            //emit updateslider();
         }
         xOld = event->x();
         yOld = event->y();

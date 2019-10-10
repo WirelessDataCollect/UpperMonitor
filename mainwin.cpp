@@ -10,14 +10,14 @@
 #include<QFormLayout>
 #include"md5.h"
 #include<QThread>
-
+//#include"login.h"
 MainWin::MainWin(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWin)
 {
     ui->setupUi(this);
     device_system = new DeviceSystem();
-
+//    login_widget = new Login(this);
 
     settingui = new Setting(device_system,this);
     settingui->setWindowFlags(settingui->windowFlags() | Qt::Window);
@@ -118,14 +118,17 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
      }
      connect(device_system, SIGNAL(SaveConfigureFile(QString)),settingui, SLOT(WriteTableView(QString)));
      connect(device_system, SIGNAL(LoadConfigureFile(QString)),settingui, SLOT(ReadTableView(QString)));
+
+     connect(device_system, SIGNAL(testconfigureshow(QString)),this, SLOT(on_testconfigureshow(QString)));
 }
 
 MainWin::~MainWin()
 {
-    help_process->kill();
+
+    delete  device_system;
+    if(help_process != nullptr)help_process->kill();
     delete settingui;
     delete ui;
-    delete  device_system;
     delete chart_widget;
     delete help_process;
 }
@@ -196,8 +199,6 @@ void MainWin::on_action_triggered()
         //新建实验
         device_system->NewLocalTest(test_name);
         device_system->AutoStop(time);
-        ui->plainTextEdit->appendPlainText(device_system->test_name);
-
     } 
 }
 
@@ -213,7 +214,6 @@ void MainWin::on_action_6_toggled(bool checked)
 
 {
     //取点
-    qDebug()<<"添加数据点 on_action_6_triggered"<<checked;
     chart_widget->GetSeriesPoint(checked);
 }
 
@@ -221,8 +221,7 @@ void MainWin::on_action_7_triggered(bool checked)
 {
     //删点
     deltablerow =checked;
-     qDebug()<<"删除数据点 on_action_7_triggered"<<checked;
-     on_MovePointdata();
+    on_MovePointdata();
 }
 void MainWin::on_action_8_triggered()
 {
@@ -257,7 +256,6 @@ void MainWin::on_pushButton_clicked()
 
 void MainWin::on_AddPointData(QString time,QColor color, QString name, QString value)
 {
-
    ui->action_6->setChecked(false);
    if(standard_model->rowCount() ==0) ui->tableView->setVisible(true);
     qDebug()<<"AddPointData receive";
@@ -418,6 +416,11 @@ void MainWin::on_action_12_triggered()
 void MainWin::on_action_16_triggered()
 {
     //适应窗口
-   chart_widget->AxisAdapt();
+   chart_widget->XAxisAdapt();
 }
 
+void MainWin::on_testconfigureshow(QString str)
+{
+    qDebug()<<str;
+    ui->plainTextEdit->setPlainText(str);
+}

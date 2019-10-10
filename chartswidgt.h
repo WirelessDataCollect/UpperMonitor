@@ -45,10 +45,8 @@ public:
     ChartView *m_chartView;
     void GetSeriesPoint(bool status);
     void showDataDialog();
-    void AxisAdapt();
-
-
-
+    void XAxisAdapt();
+    void YAxisAdapt();
 public slots:
 
     void connectMarkers();
@@ -62,6 +60,7 @@ public slots:
     void UpdateChart();
     void setMaxRange();
     void setMinRange();
+    void setPlotSize();
     void setMaxValue(float val);
     void setMinValue(float val);
     void on_updateslider();
@@ -107,7 +106,11 @@ private:
     float m_max;
     QLineEdit *lineEditMaxRange;
     QLineEdit *lineEditMinRange;
-    QList<double> getMaxMinSeriesData();
+    QLineEdit *lineEditPlotSize;
+    QList<double> getMaxMinData(bool status);
+    int plot_size;
+    bool is_update_axis;
+    QVector<QPointF> getPlotData(QVector<QPointF> &showdata);
 
 signals:
     void AddPointData(QString time, QColor color, QString name, QString point);

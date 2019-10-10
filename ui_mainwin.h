@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwin.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.12.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDateEdit>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -121,140 +120,140 @@ public:
     void setupUi(QMainWindow *MainWin)
     {
         if (MainWin->objectName().isEmpty())
-            MainWin->setObjectName(QStringLiteral("MainWin"));
+            MainWin->setObjectName(QString::fromUtf8("MainWin"));
         MainWin->resize(1207, 809);
         action = new QAction(MainWin);
-        action->setObjectName(QStringLiteral("action"));
+        action->setObjectName(QString::fromUtf8("action"));
         action->setEnabled(true);
         QIcon icon;
-        icon.addFile(QStringLiteral(":/ico/ico/icons/316.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/ico/ico/icons/316.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action->setIcon(icon);
         action_3 = new QAction(MainWin);
-        action_3->setObjectName(QStringLiteral("action_3"));
+        action_3->setObjectName(QString::fromUtf8("action_3"));
         QIcon icon1;
-        icon1.addFile(QStringLiteral(":/ico/ico/icons/324.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/ico/ico/icons/324.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_3->setIcon(icon1);
         action_4 = new QAction(MainWin);
-        action_4->setObjectName(QStringLiteral("action_4"));
+        action_4->setObjectName(QString::fromUtf8("action_4"));
         QIcon icon2;
-        icon2.addFile(QStringLiteral(":/ico/ico/icons/exit.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/ico/ico/icons/exit.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_4->setIcon(icon2);
         action_5 = new QAction(MainWin);
-        action_5->setObjectName(QStringLiteral("action_5"));
+        action_5->setObjectName(QString::fromUtf8("action_5"));
         action_5->setCheckable(true);
         QIcon icon3;
-        icon3.addFile(QStringLiteral(":/ico/ico/icons/418.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QString::fromUtf8(":/ico/ico/icons/418.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_5->setIcon(icon3);
         action_6 = new QAction(MainWin);
-        action_6->setObjectName(QStringLiteral("action_6"));
+        action_6->setObjectName(QString::fromUtf8("action_6"));
         action_6->setCheckable(true);
         QIcon icon4;
-        icon4.addFile(QStringLiteral(":/ico/ico/icons/103.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QString::fromUtf8(":/ico/ico/icons/103.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_6->setIcon(icon4);
         action_7 = new QAction(MainWin);
-        action_7->setObjectName(QStringLiteral("action_7"));
+        action_7->setObjectName(QString::fromUtf8("action_7"));
         action_7->setCheckable(true);
         QIcon icon5;
-        icon5.addFile(QStringLiteral(":/ico/ico/icons/300.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon5.addFile(QString::fromUtf8(":/ico/ico/icons/300.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_7->setIcon(icon5);
         action_8 = new QAction(MainWin);
-        action_8->setObjectName(QStringLiteral("action_8"));
+        action_8->setObjectName(QString::fromUtf8("action_8"));
         QIcon icon6;
-        icon6.addFile(QStringLiteral(":/ico/ico/icons/save1.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon6.addFile(QString::fromUtf8(":/ico/ico/icons/save1.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_8->setIcon(icon6);
         action_9 = new QAction(MainWin);
-        action_9->setObjectName(QStringLiteral("action_9"));
+        action_9->setObjectName(QString::fromUtf8("action_9"));
         QIcon icon7;
-        icon7.addFile(QStringLiteral(":/ico/ico/icons/328.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QString::fromUtf8(":/ico/ico/icons/328.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_9->setIcon(icon7);
         action_10 = new QAction(MainWin);
-        action_10->setObjectName(QStringLiteral("action_10"));
+        action_10->setObjectName(QString::fromUtf8("action_10"));
         action_10->setIcon(icon2);
         action_11 = new QAction(MainWin);
-        action_11->setObjectName(QStringLiteral("action_11"));
+        action_11->setObjectName(QString::fromUtf8("action_11"));
         action_11->setIcon(icon2);
         action_12 = new QAction(MainWin);
-        action_12->setObjectName(QStringLiteral("action_12"));
+        action_12->setObjectName(QString::fromUtf8("action_12"));
         action_12->setIcon(icon6);
         action_2 = new QAction(MainWin);
-        action_2->setObjectName(QStringLiteral("action_2"));
+        action_2->setObjectName(QString::fromUtf8("action_2"));
         QIcon icon8;
-        icon8.addFile(QStringLiteral(":/ico/ico/icons/431.bmp"), QSize(), QIcon::Normal, QIcon::Off);
-        icon8.addFile(QStringLiteral(":/ico/ico/icons/430.bmp"), QSize(), QIcon::Active, QIcon::On);
+        icon8.addFile(QString::fromUtf8(":/ico/ico/icons/431.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon8.addFile(QString::fromUtf8(":/ico/ico/icons/430.bmp"), QSize(), QIcon::Active, QIcon::On);
         action_2->setIcon(icon8);
         action_13 = new QAction(MainWin);
-        action_13->setObjectName(QStringLiteral("action_13"));
+        action_13->setObjectName(QString::fromUtf8("action_13"));
         action_13->setIcon(icon4);
         action_15 = new QAction(MainWin);
-        action_15->setObjectName(QStringLiteral("action_15"));
+        action_15->setObjectName(QString::fromUtf8("action_15"));
         QIcon icon9;
-        icon9.addFile(QStringLiteral(":/ico/ico/icons/330.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon9.addFile(QString::fromUtf8(":/ico/ico/icons/330.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_15->setIcon(icon9);
         action_16 = new QAction(MainWin);
-        action_16->setObjectName(QStringLiteral("action_16"));
+        action_16->setObjectName(QString::fromUtf8("action_16"));
         QIcon icon10;
-        icon10.addFile(QStringLiteral(":/ico/ico/icons/420.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon10.addFile(QString::fromUtf8(":/ico/ico/icons/420.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_16->setIcon(icon10);
         centralwidget = new QWidget(MainWin);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_6 = new QGridLayout(centralwidget);
-        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
         splitter_4 = new QSplitter(centralwidget);
-        splitter_4->setObjectName(QStringLiteral("splitter_4"));
+        splitter_4->setObjectName(QString::fromUtf8("splitter_4"));
         splitter_4->setOrientation(Qt::Horizontal);
         frame_2 = new QFrame(splitter_4);
-        frame_2->setObjectName(QStringLiteral("frame_2"));
+        frame_2->setObjectName(QString::fromUtf8("frame_2"));
         frame_2->setMinimumSize(QSize(400, 0));
         frame_2->setFrameShape(QFrame::Box);
         frame_2->setFrameShadow(QFrame::Raised);
         gridLayout_5 = new QGridLayout(frame_2);
-        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
         splitter_3 = new QSplitter(frame_2);
-        splitter_3->setObjectName(QStringLiteral("splitter_3"));
+        splitter_3->setObjectName(QString::fromUtf8("splitter_3"));
         splitter_3->setFrameShape(QFrame::NoFrame);
         splitter_3->setOrientation(Qt::Vertical);
         groupBox = new QGroupBox(splitter_3);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setStyleSheet(QStringLiteral(""));
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setStyleSheet(QString::fromUtf8(""));
         gridLayout_4 = new QGridLayout(groupBox);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         label_3 = new QLabel(groupBox);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
 
         gridLayout_4->addWidget(label_3, 0, 1, 1, 1);
 
         dateEdit = new QDateEdit(groupBox);
-        dateEdit->setObjectName(QStringLiteral("dateEdit"));
+        dateEdit->setObjectName(QString::fromUtf8("dateEdit"));
 
         gridLayout_4->addWidget(dateEdit, 1, 0, 1, 1);
 
         label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
 
         gridLayout_4->addWidget(label_2, 0, 0, 1, 1);
 
         dateEdit_2 = new QDateEdit(groupBox);
-        dateEdit_2->setObjectName(QStringLiteral("dateEdit_2"));
+        dateEdit_2->setObjectName(QString::fromUtf8("dateEdit_2"));
 
         gridLayout_4->addWidget(dateEdit_2, 1, 1, 1, 1);
 
         pushButton = new QPushButton(groupBox);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
         gridLayout_4->addWidget(pushButton, 1, 2, 1, 1);
 
         tableView_2 = new QTableView(groupBox);
-        tableView_2->setObjectName(QStringLiteral("tableView_2"));
+        tableView_2->setObjectName(QString::fromUtf8("tableView_2"));
 
         gridLayout_4->addWidget(tableView_2, 2, 0, 1, 3);
 
         splitter_3->addWidget(groupBox);
         groupBox_2 = new QGroupBox(splitter_3);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         gridLayout = new QGridLayout(groupBox_2);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         plainTextEdit = new QPlainTextEdit(groupBox_2);
-        plainTextEdit->setObjectName(QStringLiteral("plainTextEdit"));
+        plainTextEdit->setObjectName(QString::fromUtf8("plainTextEdit"));
 
         gridLayout->addWidget(plainTextEdit, 0, 0, 1, 1);
 
@@ -264,52 +263,52 @@ public:
 
         splitter_4->addWidget(frame_2);
         frame = new QFrame(splitter_4);
-        frame->setObjectName(QStringLiteral("frame"));
-        frame->setStyleSheet(QStringLiteral(""));
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setStyleSheet(QString::fromUtf8(""));
         frame->setFrameShape(QFrame::Box);
         frame->setFrameShadow(QFrame::Raised);
         frame->setLineWidth(1);
         frame->setMidLineWidth(0);
         gridLayout_2 = new QGridLayout(frame);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         splitter_2 = new QSplitter(frame);
-        splitter_2->setObjectName(QStringLiteral("splitter_2"));
+        splitter_2->setObjectName(QString::fromUtf8("splitter_2"));
         splitter_2->setFrameShape(QFrame::NoFrame);
         splitter_2->setFrameShadow(QFrame::Plain);
         splitter_2->setOrientation(Qt::Vertical);
         splitter_2->setHandleWidth(10);
         widget_device = new QWidget(splitter_2);
-        widget_device->setObjectName(QStringLiteral("widget_device"));
-        widget_device->setStyleSheet(QLatin1String("\n"
+        widget_device->setObjectName(QString::fromUtf8("widget_device"));
+        widget_device->setStyleSheet(QString::fromUtf8("\n"
 "#widget_4 {border:2px solid gray;\n"
 "}"));
         gridLayout_9 = new QGridLayout(widget_device);
-        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
+        gridLayout_9->setObjectName(QString::fromUtf8("gridLayout_9"));
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         radioButton_6 = new QRadioButton(widget_device);
-        radioButton_6->setObjectName(QStringLiteral("radioButton_6"));
+        radioButton_6->setObjectName(QString::fromUtf8("radioButton_6"));
 
         horizontalLayout_2->addWidget(radioButton_6);
 
         radioButton_7 = new QRadioButton(widget_device);
-        radioButton_7->setObjectName(QStringLiteral("radioButton_7"));
+        radioButton_7->setObjectName(QString::fromUtf8("radioButton_7"));
 
         horizontalLayout_2->addWidget(radioButton_7);
 
         radioButton_8 = new QRadioButton(widget_device);
-        radioButton_8->setObjectName(QStringLiteral("radioButton_8"));
+        radioButton_8->setObjectName(QString::fromUtf8("radioButton_8"));
 
         horizontalLayout_2->addWidget(radioButton_8);
 
         radioButton_9 = new QRadioButton(widget_device);
-        radioButton_9->setObjectName(QStringLiteral("radioButton_9"));
+        radioButton_9->setObjectName(QString::fromUtf8("radioButton_9"));
 
         horizontalLayout_2->addWidget(radioButton_9);
 
         radioButton_10 = new QRadioButton(widget_device);
-        radioButton_10->setObjectName(QStringLiteral("radioButton_10"));
+        radioButton_10->setObjectName(QString::fromUtf8("radioButton_10"));
 
         horizontalLayout_2->addWidget(radioButton_10);
 
@@ -321,7 +320,7 @@ public:
         gridLayout_9->addItem(horizontalSpacer_7, 6, 1, 1, 1);
 
         radioButton_11 = new QRadioButton(widget_device);
-        radioButton_11->setObjectName(QStringLiteral("radioButton_11"));
+        radioButton_11->setObjectName(QString::fromUtf8("radioButton_11"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -335,9 +334,9 @@ public:
         gridLayout_9->addItem(horizontalSpacer_4, 6, 3, 1, 1);
 
         gridLayout_8 = new QGridLayout();
-        gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
+        gridLayout_8->setObjectName(QString::fromUtf8("gridLayout_8"));
         label_6 = new QLabel(widget_device);
-        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setObjectName(QString::fromUtf8("label_6"));
 
         gridLayout_8->addWidget(label_6, 0, 0, 1, 1);
 
@@ -346,7 +345,7 @@ public:
         gridLayout_8->addItem(horizontalSpacer_6, 0, 1, 1, 1);
 
         lineEdit_3 = new QLineEdit(widget_device);
-        lineEdit_3->setObjectName(QStringLiteral("lineEdit_3"));
+        lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
 
         gridLayout_8->addWidget(lineEdit_3, 1, 0, 1, 2);
 
@@ -354,29 +353,29 @@ public:
         gridLayout_9->addLayout(gridLayout_8, 5, 5, 2, 1);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         radioButton = new QRadioButton(widget_device);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
+        radioButton->setObjectName(QString::fromUtf8("radioButton"));
 
         horizontalLayout->addWidget(radioButton);
 
         radioButton_2 = new QRadioButton(widget_device);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
+        radioButton_2->setObjectName(QString::fromUtf8("radioButton_2"));
 
         horizontalLayout->addWidget(radioButton_2);
 
         radioButton_3 = new QRadioButton(widget_device);
-        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
+        radioButton_3->setObjectName(QString::fromUtf8("radioButton_3"));
 
         horizontalLayout->addWidget(radioButton_3);
 
         radioButton_4 = new QRadioButton(widget_device);
-        radioButton_4->setObjectName(QStringLiteral("radioButton_4"));
+        radioButton_4->setObjectName(QString::fromUtf8("radioButton_4"));
 
         horizontalLayout->addWidget(radioButton_4);
 
         radioButton_5 = new QRadioButton(widget_device);
-        radioButton_5->setObjectName(QStringLiteral("radioButton_5"));
+        radioButton_5->setObjectName(QString::fromUtf8("radioButton_5"));
 
         horizontalLayout->addWidget(radioButton_5);
 
@@ -384,16 +383,16 @@ public:
         gridLayout_9->addLayout(horizontalLayout, 1, 0, 1, 5);
 
         line_2 = new QFrame(widget_device);
-        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setObjectName(QString::fromUtf8("line_2"));
         line_2->setFrameShape(QFrame::HLine);
         line_2->setFrameShadow(QFrame::Sunken);
 
         gridLayout_9->addWidget(line_2, 4, 0, 1, 6);
 
         gridLayout_7 = new QGridLayout();
-        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         label_5 = new QLabel(widget_device);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setObjectName(QString::fromUtf8("label_5"));
 
         gridLayout_7->addWidget(label_5, 0, 0, 1, 1);
 
@@ -402,7 +401,7 @@ public:
         gridLayout_7->addItem(horizontalSpacer_5, 0, 1, 1, 1);
 
         lineEdit_2 = new QLineEdit(widget_device);
-        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
+        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
 
         gridLayout_7->addWidget(lineEdit_2, 1, 0, 1, 2);
 
@@ -410,19 +409,19 @@ public:
         gridLayout_9->addLayout(gridLayout_7, 5, 2, 2, 1);
 
         label_7 = new QLabel(widget_device);
-        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setObjectName(QString::fromUtf8("label_7"));
 
         gridLayout_9->addWidget(label_7, 2, 0, 1, 1);
 
         label = new QLabel(widget_device);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         gridLayout_9->addWidget(label, 0, 0, 1, 1);
 
         gridLayout_3 = new QGridLayout();
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         label_4 = new QLabel(widget_device);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QString::fromUtf8("label_4"));
 
         gridLayout_3->addWidget(label_4, 0, 0, 1, 1);
 
@@ -431,7 +430,7 @@ public:
         gridLayout_3->addItem(horizontalSpacer_3, 0, 1, 1, 1);
 
         lineEdit = new QLineEdit(widget_device);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
         lineEdit->setMinimumSize(QSize(0, 21));
 
         gridLayout_3->addWidget(lineEdit, 1, 0, 1, 2);
@@ -440,7 +439,7 @@ public:
         gridLayout_9->addLayout(gridLayout_3, 5, 0, 2, 1);
 
         line = new QFrame(widget_device);
-        line->setObjectName(QStringLiteral("line"));
+        line->setObjectName(QString::fromUtf8("line"));
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
 
@@ -448,14 +447,14 @@ public:
 
         splitter_2->addWidget(widget_device);
         splitter = new QSplitter(splitter_2);
-        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setObjectName(QString::fromUtf8("splitter"));
         splitter->setOrientation(Qt::Horizontal);
         splitter->setHandleWidth(10);
         widget_chart = new QWidget(splitter);
-        widget_chart->setObjectName(QStringLiteral("widget_chart"));
+        widget_chart->setObjectName(QString::fromUtf8("widget_chart"));
         splitter->addWidget(widget_chart);
         tableView = new QTableView(splitter);
-        tableView->setObjectName(QStringLiteral("tableView"));
+        tableView->setObjectName(QString::fromUtf8("tableView"));
         splitter->addWidget(tableView);
         splitter_2->addWidget(splitter);
 
@@ -467,22 +466,22 @@ public:
 
         MainWin->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWin);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1207, 26));
         menu = new QMenu(menubar);
-        menu->setObjectName(QStringLiteral("menu"));
+        menu->setObjectName(QString::fromUtf8("menu"));
         menu_2 = new QMenu(menubar);
-        menu_2->setObjectName(QStringLiteral("menu_2"));
+        menu_2->setObjectName(QString::fromUtf8("menu_2"));
         menu_3 = new QMenu(menubar);
-        menu_3->setObjectName(QStringLiteral("menu_3"));
+        menu_3->setObjectName(QString::fromUtf8("menu_3"));
         menu_4 = new QMenu(menubar);
-        menu_4->setObjectName(QStringLiteral("menu_4"));
+        menu_4->setObjectName(QString::fromUtf8("menu_4"));
         MainWin->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWin);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWin->setStatusBar(statusbar);
         toolBar = new QToolBar(MainWin);
-        toolBar->setObjectName(QStringLiteral("toolBar"));
+        toolBar->setObjectName(QString::fromUtf8("toolBar"));
         toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         MainWin->addToolBar(Qt::TopToolBarArea, toolBar);
 
@@ -525,53 +524,57 @@ public:
 
     void retranslateUi(QMainWindow *MainWin)
     {
-        MainWin->setWindowTitle(QApplication::translate("MainWin", "MainWindow", Q_NULLPTR));
-        action->setText(QApplication::translate("MainWin", "\346\226\260\345\273\272\345\256\236\351\252\214", Q_NULLPTR));
-        action->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+N", Q_NULLPTR));
-        action_3->setText(QApplication::translate("MainWin", "\347\273\223\346\235\237\345\256\236\351\252\214", Q_NULLPTR));
-        action_3->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+C", Q_NULLPTR));
-        action_4->setText(QApplication::translate("MainWin", "\351\207\207\351\233\206\350\256\276\347\275\256", Q_NULLPTR));
-        action_5->setText(QApplication::translate("MainWin", "\346\224\276\345\244\247", Q_NULLPTR));
-        action_6->setText(QApplication::translate("MainWin", "\345\217\226\347\202\271", Q_NULLPTR));
-        action_7->setText(QApplication::translate("MainWin", "\345\210\240\347\202\271", Q_NULLPTR));
-        action_8->setText(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\225\260\346\215\256", Q_NULLPTR));
+        MainWin->setWindowTitle(QApplication::translate("MainWin", "MainWindow", nullptr));
+        action->setText(QApplication::translate("MainWin", "\346\226\260\345\273\272\345\256\236\351\252\214", nullptr));
+#ifndef QT_NO_SHORTCUT
+        action->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+N", nullptr));
+#endif // QT_NO_SHORTCUT
+        action_3->setText(QApplication::translate("MainWin", "\347\273\223\346\235\237\345\256\236\351\252\214", nullptr));
+#ifndef QT_NO_SHORTCUT
+        action_3->setShortcut(QApplication::translate("MainWin", "Ctrl+Shift+C", nullptr));
+#endif // QT_NO_SHORTCUT
+        action_4->setText(QApplication::translate("MainWin", "\351\207\207\351\233\206\350\256\276\347\275\256", nullptr));
+        action_5->setText(QApplication::translate("MainWin", "\346\224\276\345\244\247", nullptr));
+        action_6->setText(QApplication::translate("MainWin", "\345\217\226\347\202\271", nullptr));
+        action_7->setText(QApplication::translate("MainWin", "\345\210\240\347\202\271", nullptr));
+        action_8->setText(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\225\260\346\215\256", nullptr));
 #ifndef QT_NO_TOOLTIP
-        action_8->setToolTip(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\265\213\350\257\225\347\273\223\346\236\234", Q_NULLPTR));
+        action_8->setToolTip(QApplication::translate("MainWin", "\344\277\235\345\255\230\346\265\213\350\257\225\347\273\223\346\236\234", nullptr));
 #endif // QT_NO_TOOLTIP
-        action_9->setText(QApplication::translate("MainWin", "\345\270\256\345\212\251\346\226\207\346\241\243", Q_NULLPTR));
-        action_10->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\346\225\260\346\215\256", Q_NULLPTR));
-        action_11->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
-        action_12->setText(QApplication::translate("MainWin", "\345\257\274\345\207\272\351\205\215\347\275\256\346\226\207\344\273\266", Q_NULLPTR));
-        action_2->setText(QApplication::translate("MainWin", "\346\270\205\345\261\217", Q_NULLPTR));
-        action_13->setText(QApplication::translate("MainWin", "\345\274\271\347\252\227\345\217\226\347\202\271", Q_NULLPTR));
-        action_15->setText(QApplication::translate("MainWin", "\346\240\241\345\207\206", Q_NULLPTR));
-        action_16->setText(QApplication::translate("MainWin", "\351\200\202\345\272\224\347\252\227\345\217\243", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", Q_NULLPTR));
-        label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("MainWin", "\346\237\245\350\257\242", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\344\277\241\346\201\257", Q_NULLPTR));
-        radioButton_6->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2571", Q_NULLPTR));
-        radioButton_7->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2572", Q_NULLPTR));
-        radioButton_8->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2573", Q_NULLPTR));
-        radioButton_9->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2574", Q_NULLPTR));
-        radioButton_10->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2575", Q_NULLPTR));
-        radioButton_11->setText(QApplication::translate("MainWin", "\345\220\214\346\255\245\350\212\202\347\202\271", Q_NULLPTR));
-        label_6->setText(QApplication::translate("MainWin", "\346\265\213\350\257\225\346\227\266\351\225\277", Q_NULLPTR));
-        radioButton->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2571", Q_NULLPTR));
-        radioButton_2->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2572", Q_NULLPTR));
-        radioButton_3->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2573", Q_NULLPTR));
-        radioButton_4->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2574", Q_NULLPTR));
-        radioButton_5->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2575", Q_NULLPTR));
-        label_5->setText(QApplication::translate("MainWin", "\346\265\213\350\257\225\346\227\266\351\227\264", Q_NULLPTR));
-        label_7->setText(QApplication::translate("MainWin", "\347\273\210\347\253\257\344\275\277\350\203\275\347\212\266\346\200\201", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWin", "\347\273\210\347\253\257\345\234\250\347\272\277\347\212\266\346\200\201", Q_NULLPTR));
-        label_4->setText(QApplication::translate("MainWin", "\345\256\236\351\252\214\345\220\215\347\247\260", Q_NULLPTR));
-        menu->setTitle(QApplication::translate("MainWin", "\346\226\207\344\273\266", Q_NULLPTR));
-        menu_2->setTitle(QApplication::translate("MainWin", "\345\256\236\351\252\214", Q_NULLPTR));
-        menu_3->setTitle(QApplication::translate("MainWin", "\350\247\206\345\233\276", Q_NULLPTR));
-        menu_4->setTitle(QApplication::translate("MainWin", "\345\270\256\345\212\251", Q_NULLPTR));
-        toolBar->setWindowTitle(QApplication::translate("MainWin", "toolBar", Q_NULLPTR));
+        action_9->setText(QApplication::translate("MainWin", "\345\270\256\345\212\251\346\226\207\346\241\243", nullptr));
+        action_10->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\346\225\260\346\215\256", nullptr));
+        action_11->setText(QApplication::translate("MainWin", "\345\257\274\345\205\245\351\205\215\347\275\256\346\226\207\344\273\266", nullptr));
+        action_12->setText(QApplication::translate("MainWin", "\345\257\274\345\207\272\351\205\215\347\275\256\346\226\207\344\273\266", nullptr));
+        action_2->setText(QApplication::translate("MainWin", "\346\270\205\345\261\217", nullptr));
+        action_13->setText(QApplication::translate("MainWin", "\345\274\271\347\252\227\345\217\226\347\202\271", nullptr));
+        action_15->setText(QApplication::translate("MainWin", "\346\240\241\345\207\206", nullptr));
+        action_16->setText(QApplication::translate("MainWin", "\351\200\202\345\272\224\347\252\227\345\217\243", nullptr));
+        groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", nullptr));
+        label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", nullptr));
+        label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", nullptr));
+        pushButton->setText(QApplication::translate("MainWin", "\346\237\245\350\257\242", nullptr));
+        groupBox_2->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\344\277\241\346\201\257", nullptr));
+        radioButton_6->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2571", nullptr));
+        radioButton_7->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2572", nullptr));
+        radioButton_8->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2573", nullptr));
+        radioButton_9->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2574", nullptr));
+        radioButton_10->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2575", nullptr));
+        radioButton_11->setText(QApplication::translate("MainWin", "\345\220\214\346\255\245\350\212\202\347\202\271", nullptr));
+        label_6->setText(QApplication::translate("MainWin", "\346\265\213\350\257\225\346\227\266\351\225\277", nullptr));
+        radioButton->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2571", nullptr));
+        radioButton_2->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2572", nullptr));
+        radioButton_3->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2573", nullptr));
+        radioButton_4->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2574", nullptr));
+        radioButton_5->setText(QApplication::translate("MainWin", "\347\273\210\347\253\2575", nullptr));
+        label_5->setText(QApplication::translate("MainWin", "\346\265\213\350\257\225\346\227\266\351\227\264", nullptr));
+        label_7->setText(QApplication::translate("MainWin", "\347\273\210\347\253\257\344\275\277\350\203\275\347\212\266\346\200\201", nullptr));
+        label->setText(QApplication::translate("MainWin", "\347\273\210\347\253\257\345\234\250\347\272\277\347\212\266\346\200\201", nullptr));
+        label_4->setText(QApplication::translate("MainWin", "\345\256\236\351\252\214\345\220\215\347\247\260", nullptr));
+        menu->setTitle(QApplication::translate("MainWin", "\346\226\207\344\273\266", nullptr));
+        menu_2->setTitle(QApplication::translate("MainWin", "\345\256\236\351\252\214", nullptr));
+        menu_3->setTitle(QApplication::translate("MainWin", "\350\247\206\345\233\276", nullptr));
+        menu_4->setTitle(QApplication::translate("MainWin", "\345\270\256\345\212\251", nullptr));
+        toolBar->setWindowTitle(QApplication::translate("MainWin", "toolBar", nullptr));
     } // retranslateUi
 
 };

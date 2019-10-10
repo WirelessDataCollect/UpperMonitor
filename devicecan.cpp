@@ -43,9 +43,9 @@ void DeviceCan::RemoveFilter(QColor color, QString name, QString express_str)
     for(int i=0;i<filter_list.size();i++)
     {
        // SignalData *message = filter_list.at(i);
-        qDebug()<<"/===================================";
-        qDebug()<<color<<name<<express_str;
-        qDebug()<<filter_list.at(i)->color<<filter_list.at(i)->name<<filter_list.at(i)->express_str;
+//        qDebug()<<"/===================================";
+//        qDebug()<<color<<name<<express_str;
+//        qDebug()<<filter_list.at(i)->color<<filter_list.at(i)->name<<filter_list.at(i)->express_str;
         if(filter_list.at(i)->color == color && filter_list.at(i)->name == name && filter_list.at(i)->express_str == express_str)
         {
 
@@ -61,14 +61,11 @@ void DeviceCan::RemoveFilter(QColor color, QString name, QString express_str)
 }
 void DeviceCan::AddFrameData(int id,double time, QByteArray data)
 {
-
-
     for(int i=0;i<filter_list.size();i++)
     {
         if(filter_list.at(i)->id == id)
            filter_list.at(i)->AddData(time,data);
     }
-
 }
 void DeviceCan::ClearReceiveData()
 {

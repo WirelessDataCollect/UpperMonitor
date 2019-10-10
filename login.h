@@ -4,10 +4,9 @@
 #include <QWidget>
 #include<QSettings>
 #include"md5.h"
-#include"mainwin.h"
 #include"dialogconf.h"
 
-
+class MainWin;
 namespace Ui {
 class Login;
 }
@@ -19,6 +18,7 @@ class Login : public QWidget
 public:
     explicit Login(QWidget *parent = nullptr);
     ~Login();
+     MainWin *main_window= nullptr;
 signals:
     void closeall();
 
@@ -49,7 +49,7 @@ private:
     QPoint dragVector;
     Ui::Login *ui;
    // MainWindow *q = nullptr;
-    MainWin *main_window= nullptr;
+
     QSettings *m_IniFile = nullptr;
     QString		username;
     QString		passwd;

@@ -236,7 +236,7 @@ void Setting::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
             {
                 if(type%10 ==1)
                 {
-                    qDebug()<<"DEVICE"<<type/100<<"CAN"<<type/10%10-1;
+                    //qDebug()<<"DEVICE"<<type/100<<"CAN"<<type/10%10-1;
                     device_system->device_vector.at(type/100)->can_vector.at(type/10%10-1)->SetBaudRate(status);
 
                     if(status) item->parent()->child(1)->setCheckState(0,Qt::Unchecked);
@@ -267,7 +267,7 @@ void Setting::on_itemChanged(QStandardItem *item)
         QColor color = theModel->item(row,4)->background().color();
         QString name = theModel->item(row,5)->text();
         QString express_str = theModel->item(row,6)->text().toUpper();
-        qDebug()<<"filter_id"<<filter_id<<theModel->item(row,3)->text();
+       // qDebug()<<"filter_id"<<filter_id<<theModel->item(row,3)->text();
         if(item->checkState() == Qt::Checked)
         {
             if( device!=0 && channel!=0 && filter_id!=0)
@@ -277,9 +277,7 @@ void Setting::on_itemChanged(QStandardItem *item)
                     for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(false);
                     device_system->device_vector.at(device-1)->can_vector.at(channel-1)->update_status = true;
                 }
-
                 else  theModel->item(row,0)->setCheckState(Qt::Unchecked);
-                qDebug()<<device<<channel<<device_system->device_vector.at(device-1)->can_vector.at(channel-1)->filter_list.size();
             }
             else
             {
@@ -294,7 +292,6 @@ void Setting::on_itemChanged(QStandardItem *item)
             {
                 for(int j=1;j<7;j++) theModel->item(row,j)->setEditable(true);
                 device_system->device_vector.at(device-1)->can_vector.at(channel-1)->RemoveFilter(color,name,express_str);
-                qDebug()<<device<<channel<<device_system->device_vector.at(device-1)->can_vector.at(channel-1)->filter_list.size();
             }
         }
     }
@@ -315,7 +312,7 @@ void Setting::model3_itemChanged(QStandardItem *item)
         bool vol_enable;
         if(model == QString("电压模式")) vol_enable = true;
         else vol_enable = false;
-        qDebug()<<"model"<<model<<vol_enable;
+        //qDebug()<<"model"<<model<<vol_enable;
         if(item->checkState() == Qt::Checked)
         {
             if(device_system->device_vector.at(device)->signal_vector.at(channel)->AddFilter(color,name,express_str))
@@ -479,8 +476,6 @@ bool Setting::WriteTableView(QString file_name)
     str = "CAN1波特率"; out<<str; out<<",    ";
     str = "CAN2使能";out<<str; out<<",    ";
     str = "CAN2波特率"; out<<str<<"\n";
-
-
     for(int i=0;i<5;i++)
     {
         out<<i+1<<",    "<<device_system->device_vector.at(i)->setting_status<<",    ";
@@ -490,17 +485,14 @@ bool Setting::WriteTableView(QString file_name)
     }
     out<<"Device configure end---------------------------------------\n";
     out<<"\n";
-
     // tableview
     out<<"CAN configure start---------------------------------------"<<"\n";
     out<<"Table Size:\n"<<theModel->rowCount()<<",    "<<theModel->columnCount()<<"\n";
-
     str =  "状态"; out<<str; out<<",    ";
     str =  "终端"; out<<str; out<<",    ";
     str =  "通道"; out<<str; out<<",    ";
     str =  "ID(hex)";  out<<str; out<<",    ";
     str =  "颜色"; out<<str; out<<",    ";
-
     str =  "名称"; out<<str; out<<",    ";
     str =  "表达式"; out<<str; out<<",    ";
     str =  "数量"; out<<str;
@@ -557,6 +549,7 @@ bool Setting::WriteTableView(QString file_name)
     file.close();
     return true;
 }
+
 void Setting::on_pushButton_add_1_clicked()
 {
     //插入行
@@ -597,7 +590,6 @@ void Setting::on_pushButton_remove_1_clicked()
     }
 }
 
-
 void Setting::on_pushButton_remove_2_clicked()
 {
     if(theModel_2->rowCount() == 0) return;
@@ -612,12 +604,8 @@ void Setting::on_pushButton_remove_2_clicked()
     }
 }
 
-
-
 void Setting::on_tableView_clicked(const QModelIndex &index)//CAN颜色点击
 {
-
-
     if(index.column()==4  &&theModel->item(index.row(),0)->checkState()==Qt::Unchecked)
     {
         QColor color = QColorDialog::getColor(Qt::red, this);
@@ -695,8 +683,6 @@ void Setting::on_pushButton_clicked()
 }
 void Setting::setTreeEnabled(bool status)
 {
-//    ui->tableView->setEnabled(status);
-//    ui->tableView_2->setEnabled(status);
-//    ui->tableView_3->setEnabled(status);
+
     ui->treeWidget->setEnabled(status);
 }

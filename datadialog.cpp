@@ -34,7 +34,7 @@ void DataDialog::AddColumn(QString name,QVector<QPointF> data)
      aItem = new QStandardItem();
      aItem->setData(name,Qt::DisplayRole);
      aItemList_2.append(aItem);
-     qDebug()<<"AddColumn"<<data.size();
+
       QString str;
      for(auto itor = data.begin();itor<data.end();itor++)
      {

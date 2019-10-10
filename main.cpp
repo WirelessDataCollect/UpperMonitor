@@ -2,6 +2,7 @@
 #include <QApplication>
 #include<QPointF>
 #include"mainwin.h"
+
 int main(int argc, char *argv[])
 {
     qRegisterMetaType<QHostAddress>("QHostAddress");
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
 
     QApplication a(argc, argv);
+//    MainWin w;
     Login w;
     w.show();
     return a.exec();

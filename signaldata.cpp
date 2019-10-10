@@ -19,15 +19,16 @@ SignalData::~SignalData()
 }
 bool SignalData::isExpreesionValue(QString express_str)
 {
-
    parser.compile(express_str.toStdString(), expression);
    vector_x.clear();
    for(int i=1;i<9;i++) vector_x.push_back(i);
    qDebug()<< express_str;
+   qDebug()<<"\n-----------------------------------------";
+   qDebug()<<"expression.value()"<<expression.value();
+   qDebug()<<"-----------------------------------------\n";
     if(isnan(expression.value())) return false;
      else return true;
 
-    return true;
 }
 
 void SignalData::AddData(double time,QByteArray data)
@@ -49,9 +50,10 @@ void SignalData::AddData(double time,int data)
     double voltage = data*(10.0/65536.0);
     double val = EvaluateExpress(voltage);
 
-    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
-    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
-   // Filter(time,val);
+//    if(show_data.isEmpty() )show_data.append(QPointF(time,val));
+//    else if(time>= show_data.last().rx()) show_data.append(QPointF(time,val));
+
+    Filter(time,val);
     time_list.append(time);
     val_list.append(data);
     data_list.append(val);
@@ -81,7 +83,7 @@ double SignalData::EvaluateExpress(QByteArray data)
     vector_x.clear();
     for(int i=0;i<data.size();i++)
     {
-        vector_x.push_back(double(uchar(data.at(i))));
+        vector_x.push_back((uchar(data.at(i))));
        // qDebug()<<"EvaluateExpress"<<i<<<<double(data.at(i));
     }
     return expression.value();
@@ -154,7 +156,6 @@ void SignalData::Filter(double time, double new_data)
     double old_data;
     if(show_data.isEmpty())  old_data = new_data;
     else old_data = show_data.last().y();
-
     double val = MaxFilter(old_data, new_data);
     double result = MoveAverageFilter(val);
     show_data.append(QPointF(time,result));
@@ -171,6 +172,7 @@ void  SignalData::UpdateAllData()
     }
     if(!show_data.isEmpty()) update_status = true;
 }
+
 void SignalData::SettingAttra(QColor color, QString name, QString express_str)
 {
     this->color = color;

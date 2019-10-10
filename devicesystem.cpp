@@ -7,9 +7,9 @@
 #include "devicesystem.h"
 #include<QThread>
 #include<QFile>
-
 #include"md5.h"
 #include"signaldata.h"
+
 DeviceSystem::DeviceSystem()
 {
     device_num = 5;
@@ -29,7 +29,7 @@ DeviceSystem::DeviceSystem()
     tcp_client = new MyTCPClient();
 
     tcp_target_addr.setAddress("115.159.154.160");
-  //  tcp_target_addr.setAddress("192.168.3.2");
+    //  tcp_target_addr.setAddress("192.168.3.2");
     tcp_target_port = 8089;
 
     //local udp
@@ -47,10 +47,11 @@ DeviceSystem::DeviceSystem()
     tcp_message_flag = 0;
     test_name = "no_test";
     show_speed_timer = new QTimer();
-     connect(show_speed_timer,SIGNAL(timeout()),this,SLOT(ShowSpeed()));
-     show_speed_timer->start(1000);
+    connect(show_speed_timer,SIGNAL(timeout()),this,SLOT(ShowSpeed()));
+    show_speed_timer->start(1000);
     auto_stop = new QTimer();
     connect(auto_stop,SIGNAL(timeout()),this,SLOT(LocalTestStop()));
+    is_receive_data = false;
 }
 
 void DeviceSystem::LocalThread()
@@ -75,24 +76,22 @@ DeviceSystem::~DeviceSystem()
     qDebug()<<"TcpSendCheck Disconnect Status"<<status;
     tcp_client->disconnectCurrentConnection();
     tcp_client->closeClient();
-    LocalTestStop();
+    //  delete  udp_order;
+    if(is_local_test)
+    {
+        LocalTestStop();
+    }
     heart_beat_timer->stop();
     delete  heart_beat_timer;
     udp_data->unbindPort();
     delete  udp_data;
     udp_order->unbindPort();
-    //  delete  udp_order;
-    if(is_local_test)
-    {
-
-    }
+    device_vector.clear();
     for(int i=0;i<device_vector.size();i++)
     {
         delete device_vector[i];
     }
-    device_vector.clear();
 }
-
 
 void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
 {
@@ -109,12 +108,13 @@ void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
     connect(tcp_client, SIGNAL(newMessage(QString, QByteArray)), this, SLOT(onTcpClientAppendMessage(QString, QByteArray)));
     connect(tcp_client,SIGNAL(myClientConnected(QString,quint16)), this,SLOT(onTcpClientConnected(QString,quint16)));
     Tcp_Data.clear();
+    tcp_message_flag =0;
     status = tcp_client->connectTo(tcp_target_addr, tcp_target_port);
     qDebug()<<"tcp_client STATUS"<<status;
 
-    if(!status) emit TcpConnectStatus(false, "无法连接远程服务器");
+    if(!status) emit TcpConnectStatus(false, "无法连接远程服务器,请检查网络或服务器状态");
     else{
-        FindDocsNames(QDate::currentDate(),QDate::currentDate());
+        // FindDocsNames(QDate::currentDate(),QDate::currentDate());
     }
 }
 
@@ -122,7 +122,7 @@ void DeviceSystem::onTcpClientConnected(const QString &from, const quint16 port)
 {
     connect(tcp_client,SIGNAL(connectionFailed()), this,SLOT(onTcpConnectFailed()));
     qDebug()<< tcp_client->waitForReadyRead(1000);
-    sleep(200);
+    sleep(100);
     qDebug()<< "onTcpClientConnected"<<Tcp_Data;
 
     if(!Tcp_Data.isEmpty())
@@ -135,7 +135,7 @@ void DeviceSystem::onTcpClientConnected(const QString &from, const quint16 port)
 
     else
     {
-        emit TcpConnectStatus(false, "无法接收随机数验证消息");
+        emit TcpConnectStatus(false, "链接正常，无法接收随机数验证消息,请检查服务器服务");
     }
 }
 
@@ -156,8 +156,7 @@ void DeviceSystem::RemoteTcpLogin(QByteArray salt)
     }
     else
     {
-        emit TcpConnectStatus(false, "密码错误");
-        qDebug()<<"密码错误";
+        emit TcpConnectStatus(false, "密码错误，请重新输入密码");
     }
 }
 void DeviceSystem::onTcpConnectFailed()
@@ -173,7 +172,6 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
     if(message.isEmpty()) return;
     Tcp_Data= message;
     qDebug()<<"tcp_message_flag"<<tcp_message_flag;
-   // qDebug()<<"tcp_message_flag"<<message;
     if(tcp_message_flag ==0 && message.startsWith("MongoFindDocsNames:"))
     {
         Tcp_Data_list.clear();
@@ -187,14 +185,14 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
         tcp_data_number = 0;
         tcp_package_number = 0;
         tcp_time =0;
-
     }
+
     if(tcp_message_flag ==0 && message.startsWith(ReceiveConfigure))
     {
-         Tcp_Data_list.clear();
-         tcp_message_flag = 3;
-    }
+        Tcp_Data_list.clear();
+        tcp_message_flag = 3;
 
+    }
     if(tcp_message_flag == 1)
     {
         Tcp_Data_list.append(message);
@@ -209,10 +207,13 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
         device_data.append(message);
         tcp_data_number += message.size();
         tcp_package_number++;
+        is_receive_data = true;
         if(device_data.endsWith("OVER\n"))
         {
             tcp_message_flag=0;
+            is_receive_data = false;
             qDebug()<<"TCP DATA OVER";
+
         }
         ReciveDeviceData();
         qDebug()<<"/n/n";
@@ -221,12 +222,14 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
     if(tcp_message_flag == 3)
     {
         Tcp_Data_list.append(message);
+
         if(Tcp_Data_list.endsWith("OVER\n"))
         {
-           qDebug()<<"\n\ntcp_message_flag = = 3--------------------------";
-           qDebug()<<Tcp_Data_list.data();
-           ReceiveConfigureFile(Tcp_Data_list);
-           tcp_message_flag=0;
+            qDebug()<<"\n\ntcp_message_flag = = 3--------------------------";
+            qDebug()<<Tcp_Data_list.data();
+            ReceiveConfigureFile(Tcp_Data_list);
+            tcp_message_flag=0;
+
         }
     }
 }
@@ -310,24 +313,24 @@ void DeviceSystem::ReciveDeviceData()
     qDebug()<<device_data.left(sizeof(MongoFindDocs)+16);
     if(device_data.startsWith(MongoFindDocs) && device_data.at(sizeof(MongoFindDocs)+4) == device_data.at(sizeof(MongoFindDocs)+15))
     {
-            int count = ByteToInt32(device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+8,4));
-            //qDebug()<<"COUNT"<<count<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs)),4)<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+4,4)<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+8,4)<< device_data.left(40);
-            if(device_data.size()>=static_cast<int>(sizeof(MongoFindDocs))+16+64+count)
-            {
-                int node_id = int(device_data.at(static_cast<int>(sizeof(MongoFindDocs)+12)));
+        int count = ByteToInt32(device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+8,4));
+        //qDebug()<<"COUNT"<<count<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs)),4)<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+4,4)<<device_data.mid(static_cast<int>(sizeof(MongoFindDocs))+8,4)<< device_data.left(40);
+        if(device_data.size()>=static_cast<int>(sizeof(MongoFindDocs))+16+64+count)
+        {
+            int node_id = int(device_data.at(static_cast<int>(sizeof(MongoFindDocs)+12)));
 
-                QByteArray fram_array =  device_data.mid(static_cast<int>(sizeof(MongoFindDocs)),count+64+16);
-                int frame_time = ByteToInt32(fram_array.mid(4,4))- Device::test_headtime;
-                if(frame_time/10000>test_deep_time){
-                    test_deep_time = frame_time/10000;
-                    SetTestDeep(test_deep_time);
-                }
-                if(node_id>0 &&node_id<=5) device_vector.at(node_id-1)->AddData(fram_array);
-                qDebug()<<device_data.left(sizeof(MongoFindDocs));
-                device_data.remove(0,static_cast<int>(sizeof(MongoFindDocs))+16+64+count);
+            QByteArray fram_array =  device_data.mid(static_cast<int>(sizeof(MongoFindDocs)),count+64+16);
+            int frame_time = ByteToInt32(fram_array.mid(4,4))- Device::test_headtime;
+            if(frame_time/10000>test_deep_time){
+                test_deep_time = frame_time/10000;
+                SetTestDeep(test_deep_time);
             }
-            else return;
+            if(node_id>0 &&node_id<=5) device_vector.at(node_id-1)->AddData(fram_array);
+            qDebug()<<device_data.left(sizeof(MongoFindDocs));
+            device_data.remove(0,static_cast<int>(sizeof(MongoFindDocs))+16+64+count);
         }
+        else return;
+    }
     else
     {
 
@@ -417,7 +420,7 @@ bool DeviceSystem::UdpSendCheck(QByteArray order, QByteArray value)
         else
         {
             if(checkreturn(order.at(0),value.at(0)))
-            return true;
+                return true;
         }
     }
     return false;
@@ -452,6 +455,7 @@ void DeviceSystem::UdpHeartBeat()
 
 bool DeviceSystem::LocalTestStart()
 {
+    is_receive_data = true;
     QByteArray order;
     QByteArray value;
     order.append(GET_WIFI_SEND_EN);
@@ -489,6 +493,7 @@ bool DeviceSystem::LocalTestStart()
 
 bool DeviceSystem::LocalTestStop()
 {
+    is_receive_data = false;
     udp_order_return.clear();
     auto_stop->stop();
     QByteArray order;
@@ -530,7 +535,7 @@ bool  DeviceSystem::LocalTestIVModel()
                 iv_model.append(device_vector.at(i)->signal_vector.at(k)->vol_enable);
             }
             value.append(iv_model);
-            for(int j=0;j<4;j++)
+            for(int j=0;j<3;j++)
             {
                 is_success=UdpSendCheck(order,value);
 
@@ -573,14 +578,14 @@ bool DeviceSystem::SendCanFilter()
                     qDebug()<<"SendCanFilter";
                 }
 
-                for(int k=0;k<4;k++)
+                for(int k=0;k<3;k++)
                 {
 
                     is_success=UdpSendCheck(order,value);
                     if(is_success) break;
                     sleep(100);
                 }
-                 //qDebug()<<"decive:"<<int(i+1)<<"Channel"<<int(j+1)<<"id"<<id<<filter_size<<value.toHex()<< is_success;
+                //qDebug()<<"decive:"<<int(i+1)<<"Channel"<<int(j+1)<<"id"<<id<<filter_size<<value.toHex()<< is_success;
                 if(!is_success)
                 {
 
@@ -682,16 +687,14 @@ void DeviceSystem::ClearData()
     }
     test_deep_time = 0;
     SetTestDeep(test_deep_time);
-
 }
 
 void DeviceSystem::NewLocalTest(QString name)
 {
-     qDebug()<<"xxxxxxxxxxxxxxxxxxxxxxxxx";
+    qDebug()<<"xxxxxxxxxxxxxxxxxxxxxxxxx";
     //LocalTestStop();
     ClearData();
     emit SaveConfigureFile();
-    qDebug()<<"HHHHHHHHHHHHHHH";
     QDateTime time =QDateTime::currentDateTime();
     SetTestNameTime(name,time);
 
@@ -699,8 +702,8 @@ void DeviceSystem::NewLocalTest(QString name)
     for(int i=0;i<device_num;i++)
     {
         device_vector.at(i)->UpdateActualStatus();
-        qDebug()<<"终端使能状态"<<i+1<<":"<<device_vector.at(i)->actual_status;
     }
+    TestConfigureShow();
 
     qDebug()<<"send meaasge---------------";
     if(LocalDataUdpStart())
@@ -719,13 +722,15 @@ void DeviceSystem::NewLocalTest(QString name)
     if(LocalTestName())
         qDebug()<<"LocalTestName OK";
     else qDebug()<<"LocalTestName wrongxxxxxxxxxxxx";
+    if(LocalTestStart())
+        qDebug()<<"LocalTestStart OK";
+    else qDebug()<<"LocalTestStart wrongxxxxxxxxxxxx";
 
     if(SendConfigureFile(test_name))
         qDebug()<<"SendConfigureFile OK";
     else qDebug()<<"SendConfigureFile wrongxxxxxxxxxxxx";
-    if(LocalTestStart())
-        qDebug()<<"LocalTestStart OK";
-    else qDebug()<<"LocalTestStart wrongxxxxxxxxxxxx";
+
+
 }
 
 void DeviceSystem::EndLocalTest()
@@ -738,6 +743,7 @@ void DeviceSystem::EndLocalTest()
 
 bool DeviceSystem::FindDocsNames(QDate begin, QDate end)
 {
+    qDebug()<<"FindDocsNames";
 
     end = end.addDays(1);
     Tcp_Data.clear();
@@ -817,19 +823,6 @@ bool DeviceSystem::FindConfigureFile(QString test_name)
 
 bool DeviceSystem::ReceiveConfigureFile(QByteArray Tcp_Data_list)
 {
-//    bool ok;
-//    int index_length_begin = Tcp_Data_list.indexOf(':',0)+1;
-//    int index_length_end = Tcp_Data_list.indexOf(';',index_length_begin);
-//    qDebug()<<Tcp_Data_list.data() << index_length_begin<<index_length_end;
-
-//    int length = Tcp_Data_list.mid(index_length_begin,index_length_end-index_length_begin).toInt(&ok);
-
-//    QByteArray configure_data =Tcp_Data_list.mid(index_length_end+1,-1);
-
-//    int length_end = QString("GetTestConfig:OVER\n").size();
-//    qDebug()<<"length"<<length<<"configure_data.size() - length_end"<<configure_data.size() - length_end;
-//    if(configure_data.size() - length_end != length) return false;
-
     qDebug()<<"file BEGIN____________________";
     QFile file("configure.txt");
     if (!file.open(QFile::WriteOnly | QFile::Text)){
@@ -883,31 +876,30 @@ void DeviceSystem::ReceiveDocsName(const QByteArray &message)
 
 bool DeviceSystem::FindDocs(int index)
 {
+    qDebug()<<"finddocs begin"<<"tcp_message_flag"<<tcp_message_flag<<doc_name.name_list.size();
+
     if(tcp_message_flag !=0) RemoteTcpReset();
     ClearData();
     if(doc_name.name_list.size()<index)
     {
         return false;
     }
-        tcp_message_flag =0;
-        device_data.clear();
-        SetTestNameTime(doc_name.name_list.at(index),doc_name.datetime_list.at(index));
-        for(int i =0;i<doc_name.datetime_list.size();i++)
-        {
-            qDebug()<<doc_name.datetime_list.at(i);
+    qDebug()<<"finddocs begin name"<<doc_name.name_list.at(index);
 
-        }
-        FindConfigureFile(doc_name.name_time_list.at(index));
-        QString order;
-        order.append("MongoFindDocs+test:");
-        order.append(doc_name.name_time_list.at(index));
-        order.append('\t');
-        qDebug()<<"FindDocs"<<order;
-        tcp_client->sendMessage(order);
-        tcp_client->waitForReadyRead(1000);
-        if(Tcp_Data.isEmpty()) return false;
-        else return true;
+    device_data.clear();
+    SetTestNameTime(doc_name.name_list.at(index),doc_name.datetime_list.at(index));
+    FindConfigureFile(doc_name.name_time_list.at(index));
+    QString order;
+    order.append("MongoFindDocs+test:");
+    order.append(doc_name.name_time_list.at(index));
+    order.append('\t');
+    qDebug()<<"FindDocs------------------"<<order;
 
+    tcp_client->sendMessage(order);
+    tcp_client->waitForReadyRead(100);
+    TestConfigureShow();
+    if(Tcp_Data.isEmpty()) return false;
+    else return true;
 }
 
 void DeviceSystem::sleep(int msec)
@@ -1008,7 +1000,7 @@ void DeviceSystem:: SetFilterLengthMax(int length,double max)
     {
         for(int j=0;j<device_vector.at(i)->signal_number;j++)
         {
-          device_vector.at(i)->signal_vector.at(j)->signal_data->SetFilterLengthMax(length, max);
+            device_vector.at(i)->signal_vector.at(j)->signal_data->SetFilterLengthMax(length, max);
         }
     }
 }
@@ -1207,4 +1199,41 @@ void DeviceSystem::StopSendDocs()
     tcp_client->sendMessage(order);
 
     qDebug()<<"StopSendDocs------------------------";
+}
+void DeviceSystem::TestConfigureShow()
+{
+    QString str;
+    QStringList name_list = test_name.split('/');
+    str.append(QString("实验名称:   "));
+    str.append(name_list.at(0));
+    str.append("\n");
+
+    str.append(QString("实验时间:   "));
+    str.append(name_list.at(1));
+    str.append("\n");
+    str.append(QString("实验内容(Siganl):\n"));
+    for(int device=0;device<device_num;device++)
+    {
+        for(int signal=0;signal<device_vector.at(device)->signal_number;signal++)
+            if(device_vector.at(device)->signal_vector.at(signal)->signal_data->show_enable)
+            {
+                str.append(device_vector.at(device)->signal_vector.at(signal)->signal_data->name);
+                str.append("\n");
+            }
+    }
+    str.append("\n");
+    str.append(QString("实验内容(CAN):\n"));
+    for(int device=0;device<device_num;device++)
+    {
+        for(int channel=0;channel<2;channel++)
+        {
+            for(int i=0;i< device_vector.at(device)->can_vector.at(channel)->filter_list.size();i++)
+            {
+                if(device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->show_enable)
+                     str.append(device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->name);
+                str.append("\n");
+            }
+        }
+    }
+    emit testconfigureshow(str);
 }

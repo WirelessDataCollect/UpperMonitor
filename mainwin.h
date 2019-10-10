@@ -13,8 +13,11 @@
 #include"chartswidgt.h"
 #include<QProcess>
 #include"calibration.h"
+
+class Login;
 namespace Ui {
 class MainWin;
+
 }
 
 class MainWin : public QMainWindow
@@ -38,6 +41,7 @@ public:
     void on_MovePointdata();
     QButtonGroup *online_group;
     QButtonGroup *enable_group;
+    Login *login_widget = nullptr;
 
 private slots:
     void UpdataTestName(QString);
@@ -81,6 +85,7 @@ private slots:
     void on_action_12_triggered();
 
     void on_action_16_triggered();
+    void on_testconfigureshow(QString str);
 
 private:
     Ui::MainWin *ui;

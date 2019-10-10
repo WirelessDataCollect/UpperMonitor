@@ -3,12 +3,14 @@
 #include<QMessageBox>
 #include "login.h"
 #include "ui_login.h"
-
+#include"mainwin.h"
 Login::Login(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Login)
 {
     main_window = new MainWin();
+    //main_window = (MainWin*) parentWidget();
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     setWindowModality(Qt::WindowModal);
     m_IniFile = new QSettings("loginconfig.ini",QSettings::IniFormat);
@@ -25,17 +27,26 @@ Login::~Login()
 {
     delete ui;
     delete main_window;
+    qDebug()<<"~Login-----------------";
 }
 
 void Login:: on_TcpConnectStatus(bool status, QString str)
 {
     if(status)
     {
+        if(!main_window->isMaximized())
+        {
+            main_window->showMaximized();
+        }
         savecfg();
         this->close();
-        main_window->showMaximized();
     }
-    else QMessageBox::warning(main_window,QString("连接错误"),str);
+    else
+    {
+        this->show();
+        if( !main_window->device_system->is_local_test) main_window->close();
+        QMessageBox::warning(this, QStringLiteral("警告"),str);
+    }
 }
 
 void Login::on_pushButton_clicked()
@@ -43,19 +54,18 @@ void Login::on_pushButton_clicked()
     //远程登陆
     username = ui->lineEdit->text();
     passwd = ui->lineEdit_2->text();
+     main_window->device_system->SetLocalTest(false);
     main_window->device_system->RemoteTcpStart(username,passwd);
-    main_window->device_system->SetLocalTest(false);
 }
 
 void Login::on_pushButton_2_clicked()
 {
     //本地
-    main_window->showMaximized();
-    main_window->device_system->LocalOrderUdpStart();
-    main_window->device_system->SetLocalTest(true);
-
     username = ui->lineEdit->text();
     passwd = ui->lineEdit_2->text();
+    main_window->showMaximized();
+    main_window->device_system->SetLocalTest(true);
+    main_window->device_system->LocalOrderUdpStart();
     main_window->device_system->RemoteTcpStart(username,passwd);
     this->close();
 }
@@ -157,6 +167,7 @@ void Login::on_minimum_clicked()
 void Login::on_exit_clicked()
 {
     this->close();
+
 }
 void Login::find_ipadress()
 {

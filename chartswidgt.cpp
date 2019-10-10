@@ -53,15 +53,21 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
 
     lineEditMinRange = new QLineEdit("0");
     lineEditMaxRange = new QLineEdit("99");
+    lineEditPlotSize = new QLineEdit("10");
+
+
     m_min =0;
     m_max = 99;
-    lineEditMaxRange->setMaximumWidth(50);
-    lineEditMinRange->setMaximumWidth(50);
+    lineEditMaxRange->setMaximumWidth(40);
+    lineEditMinRange->setMaximumWidth(40);
+    lineEditPlotSize->setMaximumWidth(40);
 
     QHBoxLayout * m_hbox_layout = new QHBoxLayout();
     m_hbox_layout->addWidget(lineEditMinRange);
+    m_hbox_layout->addWidget(lineEditPlotSize);
     m_hbox_layout->addWidget(lineEditMaxRange);
     m_hbox_layout->insertStretch(1,10);
+    m_hbox_layout->insertStretch(3,10);
     m_vbox_layout->addLayout(m_hbox_layout);
 
     m_vbox_layout->setMargin(0);
@@ -75,22 +81,26 @@ chartswidgt::chartswidgt(DeviceSystem *system,QWidget *parent) :
     InitSeries();
 
     timer = new QTimer();
-    timer->start(100);
+    timer->start(300);
     connect(timer, SIGNAL(timeout()), this, SLOT(UpdateChart()));
     m_chartView->setRenderHint(QPainter::Antialiasing);
     connect(h_slider,SIGNAL(minValueChanged(float)),this,SLOT(setMinValue(float)));
     connect(h_slider,SIGNAL(maxValueChanged(float)),this,SLOT(setMaxValue(float)));
     connect(lineEditMinRange,SIGNAL(editingFinished()),this,SLOT(setMinRange()));
     connect(lineEditMaxRange,SIGNAL(editingFinished()),this,SLOT(setMaxRange()));
+    connect(lineEditPlotSize,SIGNAL(editingFinished()),this,SLOT(setPlotSize()));
     connect(m_chartView,SIGNAL(sendposition(QPoint)), this, SLOT(show_position(QPoint)));
     connect(m_chartView,SIGNAL(updateslider()), this, SLOT(on_updateslider()));
     connectMarkers();
     m_chart->createDefaultAxes();
+    plot_size = 10;
+    is_update_axis = false;
 }
 
 void chartswidgt::UpdateChart()
 {
     m_chartView->setUpdatesEnabled(false);
+    if(device_system->is_receive_data)XAxisAdapt();
 
     for(int device=0;device<5;device++)
     {
@@ -112,16 +122,11 @@ void chartswidgt::UpdateChart()
                 bool update =  device_signal->update_status;
                 if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                 if(series->name()!=device_signal->name) series->setName(device_signal->name);
-                if(update)
+                if(update || is_update_axis)
                 {
 
                     device_signal->update_status = false;
-                    //if(device_signal->show_data.isEmpty())
-                    series->replace(device_signal->show_data);
-
-                    // qDebug()<<device<<signal<<"Signal plot------------------------------------";
-                    // qDebug()<<device_signal->show_data.size();
-
+                    series->replace(getPlotData(device_signal->show_data));
                 }
             }
             else
@@ -167,13 +172,13 @@ void chartswidgt::UpdateChart()
                 bool update =  device_signal->update_status;
                 //qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX CANNNNNNNNNNNNNNNNNN"<<device<<channel<<i<<update<<device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i)->show_data.size();
 
-                if(update)
+                if(update || is_update_axis)
                 {
                     series = series_list.at(i);
                     if(series->color()!=device_signal->color) series->setColor(device_signal->color);
                     if(series->name()!=device_signal->name) series->setName(device_signal->name);
                     device_signal->update_status = false;
-                    series->replace(device_signal->show_data);
+                    series->replace(getPlotData(device_signal->show_data));
                     //  qDebug()<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXX  CAN replace";
                     if(!m_chart->series().contains(series))
                     {
@@ -188,6 +193,8 @@ void chartswidgt::UpdateChart()
         }
     }
     connectMarkers();
+    if(is_update_axis)YAxisAdapt();
+    is_update_axis = false;
     m_chartView->setUpdatesEnabled(true);
     m_chartView->update();
 }
@@ -414,17 +421,29 @@ void chartswidgt::setMinRange()
     lineEditMinRange->setText(QString::number(m_min,'f',0));
     h_slider->setMinRange(m_min);
 }
+void chartswidgt::setPlotSize()
+{
+      plot_size = lineEditPlotSize->text().toInt();
 
+
+
+}
 void chartswidgt::setMinValue(float val)
 {
     if(!m_chart->series().isEmpty())
+     {
         m_chart->axisX()->setMin(val);
+        is_update_axis  = true;
+    }
 }
 
 void chartswidgt::setMaxValue(float val)
 {
     if(!m_chart->series().isEmpty())
+    {
         m_chart->axisX()->setMax(val);
+        is_update_axis  = true;
+    }
 }
 
 void chartswidgt::show_position(const QPoint &point)
@@ -447,7 +466,6 @@ void chartswidgt::showDataDialog()
         double x_max = axisX->max();
         double y_min = axisY->min();
         double y_max = axisY->max();
-        qDebug()<<x_min<<x_max<<y_min<<y_max;
 
         for(int i=0;i<5;i++)
         {
@@ -464,16 +482,6 @@ void chartswidgt::showDataDialog()
                     }
                     if(!data.isEmpty()) dialog->AddColumn(series->name(),data);
                 }
-                //                SignalData *signaldata = device_system->device_vector.at(i)->signal_vector.at(j)->signal_data;
-                //                if(signaldata->show_enable)
-                //                {
-                //                    QVector<QPointF> data;
-                //                    for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
-                //                    {
-                //                        if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
-                //                    }
-                //                    if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
-                //                }
             }
             for(int j=0;j<2;j++)
             {
@@ -490,86 +498,93 @@ void chartswidgt::showDataDialog()
                         }
                         if(!data.isEmpty()) dialog->AddColumn(series->name(),data);
                     }
-
-
-
-                    //                    SignalData *signaldata = device_system->device_vector.at(i)->can_vector.at(j)->filter_list.at(k);
-                    //                    if(signaldata->show_enable)
-                    //                    {
-                    //                        QVector<QPointF> data;
-                    //                        data.clear();
-                    //                        for(auto itor= signaldata->show_data.begin();itor<signaldata->show_data.end();itor++)
-                    //                        {
-                    //                            if(itor->x()>x_min && itor->x()<x_max && itor->y()>y_min && itor->y()<y_max) data.append(*itor);
-                    //                        }
-                    //                        if(!data.isEmpty()) dialog->AddColumn(signaldata->name,data);
-                    //                    }
                 }
             }
         }
         dialog->show();
     }
 }
-void chartswidgt::AxisAdapt()
-{
-    QList<double> min_max = getMaxMinSeriesData();
-    if(min_max.at(0)>0 && min_max.at(0)<3) min_max[0]=0;
-    lineEditMinRange->setText(QString::number(min_max.at(0),'f',1));
-    setMinRange();
 
-    lineEditMaxRange->setText(QString::number(min_max.at(1)+5,'f',1));
-    setMaxRange();
-    h_slider->setMinValue(min_max.at(0));
-    h_slider->setMaxValue(min_max.at(1)+5);
-    m_chart->axisY()->setMin(min_max.at(2)-10);
-    m_chart->axisY()->setMax(min_max.at(3)+10);
-}
-QList<double> chartswidgt::getMaxMinSeriesData()
+void chartswidgt::XAxisAdapt()
 {
-    double x_min=0,x_max=0,y_min=1000000,y_max=-100000;
+
+    QList<double> min_max = getMaxMinData(false);
+
+    lineEditMinRange->setText(QString::number(min_max.at(0),'f',1));
+    lineEditMaxRange->setText(QString::number(min_max.at(1)+2,'f',1));
+    setMaxRange();
+    setMinRange();
+    h_slider->setMaxValue(min_max.at(1)+2);
+    if(device_system->is_receive_data)h_slider->setMinValue(min_max.at(1)-plot_size);
+    else h_slider->setMinValue(min_max.at(0));
+
+    qDebug()<<"\n------------------------------------------------\n";
+}
+
+void chartswidgt::YAxisAdapt()
+{
+    QList<double> min_max = getMaxMinData(true);
+    m_chart->axisY()->setMin(min_max.at(2)-2);
+    m_chart->axisY()->setMax(min_max.at(3)+2);
+    qDebug()<< "YAxisAdapt----------------";
+    qDebug()<<min_max.at(2)-2<<min_max.at(3)+2;
+}
+
+// status = true series
+// status = false show_data
+QList<double> chartswidgt::getMaxMinData(bool status)
+{
+    int x_min =INT32_MAX, x_max=INT32_MIN,y_min=INT32_MAX,y_max=INT32_MIN;
     for(int device=0;device<5;device++)
     {
         for(int signal =0;signal<6;signal++)
         {
             QLineSeries * series = series_list.at(device).at(signal);
-            if(series->isVisible())
+            SignalData *device_signal = device_system->device_vector.at(device)->signal_vector.at(signal)->signal_data;
+            QVector<QPointF> points ;
+            if(status) points= series->pointsVector();
+            else points = device_signal->show_data;
+            if(series->isVisible() && !points.isEmpty())
             {
-                QVector<QPointF> points = series->pointsVector();
-                int size = points.size();
-                if(x_min>points.first().x()) x_min= points.first().x();
-                if(x_max<points.last().x())  x_max = points.last().x();
+                if(x_min>points.first().x()) x_min = qFloor(points.first().x());
+                if(x_max<points.last().x())  x_max = qCeil(points.last().x());
                 for(int i=0;i<points.size();i++)
                 {
-                    if(y_min>points.at(i).y()) y_min=points.at(i).y();
-                    if(y_max<points.at(i).y())y_max=points.at(i).y();
+                    if(y_min>points.at(i).y()) y_min = qFloor(points.at(i).y());
+                    if(y_max<points.at(i).y())y_max = qCeil(points.at(i).y());
                 }
             }
         }
         for(int channel=0;channel<2;channel++)
         {
-
-
             for(int i=0;i<series_can[device][channel].size();i++)
             {
                 QLineSeries * series = series_can[device][channel].at(i);
+                SignalData *device_signal = device_system->device_vector.at(device)->can_vector.at(channel)->filter_list.at(i);
+                QVector<QPointF> points ;
+                if(status) points= series->pointsVector();
+                else points = device_signal->show_data;
 
-                if(series->isVisible())
+                if(series->isVisible()&& !points.isEmpty())
                 {
                     QVector<QPointF> points = series->pointsVector();
                     int size = points.size();
-                    if(x_min>points.first().x()) x_min= points.first().x();
-                    if(x_max<points.last().x())  x_max = points.last().x();
+                    if(x_min>points.first().x()) x_min= qFloor(points.first().x());
+                    if(x_max<points.last().x())  x_max = qCeil(points.last().x());
                     for(int i=0;i<points.size();i++)
                     {
-                        if(y_min>points.at(i).y()) y_min=points.at(i).y();
-                        if(y_max<points.at(i).y())y_max=points.at(i).y();
+                        if(y_min>points.at(i).y()) y_min=qFloor(points.at(i).y());
+                        if(y_max<points.at(i).y())y_max=qCeil(points.at(i).y());
                     }
                 }
-
             }
-
         }
     }
+    if(x_min == INT32_MAX) x_min=0;
+    if(y_min == INT32_MAX) y_min=0;
+    if(x_max == INT32_MIN) x_max=10;
+    if(y_max == INT32_MIN) y_max=10;
+    if(x_min<0)x_min=0;
     QList<double> result;
     result.append(x_min);
     result.append(x_max);
@@ -580,4 +595,31 @@ QList<double> chartswidgt::getMaxMinSeriesData()
     qDebug()<<"y_min"<<y_min;
     qDebug()<<"y_max"<<y_max;
     return  result;
+}
+
+QVector<QPointF> chartswidgt::getPlotData(QVector<QPointF> &showdata)
+{
+       QVector<QPointF> temp;
+       temp.clear();
+      if(showdata.isEmpty()) return showdata;
+      int min_index=0, max_index=0;
+      for(int i=showdata.size()-1;i>=0;i=i-10)
+      {
+          if(showdata.at(i).x()<h_slider->minValue())
+          {
+              min_index = i;
+              break;
+          }
+      }
+
+      for(int i=showdata.size()-1;i>=0;i=i-10)
+      {
+          if(showdata.at(i).x() < h_slider->maxValue())
+          {
+              max_index = i;
+              break;
+          }
+      }
+      if(max_index == min_index) return temp;
+      else return showdata.mid(min_index,max_index-min_index+1);
 }

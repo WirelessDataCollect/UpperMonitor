@@ -2,8 +2,42 @@
     <qresource prefix="/ico">
         <file>ico/box-checked.png</file>
         <file>ico/box-unchecked.png</file>
-        <file>ico/checked.png</file>
         <file>ico/unchecked.png</file>
         <file>ico/box-checked-left.png</file>
+        <file>ico/checked-green.png</file>
+        <file>ico/checked-red.png</file>
+        <file>ico/Logo.jpg</file>
+        <file>ico/user.png</file>
+        <file>ico/ruili.png</file>
+        <file>ico/ruililogin.png</file>
+        <file>ico/close.png</file>
+        <file>ico/mini.png</file>
+        <file>ico/more.png</file>
+        <file>ico/toolground.png</file>
+        <file>ico/icons/316.bmp</file>
+        <file>ico/icons/317.bmp</file>
+        <file>ico/icons/324.bmp</file>
+        <file>ico/icons/325.bmp</file>
+        <file>ico/icons/exit.bmp</file>
+        <file>ico/icons/exit2.bmp</file>
+        <file>ico/icons/416.bmp</file>
+        <file>ico/icons/418.bmp</file>
+        <file>ico/icons/318.bmp</file>
+        <file>ico/icons/319.bmp</file>
+        <file>ico/icons/103.bmp</file>
+        <file>ico/icons/104.bmp</file>
+        <file>ico/icons/300.bmp</file>
+        <file>ico/icons/301.bmp</file>
+        <file>ico/about.png</file>
+        <file>ico/icons/save1.bmp</file>
+        <file>ico/icons/save2.bmp</file>
+        <file>ico/icons/330.bmp</file>
+        <file>ico/icons/322.bmp</file>
+        <file>ico/icons/323.bmp</file>
+        <file>ico/icons/420.bmp</file>
+        <file>ico/icons/328.bmp</file>
+        <file>ico/logo.ico</file>
+        <file>ico/icons/430.bmp</file>
+        <file>ico/icons/431.bmp</file>
     </qresource>
 </RCC>

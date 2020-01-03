@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWin</class>
+ <widget class="QMainWindow" name="MainWin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1207</width>
+    <height>809</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_6">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QFrame" name="frame_2">
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter_3">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="title">
+            <string>测试记录</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>终止日期：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QDateEdit" name="dateEdit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>起始日期：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDateEdit" name="dateEdit_2"/>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>查询</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" colspan="3">
+             <widget class="QTableView" name="tableView_2"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>测试信息</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QPlainTextEdit" name="plainTextEdit"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="frame">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="leftMargin">
+         <number>11</number>
+        </property>
+        <property name="topMargin">
+         <number>11</number>
+        </property>
+        <property name="rightMargin">
+         <number>11</number>
+        </property>
+        <property name="bottomMargin">
+         <number>11</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter_2">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="handleWidth">
+           <number>10</number>
+          </property>
+          <widget class="QWidget" name="widget_device" native="true">
+           <property name="styleSheet">
+            <string notr="true">
+#widget_4 {border:2px solid gray;
+}</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="3" column="0" colspan="5">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QRadioButton" name="radioButton_6">
+                <property name="text">
+                 <string>终端1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_7">
+                <property name="text">
+                 <string>终端2</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_8">
+                <property name="text">
+                 <string>终端3</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_9">
+                <property name="text">
+                 <string>终端4</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_10">
+                <property name="text">
+                 <string>终端5</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="6" column="1">
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="5">
+             <widget class="QRadioButton" name="radioButton_11">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>同步节点</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="3">
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="5" column="5" rowspan="2">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>测试时长</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>62</width>
+                  <height>15</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="lineEdit_3"/>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0" colspan="5">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QRadioButton" name="radioButton">
+                <property name="text">
+                 <string>终端1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_2">
+                <property name="text">
+                 <string>终端2</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_3">
+                <property name="text">
+                 <string>终端3</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_4">
+                <property name="text">
+                 <string>终端4</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_5">
+                <property name="text">
+                 <string>终端5</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="4" column="0" colspan="6">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2" rowspan="2">
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>测试时间</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>43</width>
+                  <height>15</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="lineEdit_2"/>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>终端使能状态</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>终端在线状态</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" rowspan="2">
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>实验名称</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>62</width>
+                  <height>15</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>21</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="7" column="0" colspan="6">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QSplitter" name="splitter">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="handleWidth">
+            <number>10</number>
+           </property>
+           <widget class="QWidget" name="widget_chart" native="true"/>
+           <widget class="QTableView" name="tableView"/>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1207</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="action_10"/>
+    <addaction name="action_8"/>
+    <addaction name="separator"/>
+    <addaction name="action_11"/>
+    <addaction name="action_12"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>实验</string>
+    </property>
+    <addaction name="action"/>
+    <addaction name="action_3"/>
+    <addaction name="action_14"/>
+    <addaction name="separator"/>
+    <addaction name="action_4"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>视图</string>
+    </property>
+    <addaction name="action_6"/>
+    <addaction name="action_7"/>
+    <addaction name="separator"/>
+    <addaction name="action_5"/>
+    <addaction name="action_2"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="action_9"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action"/>
+   <addaction name="action_3"/>
+   <addaction name="action_8"/>
+   <addaction name="action_6"/>
+   <addaction name="action_13"/>
+   <addaction name="action_7"/>
+   <addaction name="action_5"/>
+   <addaction name="action_2"/>
+   <addaction name="action_4"/>
+   <addaction name="action_15"/>
+   <addaction name="action_16"/>
+  </widget>
+  <action name="action">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/316.bmp</normaloff>:/ico/ico/icons/316.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>新建实验</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/324.bmp</normaloff>:/ico/ico/icons/324.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>结束实验</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>采集设置</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/418.bmp</normaloff>:/ico/ico/icons/418.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>放大</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/103.bmp</normaloff>:/ico/ico/icons/103.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>取点</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/300.bmp</normaloff>:/ico/ico/icons/300.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>删点</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/save1.bmp</normaloff>:/ico/ico/icons/save1.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>保存数据</string>
+   </property>
+   <property name="toolTip">
+    <string>保存测试结果</string>
+   </property>
+  </action>
+  <action name="action_9">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/328.bmp</normaloff>:/ico/ico/icons/328.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>帮助文档</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>导入数据</string>
+   </property>
+  </action>
+  <action name="action_11">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/exit.bmp</normaloff>:/ico/ico/icons/exit.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>导入配置文件</string>
+   </property>
+  </action>
+  <action name="action_12">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/save1.bmp</normaloff>:/ico/ico/icons/save1.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>导出配置文件</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/431.bmp</normaloff>
+     <activeon>:/ico/ico/icons/430.bmp</activeon>:/ico/ico/icons/431.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>清屏</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/103.bmp</normaloff>:/ico/ico/icons/103.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>弹窗取点</string>
+   </property>
+  </action>
+  <action name="action_15">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/330.bmp</normaloff>:/ico/ico/icons/330.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>校准</string>
+   </property>
+  </action>
+  <action name="action_16">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/420.bmp</normaloff>:/ico/ico/icons/420.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>适应窗口</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/430.bmp</normaloff>:/ico/ico/icons/430.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>远程实时</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="src.qrc"/>
+ </resources>
+ <connections/>
+</ui>

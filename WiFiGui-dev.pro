@@ -4,12 +4,15 @@
 #
 #-------------------------------------------------
 
+
 QT       += core gui network charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WiFiGui
 TEMPLATE = app
+
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -24,20 +27,68 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    calibration.cpp \
+    fit.cpp \
         myudp.cpp \
     chartswidgt.cpp \
-    showwidget.cpp
+    mytcpclient.cpp \
+    chartview.cpp \
+    login.cpp \
+    md5.cpp \
+    setting.cpp \
+    device.cpp \
+    devicesignal.cpp \
+    devicesystem.cpp \
+    mainwin.cpp \
+    dialogconf.cpp \
+    doubleslider.cpp \
+    qwcomboboxdelegate.cpp \
+    devicecan.cpp \
+    signaldata.cpp \
+    datadialog.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
+    calibration.h \
+    fit.h \
     myudp.h \
     chartswidgt.h \
-    showwidget.h
+    mytcpclient.h \
+    chartview.h \
+    myeventfilter.h \
+    login.h \
+    md5.h \
+    setting.h \
+    device.h \
+    devicesignal.h \
+    devicesystem.h \
+    mainwin.h \
+    dialogconf.h \
+    doubleslider.h \
+    mytcpclient.h \
+    qwcomboboxdelegate.h \
+    devicecan.h \
+    exprtk.hpp \
+    signaldata.h \
+    datadialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += login.ui \
+    calibration.ui \
+    setting.ui \
+    mainwin.ui \
+    dialogconf.ui \
+    datadialog.ui
 
 RESOURCES += \
     src.qrc
 
 DISTFILES += \
     readme.md
+RC_ICONS = ./ico/logo.ico
+## exprtk.hpp 段过多
+win32:QMAKE_CXXFLAGS +=/bigobj
+
+## MinGW64
+#QMAKE_CXXFLAGS +=-Wa,-mbig-obj
+
+##禁止打印信息
+#DEFINES += QT_NO_DEBUG_OUTPUT

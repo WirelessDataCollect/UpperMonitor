@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   myudp.h: header file of myudp.cpp
  * 
  *   Copyright (C) 2017  Zhengyu Peng, https://zpeng.me
@@ -30,6 +30,7 @@ class MyUDP : public QUdpSocket
     explicit MyUDP(QObject *parent = nullptr);
 
     void unbindPort();
+    virtual bool waitForReadyRead (int milliseconds) override final;
 
   signals:
     void newMessage(const QString &from, const QByteArray &message);

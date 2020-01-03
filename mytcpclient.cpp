@@ -106,7 +106,7 @@ void MyTCPClient::abortConnection()
 void MyTCPClient::messageReady()
 {
       receive_message = tcpSocket->readAll();
-    // qDebug()<<"messageReady"<<receive_message.data();
+     //qDebug()<<"messageReady"<<receive_message.data();
     emit newMessage(tcpSocket->peerAddress().toString(), receive_message);
 }
 
@@ -126,7 +126,7 @@ void MyTCPClient::sendMessage(QString str)
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         qint64 number = tcpSocket->write(Data);
-        qDebug()<<"sendMessage sendsize"<<number;
+        qDebug()<<"sendMessage sendsize"<<number<<Data;
         tcpSocket->flush();
     }
 }

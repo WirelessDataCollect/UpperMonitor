@@ -424,9 +424,6 @@ void chartswidgt::setMinRange()
 void chartswidgt::setPlotSize()
 {
       plot_size = lineEditPlotSize->text().toInt();
-
-
-
 }
 void chartswidgt::setMinValue(float val)
 {
@@ -590,10 +587,10 @@ QList<double> chartswidgt::getMaxMinData(bool status)
     result.append(x_max);
     result.append(y_min);
     result.append(y_max);
-    qDebug()<<"x_min"<<x_min;
-    qDebug()<<"x_max"<<x_max;
-    qDebug()<<"y_min"<<y_min;
-    qDebug()<<"y_max"<<y_max;
+//    qDebug()<<"x_min"<<x_min;
+//    qDebug()<<"x_max"<<x_max;
+//    qDebug()<<"y_min"<<y_min;
+//    qDebug()<<"y_max"<<y_max;
     return  result;
 }
 
@@ -603,7 +600,7 @@ QVector<QPointF> chartswidgt::getPlotData(QVector<QPointF> &showdata)
        temp.clear();
       if(showdata.isEmpty()) return showdata;
       int min_index=0, max_index=0;
-      for(int i=showdata.size()-1;i>=0;i=i-10)
+      for(int i=showdata.size()-1;i>=0;i=i-100)
       {
           if(showdata.at(i).x()<h_slider->minValue())
           {
@@ -612,7 +609,7 @@ QVector<QPointF> chartswidgt::getPlotData(QVector<QPointF> &showdata)
           }
       }
 
-      for(int i=showdata.size()-1;i>=0;i=i-10)
+      for(int i=showdata.size()-1;i>=0;i=i-100)
       {
           if(showdata.at(i).x() < h_slider->maxValue())
           {

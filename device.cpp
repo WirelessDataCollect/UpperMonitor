@@ -152,6 +152,12 @@ void Device::ClearReceiveData()
     for(int i=0;i<6;i++) signal_vector.at(i)->ClearReceiveData();
     for(int i=0;i<2;i++) can_vector.at(i)->ClearReceiveData();
 }
+void Device::SetMaxDataLen(int len)
+{
+    for(int i=0;i<6;i++) signal_vector.at(i)->SetMaxDataLen(len);
+    for(int i=0;i<2;i++) can_vector.at(i)->SetMaxDataLen(len);
+
+}
 void Device::ShowCanData(bool status)
 {
     candata_status = status;

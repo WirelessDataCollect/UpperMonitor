@@ -53,6 +53,7 @@ public:
     QAction *action_13;
     QAction *action_15;
     QAction *action_16;
+    QAction *action_14;
     QWidget *centralwidget;
     QGridLayout *gridLayout_6;
     QSplitter *splitter_4;
@@ -194,6 +195,12 @@ public:
         QIcon icon10;
         icon10.addFile(QString::fromUtf8(":/ico/ico/icons/420.bmp"), QSize(), QIcon::Normal, QIcon::Off);
         action_16->setIcon(icon10);
+        action_14 = new QAction(MainWin);
+        action_14->setObjectName(QString::fromUtf8("action_14"));
+        action_14->setCheckable(true);
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/ico/ico/icons/430.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        action_14->setIcon(icon11);
         centralwidget = new QWidget(MainWin);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_6 = new QGridLayout(centralwidget);
@@ -497,6 +504,7 @@ public:
         menu->addSeparator();
         menu_2->addAction(action);
         menu_2->addAction(action_3);
+        menu_2->addAction(action_14);
         menu_2->addSeparator();
         menu_2->addAction(action_4);
         menu_3->addAction(action_6);
@@ -549,6 +557,7 @@ public:
         action_13->setText(QApplication::translate("MainWin", "\345\274\271\347\252\227\345\217\226\347\202\271", nullptr));
         action_15->setText(QApplication::translate("MainWin", "\346\240\241\345\207\206", nullptr));
         action_16->setText(QApplication::translate("MainWin", "\351\200\202\345\272\224\347\252\227\345\217\243", nullptr));
+        action_14->setText(QApplication::translate("MainWin", "\350\277\234\347\250\213\345\256\236\346\227\266", nullptr));
         groupBox->setTitle(QApplication::translate("MainWin", "\346\265\213\350\257\225\350\256\260\345\275\225", nullptr));
         label_3->setText(QApplication::translate("MainWin", "\347\273\210\346\255\242\346\227\245\346\234\237\357\274\232", nullptr));
         label_2->setText(QApplication::translate("MainWin", "\350\265\267\345\247\213\346\227\245\346\234\237\357\274\232", nullptr));

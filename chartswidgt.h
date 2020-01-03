@@ -43,6 +43,7 @@ public:
     QLabel *label_position;
 
     ChartView *m_chartView;
+    int plot_size;
     void GetSeriesPoint(bool status);
     void showDataDialog();
     void XAxisAdapt();
@@ -64,6 +65,7 @@ public slots:
     void setMaxValue(float val);
     void setMinValue(float val);
     void on_updateslider();
+
 
 private:
     bool isClicking;
@@ -108,7 +110,7 @@ private:
     QLineEdit *lineEditMinRange;
     QLineEdit *lineEditPlotSize;
     QList<double> getMaxMinData(bool status);
-    int plot_size;
+
     bool is_update_axis;
     QVector<QPointF> getPlotData(QVector<QPointF> &showdata);
 

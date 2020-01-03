@@ -22,6 +22,11 @@ void DeviceSignal::ClearReceiveData()
 {
     signal_data->ClearAllData();
 }
+void DeviceSignal::SetMaxDataLen(int len)
+{
+    signal_data->SetMaxDataLen(len);
+}
+
 bool DeviceSignal::AddFilter(QColor color, QString name, QString express_str)
 {
     if(signal_data->isExpreesionValue(express_str))
@@ -33,5 +38,4 @@ bool DeviceSignal::AddFilter(QColor color, QString name, QString express_str)
     {
         return false;
     }
-
 }

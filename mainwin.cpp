@@ -424,3 +424,11 @@ void MainWin::on_testconfigureshow(QString str)
     qDebug()<<str;
     ui->plainTextEdit->setPlainText(str);
 }
+
+void MainWin::on_action_14_triggered(bool checked)
+{
+    //远程实时
+   device_system->GetRtData(checked);
+   if(checked) device_system->SetMaxDataLen(chart_widget->plot_size*2000);
+   else device_system->SetMaxDataLen(0);
+}

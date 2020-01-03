@@ -63,9 +63,9 @@ void DeviceSystem::LocalThread()
     //    QThread *udp_data_thread = new QThread();
     //    udp_data->moveToThread(udp_data_thread);
     //    udp_data_thread->start();
-    //    QThread *tcp_client_thread = new QThread();
-    //    tcp_client->moveToThread(tcp_client_thread);
-    //    tcp_client_thread->start();
+//     QThread *tcp_client_thread = new QThread();
+//     tcp_client->moveToThread(tcp_client_thread);
+//     tcp_client_thread->start();
 }
 
 DeviceSystem::~DeviceSystem()
@@ -172,6 +172,7 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
     if(message.isEmpty()) return;
     Tcp_Data= message;
     qDebug()<<"tcp_message_flag"<<tcp_message_flag;
+    qDebug()<<"\n"<<"onTcpClientAppendMessage"<<message<<"\n";
     if(tcp_message_flag ==0 && message.startsWith("MongoFindDocsNames:"))
     {
         Tcp_Data_list.clear();
@@ -208,11 +209,11 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
         tcp_data_number += message.size();
         tcp_package_number++;
         is_receive_data = true;
-        if(device_data.endsWith("OVER\n"))
+        if(device_data.endsWith("OVER"))
         {
             tcp_message_flag=0;
             is_receive_data = false;
-            qDebug()<<"TCP DATA OVER";
+            qDebug()<<"TCP DATA OVERxxxxxxxxxxxxxx\n";
 
         }
         ReciveDeviceData();
@@ -688,6 +689,15 @@ void DeviceSystem::ClearData()
     test_deep_time = 0;
     SetTestDeep(test_deep_time);
 }
+void DeviceSystem::SetMaxDataLen(int len)
+{
+    for(int i =0;i<device_num;i++)
+    {
+        device_vector.at(i)->SetMaxDataLen(len);
+    }
+    test_deep_time = 0;
+    SetTestDeep(test_deep_time);
+}
 
 void DeviceSystem::NewLocalTest(QString name)
 {
@@ -763,21 +773,22 @@ bool DeviceSystem::FindDocsNames(QDate begin, QDate end)
     else return true;
 }
 
-bool DeviceSystem::GetRTdata()
+bool DeviceSystem::GetRtData(bool status)
 {
-    QString order = ReceiveRtdata;
+    QString order;
     QString value;
+    if(status)
+    {
+       order = ReceiveRtdata;
+    }
+    else
+    {
+        order = StopReceiveRtdata;
+    }
     TcpSendCheck(order,value);
     return true;
 }
 
-bool DeviceSystem::StopGetRTdata()
-{
-    QString order = StopReceiveRtdata;
-    QString value;
-    TcpSendCheck(order,value);
-    return true;
-}
 bool DeviceSystem::SendConfigureFile(QString test_name)
 {
     QString order = SendConfigure;

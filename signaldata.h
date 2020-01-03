@@ -29,6 +29,8 @@ public:
     double filter_sum;
     QVector<double>   filter_list;
     int filter_length;
+    bool filter_enable;
+    int max_data_len;
 
 
    // exprtk::vector_view<double> view = exprtk::make_vector_view(vector_x,8);
@@ -50,6 +52,8 @@ public:
      void Filter(double time, double new_data);
      void UpdateAllData();
      void SettingAttra(QColor color, QString name, QString express_str);
+     void RemoveDataLen();
+     void SetMaxDataLen(int len);
 };
 
 #endif // SIGNALDATA_H

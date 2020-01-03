@@ -24,6 +24,8 @@ public:
     void RemoveFilter(QColor color, QString name, QString express_str);
     void AddFrameData(int id,double time, QByteArray data);
     void ClearReceiveData();
+    void SetMaxDataLen(int len);
+
     bool update_status;
 
 

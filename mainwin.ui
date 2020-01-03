@@ -425,6 +425,7 @@
     </property>
     <addaction name="action"/>
     <addaction name="action_3"/>
+    <addaction name="action_14"/>
     <addaction name="separator"/>
     <addaction name="action_4"/>
    </widget>
@@ -630,6 +631,18 @@
    </property>
    <property name="text">
     <string>适应窗口</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/ico/ico/icons/430.bmp</normaloff>:/ico/ico/icons/430.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>远程实时</string>
    </property>
   </action>
  </widget>

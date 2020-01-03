@@ -87,6 +87,8 @@ private slots:
     void on_action_16_triggered();
     void on_testconfigureshow(QString str);
 
+    void on_action_14_triggered(bool checked);
+
 private:
     Ui::MainWin *ui;
      QTimer *timer = nullptr;

@@ -76,3 +76,12 @@ void DeviceCan::ClearReceiveData()
      }
       update_status =true;
 }
+void DeviceCan::SetMaxDataLen(int len)
+{
+     for(int i=0;i<filter_list.size();i++)
+     {
+         filter_list.at(i)->SetMaxDataLen(len);
+
+     }
+      update_status =true;
+}

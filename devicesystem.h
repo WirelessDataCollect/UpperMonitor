@@ -80,6 +80,7 @@ public:
     bool UdpSendCheck();
     void SetDevStatus(bool status, int i= -1);
     void ClearData();
+    void SetMaxDataLen(int len);
     void SetTestNameTime(QString name, QDateTime time);
     void SetTestDeep(double time);
     void NewLocalTest(QString name);
@@ -109,8 +110,7 @@ public:
     bool SendConfigureFile(QString test_name);
     bool FindConfigureFile(QString test_name);
     bool ReceiveConfigureFile(QByteArray configure_data);
-    bool GetRTdata();
-    bool StopGetRTdata();
+    bool GetRtData(bool status);
     bool SaveDataFile(QString file_name);
     bool LoadDataFile(QString file_name);
     void AutoStop(int time);

@@ -34,6 +34,7 @@ public:
     void AddData(const QByteArray &message);
     int  ByteToInt32(QByteArray abyte0);
     void ClearReceiveData();
+    void SetMaxDataLen(int len);
     void AddAdcData( QByteArray &adcbyte, int frame_time,int frame_length);
     void AddCanData( QByteArray &adcbyte, int frame_time,int frame_length);
     void ShowCanData(bool status);

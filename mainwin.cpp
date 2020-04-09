@@ -74,7 +74,7 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
     standard_model_2->setRowCount(0);
     standard_model_2->setColumnCount(2);
     QStringList headerList_2;
-    headerList_2<<QString("测试名称")<<QString("时间");
+    headerList_2<<QString("测试名称")<<QString("测试时间");
     standard_model_2->setHorizontalHeaderLabels(headerList_2);
     ui->tableView_2->resizeColumnsToContents();
     ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
@@ -122,6 +122,8 @@ connect(device_system, SIGNAL(UpdataDocsnames(QList<QString>,QList<QString>)),th
      connect(device_system, SIGNAL(testconfigureshow(QString)),this, SLOT(on_testconfigureshow(QString)));
 }
 
+
+//析构函数
 MainWin::~MainWin()
 {
 
@@ -150,9 +152,10 @@ void MainWin::on_action_4_triggered()
     settingui->show();
 }
 
+//绘图窗口放大
 void MainWin::on_action_5_triggered(bool checked)
 {
-    //绘图窗口放大
+
     qDebug()<<checked;
     if(checked)
     {
@@ -166,6 +169,7 @@ void MainWin::on_action_5_triggered(bool checked)
     }
 }
 
+//新建实验弹出窗口
 void MainWin::on_action_triggered()
 {
     QDialog dialog(this);
@@ -202,30 +206,34 @@ void MainWin::on_action_triggered()
     } 
 }
 
+//结束实验
 void MainWin::on_action_3_triggered()
 {
-    //结束实验
+
     ui->action->setEnabled(true);
     ui->action_3->setDisabled(true);
     device_system->EndLocalTest();
 }
 
+ //取点
 void MainWin::on_action_6_toggled(bool checked)
 
 {
-    //取点
     chart_widget->GetSeriesPoint(checked);
 }
 
+ //删点
 void MainWin::on_action_7_triggered(bool checked)
 {
-    //删点
+
     deltablerow =checked;
     on_MovePointdata();
 }
+
+//导出数据
 void MainWin::on_action_8_triggered()
 {
-    //导出数据
+
     QString curPath = QCoreApplication::applicationDirPath();
    // curPath = QDir::currentPath();
     QString dlgTile = "数据保存路径";
@@ -244,9 +252,10 @@ void MainWin::on_action_8_triggered()
     }
 }
 
+//查询历史
 void MainWin::on_pushButton_clicked()
 {
-    //查询历史
+
     QDate begin_date = ui->dateEdit->date();
     QDate end_date = ui->dateEdit_2->date();
     device_system->FindDocsNames(begin_date,end_date);
@@ -325,6 +334,11 @@ void MainWin::on_UpdataDocsnames(QList<QString> name,QList<QString> time)
     }
     standard_model_2->appendColumn(item_column_name);
     standard_model_2->appendColumn(item_column_time);
+    QStringList labels;
+    labels.append("实验名称");
+    labels.append("实验时间");
+    standard_model_2->setHorizontalHeaderLabels(labels);
+
 }
 
 void MainWin::on_SelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
@@ -430,5 +444,5 @@ void MainWin::on_action_14_triggered(bool checked)
     //远程实时
    device_system->GetRtData(checked);
    if(checked) device_system->SetMaxDataLen(chart_widget->plot_size*2000);
-   else device_system->SetMaxDataLen(0);
+   else device_system->SetMaxDataLen(60000000);
 }

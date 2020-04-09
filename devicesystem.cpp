@@ -25,10 +25,11 @@ DeviceSystem::DeviceSystem()
     udp_order = new MyUDP();
     udp_data  = new MyUDP();
 
+
     //tcp ip and port
     tcp_client = new MyTCPClient();
 
-    tcp_target_addr.setAddress("115.159.154.160");
+    tcp_target_addr.setAddress("114.55.104.50");
     //  tcp_target_addr.setAddress("192.168.3.2");
     tcp_target_port = 8089;
 
@@ -46,9 +47,9 @@ DeviceSystem::DeviceSystem()
     LocalThread();
     tcp_message_flag = 0;
     test_name = "no_test";
-    show_speed_timer = new QTimer();
-    connect(show_speed_timer,SIGNAL(timeout()),this,SLOT(ShowSpeed()));
-    show_speed_timer->start(1000);
+    //show_speed_timer = new QTimer();
+    //connect(show_speed_timer,SIGNAL(timeout()),this,SLOT(ShowSpeed()));
+    //->start(1000);
     auto_stop = new QTimer();
     connect(auto_stop,SIGNAL(timeout()),this,SLOT(LocalTestStop()));
     is_receive_data = false;
@@ -114,7 +115,7 @@ void DeviceSystem::RemoteTcpStart(QString username,QString passwd)
 
     if(!status) emit TcpConnectStatus(false, "无法连接远程服务器,请检查网络或服务器状态");
     else{
-        // FindDocsNames(QDate::currentDate(),QDate::currentDate());
+         FindDocsNames(QDate::currentDate(),QDate::currentDate());
     }
 }
 
@@ -171,8 +172,8 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
 {
     if(message.isEmpty()) return;
     Tcp_Data= message;
-    qDebug()<<"tcp_message_flag"<<tcp_message_flag;
-    qDebug()<<"\n"<<"onTcpClientAppendMessage"<<message<<"\n";
+    //qDebug()<<"tcp_message_flag"<<tcp_message_flag;
+   // qDebug()<<"\n"<<"onTcpClientAppendMessage"<<message<<"\n";
     if(tcp_message_flag ==0 && message.startsWith("MongoFindDocsNames:"))
     {
         Tcp_Data_list.clear();
@@ -209,7 +210,7 @@ void DeviceSystem::onTcpClientAppendMessage(const QString &from, const QByteArra
         tcp_data_number += message.size();
         tcp_package_number++;
         is_receive_data = true;
-        if(device_data.endsWith("OVER"))
+        if(device_data.endsWith("OVER\n"))
         {
             tcp_message_flag=0;
             is_receive_data = false;
@@ -779,14 +780,22 @@ bool DeviceSystem::GetRtData(bool status)
     QString value;
     if(status)
     {
+        //start realtime data
        order = ReceiveRtdata;
+       //get configure file
+       if(doc_name.name_time_list.size()==0) return false;
+       FindConfigureFile(doc_name.name_time_list.last());
+       value.append(doc_name.name_time_list.last());
+       //qDebug()<<"XXXXXXXXXXXXXXXXXXXXXX"<<value;
     }
     else
     {
+        //stop realtime data
         order = StopReceiveRtdata;
     }
-    TcpSendCheck(order,value);
-    return true;
+     //get rt data
+    bool rt_status = TcpSendCheck(order,value);
+    return rt_status;
 }
 
 bool DeviceSystem::SendConfigureFile(QString test_name)
@@ -828,8 +837,12 @@ bool DeviceSystem::FindConfigureFile(QString test_name)
     qDebug()<<"FindConfigureFile order"<<order;
     tcp_client->sendMessage(order);
     tcp_client->waitForReadyRead(1000);
-    if(Tcp_Data.isEmpty()) qDebug()<<"FindConfigureFile no return ";
-    return true;
+    if(Tcp_Data.isEmpty())
+    {
+        qDebug()<<"FindConfigureFile no return ";
+        return false;
+    }
+    else return true;
 }
 
 bool DeviceSystem::ReceiveConfigureFile(QByteArray Tcp_Data_list)

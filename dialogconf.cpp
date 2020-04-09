@@ -15,6 +15,10 @@ DialogConf::DialogConf(DeviceSystem *system,QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit->setEnabled(false);
     ui->lineEdit_2->setEnabled(false);
+    ui->lineEdit_3->setEnabled(false);
+    ui->lineEdit->setText("mywifi5G");
+    ui->lineEdit_2->setText("1234567890");
+    ui->lineEdit_3->setText("114.55.104.50");
 
     ui->comboBox->setEnabled(false);
 
@@ -40,6 +44,7 @@ void DialogConf::onTcpClientConnectFailed()
 {
     ui->lineEdit->setEnabled(false);
     ui->lineEdit_2->setEnabled(false);
+    ui->lineEdit_3->setEnabled(false);
     ui->comboBox->setEnabled(false);
     ui->pushButton_3->setEnabled(true);
 
@@ -89,6 +94,7 @@ void DialogConf::onTcpClientConnected(const QString &from, const quint16 port)
 {
     ui->lineEdit->setEnabled(true);
     ui->lineEdit_2->setEnabled(true);
+    ui->lineEdit_3->setEnabled(true);
     if(ui->comboBox_2->currentIndex() == 0) ui->comboBox->setEnabled(true);
     ui->pushButton_3->setEnabled(false);
     qDebug()<<"onTcpClientConnected";
@@ -137,6 +143,7 @@ void DialogConf::on_buttonBox_accepted()
 {
     QString ssid_name = ui->lineEdit->text();
     QString ssid_pwd = ui->lineEdit_2->text();
+    QString server_ip = ui->lineEdit_3->text();
     QString device_id;
     QString SET_MASTER_CLK_STATUS;
    if(ui->comboBox_2->currentIndex() == 0)
@@ -154,7 +161,11 @@ void DialogConf::on_buttonBox_accepted()
         QMessageBox::warning(this,"警告","输入密码和名称");
         return;
     }
-    if(SetCmdValue("SET_NODE_ID",device_id)==true && SetCmdValue("SET_RSI_JOIN_SSID",ssid_name)==true && SetCmdValue("SET_RSI_PSK",ssid_pwd)==true && SetCmdValue("SET_MASTER_CLK",SET_MASTER_CLK_STATUS)==true)
+    if(SetCmdValue("SET_NODE_ID",device_id)==true
+            && SetCmdValue("SET_RSI_JOIN_SSID",ssid_name)==true
+            && SetCmdValue("SET_RSI_PSK",ssid_pwd)==true
+            && SetCmdValue("SET_MASTER_CLK",SET_MASTER_CLK_STATUS)==true
+            && SetCmdValue("SET_SERVER_IP",server_ip)==true)
     {
         if(SetCmdValue("SAVE_ALL_PARA",""))
         {
@@ -177,6 +188,7 @@ void DialogConf::on_buttonBox_accepted()
 
     ui->lineEdit->setEnabled(false);
     ui->lineEdit_2->setEnabled(false);
+     ui->lineEdit_3->setEnabled(false);
     ui->comboBox->setEnabled(false);
     qDebug()<<"ssid_name"<<ssid_name<<"ssid_pwd"<<ssid_pwd<<"device_id"<<device_id;
 }

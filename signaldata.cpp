@@ -10,7 +10,7 @@ SignalData::SignalData()
     update_status = false;
     show_enable = false;
     filter_enable = false;
-    max_data_len = 0;
+    max_data_len = 60000000;
     SetFilterLengthMax(1,1000);
 }
 SignalData::~SignalData()

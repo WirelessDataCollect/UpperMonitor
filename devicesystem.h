@@ -67,13 +67,9 @@ public:
     QVector<bool> device_all_status;
     bool clock_device_status;
 
-
-
-
     MyUDP *udp_data  = nullptr;
     MyUDP *udp_order = nullptr;
     MyTCPClient *tcp_client = nullptr;
-
 
     bool TcpSendCheck(QString order, QString value = "");
     bool UdpSendCheck(QByteArray order, QByteArray value);

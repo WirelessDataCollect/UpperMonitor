@@ -17,7 +17,7 @@ public:
     QColor color;
     QString express_str;
     QVector<QByteArray> message_list;
-    QVector<int> val_list;
+    QVector<double> val_list;
     QVector<double> time_list;
     QVector<double> data_list;
     QVector<QPointF> show_data;
@@ -37,11 +37,13 @@ public:
     bool isExpreesionValue(QString express_str);
     double EvaluateExpress(QByteArray data);
     double EvaluateExpress(double data);
+    void UpdateExpress();
     void AddData(double time,QByteArray data);
     void AddData(double time,int data);
     void AddIOData(double time,int data);
     void ClearPlotData();
     void ClearAllData();
+
     bool update_status;
     bool show_enable;
 

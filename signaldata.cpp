@@ -58,7 +58,7 @@ void SignalData::AddData(double time,int data)
     double val = EvaluateExpress(voltage);
 
     time_list.append(time);
-    val_list.append(data);
+    val_list.append(voltage);
     data_list.append(val);
     if(filter_enable==false) filter_enable = true;
     Filter(time,val);
@@ -100,6 +100,27 @@ double SignalData::EvaluateExpress(double data)
     vector_x.clear();
     vector_x.push_back(double(data));
     return expression.value();
+}
+
+void SignalData::UpdateExpress()
+{
+    if(!val_list.isEmpty())
+    {
+        data_list.clear();
+        for(int i=0;i<val_list.size();i++)
+        {
+            data_list.append(EvaluateExpress(val_list.at(i)));
+        }
+    }
+    else if(!message_list.isEmpty())
+    {
+        data_list.clear();
+        for(int i=0;i<message_list.size();i++)
+        {
+            data_list.append(EvaluateExpress(message_list.at(i)));
+        }
+
+    }
 }
 void SignalData::ClearPlotData()
 {
@@ -178,6 +199,7 @@ void SignalData::Filter(double time, double new_data)
 
 void SignalData::UpdateAllData()
 {
+    UpdateExpress();
     show_data.clear();
     show_data.resize(time_list.size());
     filter_sum=0;
@@ -216,3 +238,4 @@ void SignalData::SetMaxDataLen(int len)
 {
     max_data_len = len;
 }
+
